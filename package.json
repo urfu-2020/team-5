@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=production node ./app/app.js",
-    "dev": "cross-env NODE_ENV=development nodemon ./app/app.js"
+    "dev": "cross-env NODE_ENV=development nodemon ./app/app.js",
+    "lint": "npm-run-all lint:*",
+    "lint:css": "stylelint --fix ./**/*.css",
+    "lint:js": "eslint --fix ./app/"
   },
   "dependencies": {
     "config": "^3.3.6",
@@ -19,6 +22,13 @@
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
-    "nodemon": "^2.0.7"
+    "eslint": "^7.23.0",
+    "eslint-config-standard": "^16.0.2",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.3.1",
+    "nodemon": "^2.0.7",
+    "stylelint": "^13.12.0",
+    "stylelint-config-standard": "^21.0.0"
   }
 }
