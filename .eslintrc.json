@@ -15,6 +15,7 @@
     "no-console": "warn",
     "semi": ["warn", "always"],
     "no-unused-vars": "warn",
-    "max-len": ["error", 100]
+    "max-len": ["error", 100],
+    "comma-dangle": "off"
   }
 }
