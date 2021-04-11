@@ -30,9 +30,9 @@ if (process.env.NODE_ENV === 'development') {
   app.use(express.static(publicDir));
 }
 
-app.use('/', indexRouter);
-
 app.use(commonData);
+
+app.use('/', indexRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
