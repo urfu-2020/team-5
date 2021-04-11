@@ -11,3 +11,5 @@ Install the dependencies
 
 Start application in the development mode  
 `npm run dev`
+
+Heroku: https://kilogram-team5.herokuapp.com/
