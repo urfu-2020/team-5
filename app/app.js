@@ -11,6 +11,7 @@ const indexRouter = require('./routes/index');
 
 const app = express();
 const commonData = require('./middlewares/common-data');
+
 const publicDir = path.join(__dirname, 'public');
 const viewsDir = path.join(__dirname, 'views');
 
@@ -29,16 +30,16 @@ if (process.env.NODE_ENV === 'development') {
   app.use(express.static(publicDir));
 }
 
-app.use('/', indexRouter);
-
 app.use(commonData);
 
+app.use('/', indexRouter);
+
 // catch 404 and forward to error handler
-app.use(function (req, res, next) {
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-app.use(function (err, req, res) {
+app.use((err, req, res) => {
   res.status(err.status || 500);
 });
 
