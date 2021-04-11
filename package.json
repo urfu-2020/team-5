@@ -19,7 +19,8 @@
     "hbs": "^4.1.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "npm-run-all": "^4.1.5"
+    "npm-run-all": "^4.1.5",
+    "surge": "^0.23.0"
   },
   "devDependencies": {
     "eslint": "^7.24.0",
