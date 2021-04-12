@@ -1,0 +1,9 @@
+language: node_js
+node_js:
+  - 14
+install:
+  - npm install
+before_script:
+  - npm run lint
+after_success:
+  - surge --project ./app/public --domain ${STATIC_DOMAIN}
