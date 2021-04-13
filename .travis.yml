@@ -1,0 +1,21 @@
+language: node_js
+node_js:
+  - 14
+install:
+  - npm install
+before_script:
+  - npm run lint
+deploy:
+  - provider: surge
+    project: ./app/public/
+    domain: kilogram-5-team.surge.sh
+    skip_cleanup: true
+    on:
+      branch: main
+  - provider: surge
+    project: ./app/public/
+    domain: kilogram-5-team-dev.surge.sh
+    skip_cleanup: true
+    on:
+      branch: dev
+
