@@ -8,13 +8,13 @@ before_script:
 deploy:
   - provider: surge
     project: ./app/public/
-    domain: https://kilogram-5-team.surge.sh/
+    domain: kilogram-5-team.surge.sh
     skip_cleanup: true
     on:
       branch: main
   - provider: surge
     project: ./app/public/
-    domain: https://kilogram-5-team-dev.surge.sh/
+    domain: kilogram-5-team-dev.surge.sh
     skip_cleanup: true
     on:
       branch: dev
