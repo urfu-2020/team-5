@@ -18,4 +18,10 @@ deploy:
     skip_cleanup: true
     on:
       branch: dev
+  - provider: surge
+    project: ./app/public/
+    domain: kilogram-5-team-dev.surge.sh
+    skip_cleanup: true
+    on:
+      branch: feature/webpack
 
