@@ -1,0 +1,1 @@
+body{align-items:center;display:flex;flex-flow:column nowrap;font:14px Lucida Grande,Helvetica,Arial,sans-serif;justify-content:center;margin:0}.dogs-img-container{border-radius:2%;height:600px;overflow:hidden;transition:border-radius 1s;width:900px}.dogs-img-container:hover{border-radius:50%}.dogs-img{height:100%;width:100%}

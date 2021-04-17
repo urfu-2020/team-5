@@ -11,7 +11,9 @@
   "parserOptions": {
     "ecmaVersion": 2021
   },
+  "ignorePatterns": ["app/public/**"],
   "rules": {
+    "import/no-dynamic-require": "off",
     "no-console": "warn",
     "semi": ["warn", "always"],
     "no-unused-vars": "warn",

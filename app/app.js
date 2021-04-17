@@ -1,5 +1,7 @@
 const createError = require('http-errors');
 const path = require('path');
+const webpack = require('webpack');
+const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -7,10 +9,14 @@ require('dotenv').config();
 const config = require('config');
 const morgan = require('morgan');
 
+const webpackConfig = require('../config/webpack/common');
+
+const compiler = webpack(webpackConfig);
+
+const commonData = require('./middlewares/common-data');
 const indexRouter = require('./routes/index');
 
 const app = express();
-const commonData = require('./middlewares/common-data');
 
 const publicDir = path.join(__dirname, 'public');
 const viewsDir = path.join(__dirname, 'views');
@@ -21,6 +27,13 @@ app.set('view engine', 'hbs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+app.use(
+  webpackDevMiddleware(compiler, {
+    publicPath: webpackConfig.output.publicPath,
+    writeToDisk: true
+  })
+);
 
 if (config.get('debug')) {
   app.use(morgan('dev'));
