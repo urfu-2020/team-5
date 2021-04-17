@@ -50,7 +50,7 @@ module.exports = {
       // JavaScript
       {
         test: /\.js$/i,
-        exclude: /node_modules/,
+        exclude: /\*\/node_modules/,
         use: babelLoader
       },
       // CSS, SASS

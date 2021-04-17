@@ -1,7 +1,5 @@
 const createError = require('http-errors');
 const path = require('path');
-const webpack = require('webpack');
-const webpackDevMiddleware = require('webpack-dev-middleware');
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -10,8 +8,6 @@ const config = require('config');
 const morgan = require('morgan');
 
 const webpackConfig = require('../config/webpack/common');
-
-const compiler = webpack(webpackConfig);
 
 const commonData = require('./middlewares/common-data');
 const indexRouter = require('./routes/index');
@@ -28,19 +24,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(
-  webpackDevMiddleware(compiler, {
-    publicPath: webpackConfig.output.publicPath,
-    writeToDisk: true
-  })
-);
-
 if (config.get('debug')) {
   app.use(morgan('dev'));
 }
 
 if (process.env.NODE_ENV === 'development') {
   app.use(express.static(publicDir));
+
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const compiler = webpack(webpackConfig);
+
+  app.use(
+    webpackDevMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+      writeToDisk: true
+    })
+  );
 }
 
 app.use(commonData);
