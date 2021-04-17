@@ -7,8 +7,6 @@ require('dotenv').config();
 const config = require('config');
 const morgan = require('morgan');
 
-const webpackConfig = require('../config/webpack/common');
-
 const commonData = require('./middlewares/common-data');
 const indexRouter = require('./routes/index');
 
@@ -31,6 +29,7 @@ if (config.get('debug')) {
 if (process.env.NODE_ENV === 'development') {
   app.use(express.static(publicDir));
 
+  const webpackConfig = require('../config/webpack/common');
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const compiler = webpack(webpackConfig);
