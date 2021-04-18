@@ -13,7 +13,7 @@ deploy:
     domain: kilogram-5-team.surge.sh
     skip_cleanup: true
     on:
-      branch: main
+      branch: master
   - provider: surge
     project: ./app/public/
     domain: kilogram-5-team-dev.surge.sh
