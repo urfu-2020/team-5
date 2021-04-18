@@ -1,16 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
 
-.dialogs,
-.send-message-form {
-  background-color: var(--bg-color);
-}
-
 .send-message-form {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
   padding: 0 5px;
+  background-color: var(--bg-color);
+  border-left: var(--separator) solid 1px;
 }
 
 .input-message {
