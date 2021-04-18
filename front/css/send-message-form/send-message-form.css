@@ -34,7 +34,7 @@
   background-color: transparent;
   border: none;
   outline: none;
-  transition: color 0.3s;
+  transition: color 0.2s;
 }
 
 .send-message-form-button:hover,

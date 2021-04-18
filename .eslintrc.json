@@ -13,6 +13,7 @@
   },
   "ignorePatterns": ["app/public/**"],
   "rules": {
+    "linebreak-style":"off",
     "import/no-dynamic-require": "off",
     "no-console": "warn",
     "semi": ["warn", "always"],
