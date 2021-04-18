@@ -1,0 +1,8 @@
+{
+  "env": {
+    "NODE_ENV": "development"
+  },
+  "watch": ["./app/**/*", "./front/**/*", "./config/**/*"],
+  "ext": "*",
+  "ignore":["./app/public/*", "node_modules/"]
+}
