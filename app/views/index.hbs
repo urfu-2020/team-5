@@ -6,8 +6,8 @@
   <meta charset="{{ meta.charset }}">
   <title>{{ title }}</title>
   <meta name="description" content="{{ meta.description }}">
-  <link rel="stylesheet" href="{{ staticBasePath }}stylesheets/styles.css" media="screen">
-  <link rel="icon" href="{{ staticBasePath }}favicon.ico">
+  <link rel="stylesheet" href="{{ staticBasePath }}bundle.css" media="screen">
+  <link rel="icon" href="{{ staticBasePath }}images/favicon.ico">
 </head>
 
 <body>
@@ -15,6 +15,8 @@
   <div class="dogs-img-container">
     <img src="{{ staticBasePath }}images/dogs.webp" class="dogs-img" />
   </div>
+
+  <script src="{{ staticBasePath }}bundle.js"> </script>
 </body>
 
 </html>

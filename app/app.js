@@ -7,10 +7,10 @@ require('dotenv').config();
 const config = require('config');
 const morgan = require('morgan');
 
+const commonData = require('./middlewares/common-data');
 const indexRouter = require('./routes/index');
 
 const app = express();
-const commonData = require('./middlewares/common-data');
 
 const publicDir = path.join(__dirname, 'public');
 const viewsDir = path.join(__dirname, 'views');
@@ -28,6 +28,18 @@ if (config.get('debug')) {
 
 if (process.env.NODE_ENV === 'development') {
   app.use(express.static(publicDir));
+
+  const webpackConfig = require('../config/webpack/common');
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const compiler = webpack(webpackConfig);
+
+  app.use(
+    webpackDevMiddleware(compiler, {
+      publicPath: webpackConfig.output.publicPath,
+      writeToDisk: true
+    })
+  );
 }
 
 app.use(commonData);
