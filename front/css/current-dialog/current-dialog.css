@@ -1,0 +1,166 @@
+.chat-header {
+  background-color: var(--bg-color);
+  border-left: var(--separator) solid 1px;
+}
+
+.chat-container {
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
+  height: 100vh;
+}
+
+.chat-container__chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-header__chat-data {
+  margin-left: 10px;
+}
+
+.chat-name {
+  color: var(--primary-text);
+}
+
+.chat-status {
+  color: var(--secondary-text);
+}
+
+.chat-data__chat-name,
+.chat-data__chat-status {
+  margin: 5px;
+}
+
+.options-container {
+  color: var(--secondary-text);
+}
+
+.options-container__icon {
+  margin-left: 10px;
+}
+
+.chat-container__chat-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-area > :first-child {
+  margin-top: auto;
+}
+
+.chat-area {
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: var(--teal-200);
+  border: var(--separator) solid 1px;
+}
+
+.chat-date {
+  font-weight: normal;
+  color: white;
+  background-color: gray;
+  border-radius: 35px;
+}
+
+.chat-area__chat-date {
+  position: sticky;
+  top: 0;
+  padding: 5px 10px;
+  margin: 0 auto;
+}
+
+.chat-area__message {
+  display: flex;
+}
+
+.chat-area__message_income {
+  margin: 5px;
+}
+
+.chat-area__message_my {
+  margin: 5px 5px 5px auto;
+}
+
+.chat-avatar {
+  color: var(--secondary-text);
+  background-color: var(--bg-color);
+  border-radius: 35px;
+}
+
+.message__chat-avatar {
+  align-self: flex-end;
+  height: 35px;
+}
+
+.message__arrow_my,
+.message__arrow_income {
+  align-self: flex-end;
+  width: 0;
+  height: 0;
+}
+
+.message__arrow_my {
+  margin-right: 5px;
+}
+
+.message__arrow_income {
+  margin-left: 5px;
+}
+
+.arrow_my {
+  border-right: 10px solid transparent;
+  border-bottom: 10px solid var(--teal-50);
+  box-shadow: 1px 1px 1px var(--separator);
+}
+
+.arrow_income {
+  border-bottom: 10px solid var(--bg-color);
+  border-left: 10px solid transparent;
+  box-shadow: 1px 1px 1px var(--separator);
+}
+
+.message__cloud {
+  display: flex;
+  min-height: 20px;
+}
+
+.cloud_my {
+  background-color: var(--teal-50);
+  border-radius: 7px 7px 0 7px;
+}
+
+.cloud_income {
+  background-color: var(--bg-color);
+  border-radius: 7px 7px 7px 0;
+}
+
+.cloud {
+  box-shadow: 1px 1px 1px var(--separator);
+}
+
+.cloud__message-text {
+  display: inline-flex;
+  align-items: center;
+  max-width: 300px;
+  padding: 10px;
+  overflow-wrap: anywhere;
+}
+
+.message-time {
+  color: var(--secondary-text);
+}
+
+.cloud__message-time,
+.cloud__ticks {
+  align-self: flex-end;
+  margin: 5px;
+}
+
+.material-icons.ticks {
+  font-size: 20px;
+}
+
+.ticks {
+  color: var(--teal-500);
+}

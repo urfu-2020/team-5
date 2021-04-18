@@ -3,6 +3,7 @@
 @import url('./send-message-form/send-message-form.css');
 @import url('./send-message-form/input-file-modal.css');
 @import url('./contact-list/contact-list.css');
+@import url('./current-dialog/current-dialog.css');
 
 * {
   box-sizing: border-box;
@@ -21,10 +22,4 @@ body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
   background-color: var(--teal-200);
-}
-
-.current-dialog {
-  display: grid;
-  grid-template: 'messages' 20fr 'send-message-form' 1.3fr / 1fr;
-  margin-left: 1.2px;
 }
