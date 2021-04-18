@@ -1,0 +1,35 @@
+@import url('./send-message-form/send-message-form.css');
+@import url('./send-message-form/input-file-modal.css');
+@import url('./_utils.css');
+@import url('./_variables.css');
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+.dialogs,
+.current-dialog {
+  height: 100vh;
+}
+
+body {
+  display: grid;
+  grid-template:
+    'dialogs' 'current-dialog' 1fr
+    / 1fr 2fr;
+  min-width: 1024px;
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--teal-200);
+}
+
+.current-dialog {
+  display: grid;
+  grid-template:
+    'messages' 20fr
+    'send-message-form' 1.3fr
+    / 1fr;
+  margin-left: 1.2px;
+}
