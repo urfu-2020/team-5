@@ -1,0 +1,96 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 99;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  transition: 0.3s;
+}
+
+.input-file-modal {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: start;
+  justify-content: space-between;
+  width: 450px;
+  height: 300px;
+  padding: 1.2rem 2rem;
+  background-color: var(--bg-color);
+  border-radius: 5px;
+}
+
+.input-file-modal__input-text {
+  width: 100%;
+  border-bottom: 1px solid var(--teal-200);
+  transition: 0.3s border;
+}
+
+.input-file-modal__input-text:focus {
+  border-bottom: 1px solid var(--teal-500);
+}
+
+.input-file-modal__buttons {
+  width: 100%;
+}
+
+.input-file-modal__button {
+  font-size: 1.1rem;
+}
+
+.input-file-modal__button:nth-of-type(2) {
+  margin: 0 0.9rem 0 7.3rem;
+}
+
+.input-file-modal__close-button {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+  font-size: 1.8rem;
+}
+
+.attachments {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  width: 100%;
+  height: 150px;
+  overflow: auto;
+  font-size: 1rem;
+}
+
+.input-file-modal__attachments {
+  margin-top: 1.3rem;
+}
+
+.attachment {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.attachment:hover {
+  cursor: default;
+}
+
+.attachments__attachment {
+  margin-top: 0.9rem;
+}
+
+.attachment__pic {
+  font-size: 2rem;
+  color: var(--teal-200);
+}
+
+.attachment__name {
+  margin: 0 13rem 0 0.5rem;
+}

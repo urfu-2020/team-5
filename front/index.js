@@ -1,1 +1,3 @@
-import './stylesheets/styles.css';
+
+import './js/input-file-modal';
+import './css/layout.css';

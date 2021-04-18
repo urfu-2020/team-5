@@ -13,6 +13,7 @@
   },
   "ignorePatterns": ["app/public/**"],
   "rules": {
+    "linebreak-style":"off",
     "import/no-dynamic-require": "off",
     "no-console": "warn",
     "semi": ["warn", "always"],
@@ -20,6 +21,7 @@
     "max-len": ["error", 100],
     "comma-dangle": "off",
     "global-require": "off",
-    "import/no-extraneous-dependencies": "off"
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off"
   }
 }

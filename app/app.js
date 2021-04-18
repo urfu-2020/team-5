@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const config = require('config');
 const morgan = require('morgan');
+const hbs = require('hbs');
 
 const commonData = require('./middlewares/common-data');
 const indexRouter = require('./routes/index');
@@ -14,8 +15,10 @@ const app = express();
 
 const publicDir = path.join(__dirname, 'public');
 const viewsDir = path.join(__dirname, 'views');
+const partialsDir = path.join(viewsDir, 'partials');
 
 app.set('views', viewsDir);
+hbs.registerPartials(partialsDir);
 app.set('view engine', 'hbs');
 
 app.use(express.json());

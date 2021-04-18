@@ -1,0 +1,49 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
+
+.dialogs,
+.send-message-form {
+  background-color: var(--bg-color);
+}
+
+.send-message-form {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+}
+
+.input-message {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  color: var(--primary-text);
+  border: none;
+  outline: none;
+}
+
+.send-message-form__input-text {
+  flex-grow: 1;
+  height: 100%;
+  padding: 0;
+  padding-left: 0.5rem;
+  font-weight: 300;
+}
+
+.send-message-form-button {
+  color: var(--teal-200);
+  background-color: transparent;
+  border: none;
+  outline: none;
+  transition: color 0.2s;
+}
+
+.send-message-form-button:hover,
+.send-message-form-button:focus {
+  color: var(--teal-500);
+  cursor: pointer;
+}
+
+.send-message-form__input-file-button,
+.send-message-form__send-message-button {
+  font-size: 1.8rem;
+}
