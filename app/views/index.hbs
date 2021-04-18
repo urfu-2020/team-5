@@ -7,12 +7,14 @@
   <title>{{ title }}</title>
   <meta name="description" content="{{ meta.description }}">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{{ staticBasePath }}bundle.css" media="screen">
   <link rel="icon" href="{{ staticBasePath }}images/favicon.ico">
 </head>
 
 <body>
-  <aside class="dialogs">
+  <aside class="contactsListWrapper">
+    {{> contact_list}}
   </aside>
 
   <main class="current-dialog">
