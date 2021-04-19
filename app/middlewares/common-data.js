@@ -7,6 +7,8 @@ module.exports = (req, res, next) => {
   };
 
   res.locals.staticBasePath = config.get('staticBasePath');
+  res.locals.cssBundle = config.get('cssBundle');
+  res.locals.jsBundle = config.get('jsBundle');
 
   next();
 };
