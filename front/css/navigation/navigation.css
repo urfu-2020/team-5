@@ -1,44 +1,8 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
-::-webkit-scrollbar {
-  width: 9px;
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--separator);
-  border-radius: 5px;
-}
-
-:root {
-  --teal-50: #e0f2f1;
-  --teal-200: #80cbc4;
-  --teal-500: #009688;
-  --green-500: #4caf50;
-  --bg-color: #fff;
-  --primary-text: #050505;
-  --secondary-text: #757575;
-  --separator: #bdbdbd;
-  --grey-200: #eee;
-  --accent-text: var(--teal-500);
-}
-
-body {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
-  background-color: var(--teal200);
-}
-
 main {
   background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
 }
 
-.contactsListWrapper {
+.navigationWrapper {
   display: grid;
   grid-template-rows: 1fr 11fr;
   width: 100%;
@@ -46,23 +10,48 @@ main {
   background-color: white;
 }
 
-.searchBarWrapper {
+.navigationHeaderWrapper {
   display: flex;
+  gap: 12px;
   align-items: center;
   justify-content: stretch;
+  padding: 0 12px;
+}
+
+.mainMenuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  cursor: pointer;
+  background-color: var(--bg-color);
+  border: none;
+  border-radius: 2em;
+  outline: none;
+  transition: all 0.3s;
+}
+
+.mainMenuButton:hover,
+.mainMenuButton:focus,
+.mainMenuButton:active {
+  background-color: var(--grey-200);
+  box-shadow: 0 0 0 2px var(--teal-500);
+}
+
+.mainMenuButton__icon {
+  fill: var(--teal-500);
 }
 
 .search {
   display: flex;
   flex-grow: 1;
-  justify-content: stretch;
-  padding: 0 2em;
 }
 
 .search input {
   flex-grow: 1;
   padding: 0.5em 1em;
-  font-size: 1.2em;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
   color: var(--primary-text);
   background-color: var(--grey-200);
   border: none;
@@ -81,7 +70,12 @@ main {
 ul {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   overflow-y: auto;
+}
+
+ul::-webkit-scrollbar {
+  background-color: transparent;
 }
 
 li {
@@ -140,7 +134,7 @@ li:hover {
 .dialogHeaader,
 h3 {
   overflow-x: hidden;
-  font-size: 1.2em;
+  font-size: 1em;
   color: var(--primary-text);
   text-overflow: ellipsis;
   white-space: nowrap;
