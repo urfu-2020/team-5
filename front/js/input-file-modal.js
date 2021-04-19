@@ -2,12 +2,18 @@ import { createFocusTrap } from 'focus-trap';
 
 const modalOverlay = document.querySelector('.modal-overlay');
 const modal = document.querySelector('.input-file-modal');
+const fileInput = document.querySelector('#input-file');
+const modalTextInput = document.querySelector('.input-file-modal__input-text');
 
 const modalFocusTrap = createFocusTrap(modal, {
   returnFocusOnDeactivate: true,
   clickOutsideDeactivates: true,
   escapeDeactivates: true,
-  onDeactivate: () => document.querySelector('.modal-overlay').classList.add('hidden')
+  onDeactivate: () => {
+    modalOverlay.classList.add('hidden');
+    fileInput.value = '';
+    modalTextInput.value = '';
+  }
 });
 
 document.querySelector('#input-file').addEventListener('change', () => {
