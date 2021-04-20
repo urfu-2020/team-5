@@ -4,46 +4,64 @@
       close
     </button>
     <section class="input-file-modal__attachments attachments" aria-label="прикрепленные файлы">
-      <div class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
-        <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
-        <p class="attachment__name"> file1.txt </p>
-        <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
-           edit
-        </button>
-        <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
-          delete
-        </button>
-      </div>
-      <div class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
-        <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
-        <p class="attachment__name"> file2.txt </p>
-        <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
-           edit
-        </button>
-        <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
-          delete
-        </button>
-      </div>
-      <div class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
-        <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
-        <p class="attachment__name"> file3.txt </p>
-        <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
-           edit
-        </button>
-        <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
-          delete
-        </button>
-      </div>
+
+      <section class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
+        <div class="attachment__file-icon-and-name">
+          <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
+          <p class="attachment__name"> file1.txt </p>
+        </div>
+        <div class="attachment__file-buttons">
+          <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
+            edit
+          </button>
+          <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
+            delete
+          </button>
+        </div>
+      </section>
+
+      <section class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
+        <div class="attachment__file-icon-and-name">
+          <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
+          <p class="attachment__name"> file2.txt </p>
+        </div>
+        <div class="attachment__file-buttons">
+          <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
+            edit
+          </button>
+          <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
+            delete
+          </button>
+        </div>
+      </section>
+
+      <section class="attachments__attachment attachment" aria-label="Прикрепленный файл" tabindex="0">
+        <div class="attachment__file-icon-and-name">
+          <span class="attachment__pic material-icons" aria-hidden="true"> insert_drive_file </span>
+          <p class="attachment__name"> file2.txt </p>
+        </div>
+        <div class="attachment__file-buttons">
+          <button class="attachment__edit-button send-message-form-button material-icons" aria-label="Редактировать файл">
+            edit
+          </button>
+          <button class="attachment__delete-button send-message-form-button material-icons" aria-label="Открепить файл">
+            delete
+          </button>
+        </div>
+      </section>
+
     </section>
     <input type="text" class="input-file-modal__input-text input-message" autocomplete="off" placeholder="Введите сообщение..." />
     <section class="input-file-modal__buttons">
       <button class="input-file-modal__button send-message-form-button" aria-label="Добавить файл">Добавить</button>
-      <button class="input-file-modal__button cancel-button send-message-form-button" aria-label="Отмена прикрепления файлов">
-        Отмена
-      </button>
-      <button class="input-file-modal__button send-message-form-button" aria-label="Отправить сообщение">
-        Отправить
-      </button>
+      <div class="input-file-modal__last-two-buttons">
+        <button class="input-file-modal__button cancel-button send-message-form-button" aria-label="Отмена прикрепления файлов">
+          Отмена
+        </button>
+        <button class="input-file-modal__button send-message-form-button" aria-label="Отправить сообщение">
+          Отправить
+        </button>
+      </div>
     </section>
   </section>
 </div>
