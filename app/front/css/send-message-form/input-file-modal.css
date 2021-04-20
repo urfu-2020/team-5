@@ -55,7 +55,6 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  width: 45%;
 }
 
 .input-file-modal__close-button {
@@ -92,7 +91,7 @@
 }
 
 .attachments__attachment {
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.5rem;
 }
 
 .attachment__file-icon-and-name {
@@ -108,10 +107,10 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  width: 15%;
+  width: 21%;
 }
 
 .attachment__pic {
   font-size: 2rem;
-  color: var(--teal-200);
+  color: var(--teal-500);
 }
