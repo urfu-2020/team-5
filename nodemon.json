@@ -4,5 +4,5 @@
   },
   "watch": ["./app/**/*", "./front/**/*", "./config/**/*"],
   "ext": "*",
-  "ignore":["./app/public/*", "node_modules/"]
+  "ignore":["./app/build/*", "node_modules/", "./**/devBundle.js", "./**/bundle.css"]
 }

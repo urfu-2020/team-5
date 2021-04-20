@@ -13,7 +13,6 @@ const indexRouter = require('./routes/index');
 
 const app = express();
 
-const publicDir = path.join(__dirname, 'public');
 const viewsDir = path.join(__dirname, 'views');
 const partialsDir = path.join(viewsDir, 'partials');
 
@@ -30,9 +29,10 @@ if (config.get('debug')) {
 }
 
 if (process.env.NODE_ENV === 'development') {
+  const publicDir = path.join(__dirname, 'front');
   app.use(express.static(publicDir));
 
-  const webpackConfig = require('../config/webpack/common');
+  const webpackConfig = require('../config/webpack/dev');
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const compiler = webpack(webpackConfig);
