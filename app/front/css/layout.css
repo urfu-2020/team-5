@@ -1,5 +1,6 @@
 @import url('./_utils.css');
 @import url('./_variables.css');
+@import url('./button/button.css');
 @import url('./send-message-form/send-message-form.css');
 @import url('./send-message-form/input-file-modal.css');
 @import url('./contact-list/contact-list.css');
