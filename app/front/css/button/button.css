@@ -15,7 +15,14 @@
   background-color: var(--teal-50);
 }
 
+.svg-button {
+  width: 25px;
+  height: 25px;
+  fill: var(--teal-500);
+}
+
 .text-button {
+  font-size: 1rem;
   text-transform: uppercase;
 }
 

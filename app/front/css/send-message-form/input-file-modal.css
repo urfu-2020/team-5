@@ -46,10 +46,6 @@
   width: 100%;
 }
 
-.input-file-modal__button {
-  font-size: 1.1rem;
-}
-
 .input-file-modal__last-two-buttons {
   display: flex;
   flex-flow: row nowrap;
@@ -61,7 +57,6 @@
   position: absolute;
   top: 3%;
   right: 3%;
-  font-size: 1.8rem;
 }
 
 .attachments {
@@ -71,7 +66,6 @@
   width: 90%;
   max-height: 150px;
   overflow: auto;
-  font-size: 1rem;
 }
 
 .input-file-modal__attachments {
@@ -107,10 +101,11 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  width: 21%;
+  width: 23%;
 }
 
 .attachment__pic {
-  font-size: 2rem;
-  color: var(--teal-500);
+  width: 30px;
+  height: 30px;
+  fill: var(--teal-500);
 }

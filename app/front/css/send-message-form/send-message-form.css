@@ -26,7 +26,8 @@
   font-weight: 300;
 }
 
-.send-message-form__input-file-button,
-.send-message-form__send-message-button {
-  font-size: 1.8rem;
+.send-message-form__attach-files-button,
+.send-message-form__send-button {
+  width: 30px;
+  height: 30px;
 }

@@ -1,5 +1,6 @@
 document.addEventListener('click', (e) => {
-  if (e.target.classList.contains('button')) {
+  const closestButton = e.target.closest('.button');
+  if (closestButton) {
     const targetCoords = e.target.getBoundingClientRect();
     const x = e.clientX - targetCoords.left;
     const y = e.clientY - targetCoords.top;
@@ -7,7 +8,7 @@ document.addEventListener('click', (e) => {
     rippleElement.classList.add('ripple-effect');
     rippleElement.style.left = `${x}px`;
     rippleElement.style.top = `${y}px`;
-    e.target.appendChild(rippleElement);
+    closestButton.appendChild(rippleElement);
     setTimeout(() => {
       rippleElement.remove();
     }, 500);
