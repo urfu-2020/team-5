@@ -29,8 +29,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint:client": "npm-run-all lint:js",
-    "lint:css": "stylelint --fix ./**/*.css",
-    "lint:js": "eslint --fix ./**/*.js ./**/*.jsx"
+    "lint:css": "stylelint --fix './**/*.css'",
+    "lint:js": "eslint --fix './**/*.{js,jsx}'"
   },
   "browserslist": {
     "production": [
