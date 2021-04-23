@@ -6,9 +6,7 @@ install:
   - npm install --prefix client
 script:
   - npm run lint:server
-  - cd client
-  - npm run lint:client
-  - cd ..
+  - npm run lint:client --prefix client
 deploy:
   - provider: surge
     project: ./client/public/
