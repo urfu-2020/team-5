@@ -32,12 +32,12 @@
   margin: 5px;
 }
 
-.options-container {
-  color: var(--secondary-text);
+.options-container__icon {
+  margin-right: 10px;
 }
 
-.options-container__icon {
-  margin-left: 10px;
+.icon {
+  fill: var(--secondary-text);
 }
 
 .chat-container__chat-area {
@@ -52,8 +52,6 @@
 .chat-area {
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: var(--teal-200);
-  border: var(--separator) solid 1px;
 }
 
 .chat-date {
@@ -82,10 +80,10 @@
   margin: 5px 5px 5px auto;
 }
 
-.chat-avatar {
-  color: var(--secondary-text);
-  background-color: var(--bg-color);
-  border-radius: 35px;
+.chat-avatar-border {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.1);
+  stroke-width: 3;
 }
 
 .message__chat-avatar {
@@ -93,50 +91,57 @@
   height: 35px;
 }
 
-.message__arrow_my,
-.message__arrow_income {
-  align-self: flex-end;
-  width: 0;
-  height: 0;
-}
-
-.message__arrow_my {
-  margin-right: 5px;
-}
-
-.message__arrow_income {
-  margin-left: 5px;
-}
-
-.arrow_my {
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid var(--teal-50);
-  box-shadow: 1px 1px 1px var(--separator);
-}
-
-.arrow_income {
-  border-bottom: 10px solid var(--bg-color);
-  border-left: 10px solid transparent;
-  box-shadow: 1px 1px 1px var(--separator);
-}
-
 .message__cloud {
   display: flex;
   min-height: 20px;
 }
 
+.message__cloud_my {
+  position: relative;
+  margin-right: 10px;
+}
+
 .cloud_my {
   background-color: var(--teal-50);
   border-radius: 7px 7px 0 7px;
+  box-shadow: 1px -1px 1px var(--separator);
+}
+
+.message__cloud_my::after {
+  position: absolute;
+  right: -10px;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  content: "";
+  border-top: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid var(--teal-50);
+  border-left: 5px solid var(--teal-50);
+}
+
+.message__cloud_income {
+  position: relative;
+  margin-left: 10px;
 }
 
 .cloud_income {
   background-color: var(--bg-color);
   border-radius: 7px 7px 7px 0;
+  box-shadow: 1px -1px 1px var(--separator);
 }
 
-.cloud {
-  box-shadow: 1px 1px 1px var(--separator);
+.message__cloud_income::before {
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  content: "";
+  border-top: 5px solid transparent;
+  border-right: 5px solid var(--bg-color);
+  border-bottom: 5px solid var(--bg-color);
+  border-left: 5px solid transparent;
 }
 
 .cloud__message-text {
@@ -162,5 +167,5 @@
 }
 
 .ticks {
-  color: var(--teal-500);
+  fill: var(--teal-500);
 }
