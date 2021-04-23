@@ -1,17 +1,10 @@
 {
-  "extends": [
-    "airbnb-base"
-  ],
-  "plugins": [
-    "import"
-  ],
+  "root": true,
+  "extends": ["airbnb", "airbnb/hooks"],
   "env": {
     "browser": true,
     "commonjs": true,
     "node": true
-  },
-  "parserOptions": {
-    "ecmaVersion": 2021
   },
   "rules": {
     "linebreak-style":"off",
@@ -23,6 +16,13 @@
     "comma-dangle": "off",
     "global-require": "off",
     "import/no-extraneous-dependencies": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "import/no-mutable-exports": "off",
+    "jsx-quotes": [
+      1,
+      "prefer-double"
+    ],
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": "warn",
+    "jsx-a11y/no-noninteractive-tabindex": "warn"
   }
 }
