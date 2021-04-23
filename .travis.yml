@@ -4,9 +4,11 @@ node_js:
 install:
   - npm install
   - npm install --prefix client
-before_script:
+script:
   - npm run lint:server
-  - npm run lint:client --prefix client
+  - cd client
+  - npm run lint:client
+  - cd ..
 deploy:
   - provider: surge
     project: ./client/public/
