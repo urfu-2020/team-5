@@ -6,6 +6,7 @@
     "commonjs": true,
     "node": true
   },
+  "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx"],
   "rules": {
     "linebreak-style":"off",
     "import/no-dynamic-require": "off",
