@@ -4,28 +4,48 @@ import { config } from '../../../config';
 
 const { staticBasePath } = config;
 
-/* eslint max-len: "off" */
-export const ChatMessage = ({ message, time, isMyMessage }) => (
+export const ChatMessage = ({ message, time, isMyMessage, isMessageRead }) => (
   <div className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
-    <div className={`cloud message__cloud ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}>
+    <div className={`cloud message__cloud
+          ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}
+    >
       <span className="message-text cloud__message-text">
         {message}
       </span>
       <span className="message-time cloud__message-time">
         {time}
       </span>
-      <svg
-        className="ticks cloud__ticks"
-        height="20px"
-        viewBox="0 0 24 24"
-        width="20px"
-        fill="#000000"
-      >
-        <path d="M0 0h24v24H0V0z" fill="none" />
-        <path
-          d="M18 7l-1.41-1.41-6.34 6.34 1.41 1.41L18 7zm4.24-1.41L11.66 16.17 7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41 13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"
-        />
-      </svg>
+      {
+        isMyMessage ? (
+          <svg
+          className="ticks cloud__ticks"
+          height="20px"
+          viewBox="0 0 24 24"
+          width="20px"
+          fill="#000000"
+        >
+          {
+            isMessageRead ? (
+              <>
+                <path d="M0 0h24v24H0V0z" fill="none" />
+                <path
+                  d="M18 7l-1.41-1.41-6.34 6.34 1.41
+                  1.41L18 7zm4.24-1.41L11.66 16.17
+                  7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41
+                   13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"
+                />
+              </>
+            ) : (
+              <>
+                <path d="M0 0h24v24H0V0z" fill="none"></path>
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path>
+              </>
+            )
+          }
+        </svg>
+        ) : null
+      }
+
     </div>
     <svg
       className="message__chat-avatar"
@@ -55,7 +75,8 @@ export const ChatMessage = ({ message, time, isMyMessage }) => (
 ChatMessage.propTypes = {
   message: PropTypes.string,
   time: PropTypes.string.isRequired,
-  isMyMessage: PropTypes.bool.isRequired
+  isMyMessage: PropTypes.bool.isRequired,
+  isMessageRead: PropTypes.bool.isRequired
 };
 
 ChatMessage.defaultProps = {
