@@ -20,9 +20,3 @@ deploy:
     skip_cleanup: true
     on:
       branch: dev
-  - provider: surge
-    project: ./client/public/
-    domain: playground3310-dev.surge.sh
-    skip_cleanup: true
-    on:
-      branch: feature/react
