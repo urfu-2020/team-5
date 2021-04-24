@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import './modal-attachment.css';
+
 export const ModalAttachment = ({ title }) => (
   <section
     className="attachments__attachment attachment"

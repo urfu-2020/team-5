@@ -1,10 +1,5 @@
-@import url('./_utils.css');
-@import url('./_variables.css');
-@import url('./button/button.css');
-@import url('./send-message-form/send-message-form.css');
-@import url('./send-message-form/input-file-modal.css');
-@import url('./contact-list/contact-list.css');
-@import url('./current-dialog/current-dialog.css');
+@import url("./_variables.css");
+@import url("./contact-list/contact-list.css");
 
 * {
   box-sizing: border-box;
@@ -18,9 +13,9 @@ body,
 
 body {
   display: grid;
-  grid-template: 'dialogs' 'current-dialog' 1fr / 1fr 2fr;
+  grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
   min-width: 1024px;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   background-color: var(--teal-200);
 }

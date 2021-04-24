@@ -1,5 +1,7 @@
+@import url("@css/_variables");
+
 .button {
-  position: relative;
+  /* position: relative; */
   padding: 0.35rem;
   overflow: hidden;
   color: var(--teal-500);

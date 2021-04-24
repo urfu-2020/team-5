@@ -1,6 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-export const SendMessageForm = () => (
+import './send-message-form.css';
+
+import {Button} from '@components/Controls/Button/Button';
+
+export const SendMessageForm = ({ setOpenModal }) => (
   <form className="send-message-form" aria-label="отправить сообщение">
     <label
       htmlFor="input-file"
@@ -9,7 +14,7 @@ export const SendMessageForm = () => (
       role="button"
       tabIndex="0"
     >
-      <input type="file" id="input-file" hidden multiple />
+      <input type="file" id="input-file" hidden multiple onChange={() => setOpenModal(true)} />
       <svg
         className="svg-button send-message-form__attach-files-button"
         xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +38,7 @@ export const SendMessageForm = () => (
       autoComplete="off"
       placeholder="Введите сообщение..."
     />
-    <button className="button" aria-label="отправить сообщение" type="button">
+    <Button className="button" aria-label="отправить сообщение" type="button">
       <svg
         className="svg-button send-message-form__send-button"
         xmlns="http://www.w3.org/2000/svg"
@@ -45,6 +50,11 @@ export const SendMessageForm = () => (
         <path d="M0 0h24v24H0z" fill="none" />
         <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
       </svg>
-    </button>
+    </Button>
   </form>
 );
+
+
+SendMessageForm.propTypes = {
+  setOpenModal: PropTypes.func.isRequired
+};
