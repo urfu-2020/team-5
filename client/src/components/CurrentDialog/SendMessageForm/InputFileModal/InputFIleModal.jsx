@@ -1,10 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 
 import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
-import { Button } from '../../../Controls/Button/Button';
+import { Button } from '@components/Controls/Button/Button';
+import { closeModal, setInputMessage } from '@reducers/currentDialogReducer';
+import { useDispatch, useSelector } from 'react-redux';
 
 const files = [
   { id: 123, title: 'file1.txt' },
@@ -12,20 +14,20 @@ const files = [
   { id: 32, title: 'file3.txt' }
 ];
 
-export const InputFileModal = ({ setOpenModal }) => {
+
+export const InputFileModal = () => {
+  const dispatch = useDispatch();
+  const inputMessage = useSelector(state => state.currentDialog.message);
 
   const handleEscape = e => {
     if(e.target.key === 'Escape')
-      setOpenModal(false);
+      dispatch(closeModal());
   };
 
   const handleOverlayClick = e => {
     if(e.target.classList.contains('modal-overlay'))
-      setOpenModal(false);
+      dispatch(closeModal());
   };
-
-  const [inputText, setInputText] = useState('');
-  // const [inputFiles, setInputFiles] = useState('');
 
   return (
   <div
@@ -43,8 +45,8 @@ export const InputFileModal = ({ setOpenModal }) => {
         {files.map(({ id, title }) => <ModalAttachment key={id} title={title} />)}
       </section>
       <input
-        value={inputText}
-        onChange={e => setInputText(e.target.value)}
+        value={inputMessage}
+        onChange={e => dispatch(setInputMessage(e.target.value))}
         type="text"
         className="input-file-modal__input-text input-message"
         autoComplete="off"
@@ -63,7 +65,7 @@ export const InputFileModal = ({ setOpenModal }) => {
             type="button"
             className="input-file-modal__button cancel-button button text-button"
             aria-label="Отмена прикрепления файлов"
-            onClick={() => setOpenModal(false)}
+            onClick={() => dispatch(closeModal())}
           >
             Отменить
           </Button>
@@ -81,7 +83,7 @@ export const InputFileModal = ({ setOpenModal }) => {
         type="button"
         className="input-file-modal__close-button button"
         aria-label="закрыть окно"
-        onClick={() => setOpenModal(false)}
+        onClick={() => dispatch(closeModal())}
       >
         <svg
           className="svg-button"
