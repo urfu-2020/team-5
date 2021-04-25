@@ -7,11 +7,12 @@
 
 html,
 body,
+#root,
 .current-dialog {
   height: 100vh;
 }
 
-body {
+#root {
   display: grid;
   grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
   min-width: 1024px;

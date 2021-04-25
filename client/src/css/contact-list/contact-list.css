@@ -13,14 +13,6 @@
   border-radius: 5px;
 }
 
-body {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  font-family: "Roboto", sans-serif;
-  font-size: 16px;
-  background-color: var(--teal200);
-}
-
 main {
   background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
 }
