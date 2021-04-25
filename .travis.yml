@@ -3,19 +3,19 @@ node_js:
   - 14
 install:
   - npm install
-before_script:
-  - npm run lint
-after_success:
-  - npm run build
+  - npm install --prefix client
+script:
+  - npm run lint:server
+  - npm run lint:client --prefix client
 deploy:
   - provider: surge
-    project: ./app/public/
+    project: ./client/public/
     domain: kilogram-5-team.surge.sh
     skip_cleanup: true
     on:
       branch: master
   - provider: surge
-    project: ./app/public/
+    project: ./client/public/
     domain: kilogram-5-team-dev.surge.sh
     skip_cleanup: true
     on:

@@ -2,16 +2,17 @@
   "extends": [
     "airbnb-base"
   ],
+  "plugins": [
+    "import"
+  ],
   "env": {
     "browser": true,
     "commonjs": true,
-    "es2021": true,
     "node": true
   },
   "parserOptions": {
     "ecmaVersion": 2021
   },
-  "ignorePatterns": ["app/public/**", "devBundle.js"],
   "rules": {
     "linebreak-style":"off",
     "import/no-dynamic-require": "off",

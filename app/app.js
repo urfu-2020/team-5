@@ -1,64 +1,41 @@
-const createError = require('http-errors');
+// чужие импорты
 const path = require('path');
-
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
-const config = require('config');
 const morgan = require('morgan');
-const hbs = require('hbs');
 
-const commonData = require('./middlewares/common-data');
-const indexRouter = require('./routes/index');
+// наши импорты
+const config = require('./config');
+const testApiRouter = require('./routes/test');
 
 const app = express();
-
-const viewsDir = path.join(__dirname, 'views');
-const partialsDir = path.join(viewsDir, 'partials');
-
-app.set('views', viewsDir);
-hbs.registerPartials(partialsDir);
-app.set('view engine', 'hbs');
-
+// мидлвары
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-if (config.get('debug')) {
+// роуты
+app.use('/api/test', testApiRouter);
+
+if (config.debug) {
   app.use(morgan('dev'));
 }
 
-if (process.env.NODE_ENV === 'development') {
-  const publicDir = path.join(__dirname, 'front');
-  app.use(express.static(publicDir));
-
-  const webpackConfig = require('../config/webpack/dev');
-  const webpack = require('webpack');
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const compiler = webpack(webpackConfig);
-
-  app.use(
-    webpackDevMiddleware(compiler, {
-      publicPath: webpackConfig.output.publicPath,
-      writeToDisk: true
-    })
-  );
+// в проде отдаем билд реакта, в дев отдаем исходники
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../client/build')));
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
+} else {
+  app.get('*', (req, res) => {
+    app.use(express.static(path.join(__dirname, 'client')));
+    res.sendFile(path.join(__dirname, '../client/public/index.html'));
+  });
 }
 
-app.use(commonData);
-
-app.use('/', indexRouter);
-
-// catch 404 and forward to error handler
-app.use((req, res, next) => {
-  next(createError(404));
-});
-
-app.use((err, req, res) => {
-  res.status(err.status || 500);
-});
-
-const port = config.get('port');
+const { port } = config;
 app.listen(port, () => {
   /* eslint no-console: "off" */
   console.info(`Server started on ${port}`);

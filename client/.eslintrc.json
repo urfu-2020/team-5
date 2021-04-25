@@ -1,0 +1,43 @@
+{
+  "root": true,
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:import/warnings",
+    "plugin:react-hooks/recommended",
+    "plugin:jsx-a11y/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "commonjs": true,
+    "node": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 2018,
+    "sourceType": "module"
+  },
+  "parser": "babel-eslint",
+  "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx"],
+  "rules": {
+    "linebreak-style":"off",
+    "import/no-dynamic-require": "off",
+    "no-console": "warn",
+    "semi": ["warn", "always"],
+    "no-unused-vars": "warn",
+    "max-len": ["error", 120],
+    "comma-dangle": "off",
+    "global-require": "off",
+    "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
+    "import/no-mutable-exports": "off",
+    "jsx-quotes": [
+      1,
+      "prefer-double"
+    ],
+    "jsx-a11y/no-noninteractive-element-to-interactive-role": "warn",
+    "jsx-a11y/no-noninteractive-tabindex": "warn"
+  }
+}
