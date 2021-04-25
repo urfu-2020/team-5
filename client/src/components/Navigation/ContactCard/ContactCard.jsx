@@ -82,4 +82,4 @@ ContactCard.propTypes = {
     attachments: PropTypes.Attachments
   },
   countUnreadMessage: PropTypes.number
-}
+};

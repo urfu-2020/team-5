@@ -12,13 +12,13 @@ const App = () => {
   return (
     <>
       <nav className="navigation">
-        <Navigation/>
+        <Navigation />
       </nav>
 
       <main className="chat-container">
         <CurrentDialog />
         <SendMessageForm />
-        { isModalOpen && <InputFileModal /> }
+        {isModalOpen && <InputFileModal />}
       </main>
     </>
   );
