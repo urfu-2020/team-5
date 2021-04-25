@@ -30,6 +30,7 @@
 .input-file-modal__input-text {
   width: 100%;
   padding: 0.4rem;
+  border: none;
   border-bottom: 1px solid var(--teal-200);
   transition: 0.3s border;
 }
@@ -51,12 +52,6 @@
   flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-}
-
-.input-file-modal__close-button {
-  position: absolute;
-  top: 3%;
-  right: 3%;
 }
 
 .attachments {
