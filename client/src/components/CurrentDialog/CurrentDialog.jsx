@@ -1,4 +1,7 @@
 import React from 'react';
+
+import './current-dialog.css';
+
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { DialogHeader } from './DialogHeader/DialogHeader';
 

@@ -1,5 +1,11 @@
 import React from 'react';
+
+import './input-file-modal.css';
+
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
+import { Button } from '@components/Controls/Button/Button';
+import { closeModal, setInputMessage } from '@slices/currentDialogSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const files = [
   { id: 123, title: 'file1.txt' },
@@ -7,8 +13,29 @@ const files = [
   { id: 32, title: 'file3.txt' }
 ];
 
-export const InputFileModal = () => (
-  <div className="modal-overlay hidden" aria-hidden="true" tabIndex="-1">
+
+export const InputFileModal = () => {
+  const dispatch = useDispatch();
+  const inputMessage = useSelector(state => state.currentDialog.message);
+
+  const handleEscape = e => {
+    if(e.key === 'Escape')
+      dispatch(closeModal());
+  };
+
+  const handleOverlayClick = e => {
+    if(e.target.classList.contains('modal-overlay'))
+      dispatch(closeModal());
+  };
+
+  return (
+  <div
+    className="modal-overlay"
+    tabIndex="-1"
+    onClick={handleOverlayClick}
+    onKeyDown={handleEscape}
+    aria-hidden="true"
+  >
     <section className="input-file-modal" role="dialog" aria-label="окно загрузки файлов">
       <section
         className="input-file-modal__attachments attachments"
@@ -17,41 +44,45 @@ export const InputFileModal = () => (
         {files.map(({ id, title }) => <ModalAttachment key={id} title={title} />)}
       </section>
       <input
+        value={inputMessage}
+        onChange={e => dispatch(setInputMessage(e.target.value))}
         type="text"
         className="input-file-modal__input-text input-message"
         autoComplete="off"
         placeholder="Введите сообщение..."
       />
       <section className="input-file-modal__buttons">
-        <button
+        <Button
           className="input-file-modal__button button text-button"
           aria-label="Добавить файл"
           type="button"
         >
           Добавить
-        </button>
+        </Button>
         <div className="input-file-modal__last-two-buttons">
-          <button
+          <Button
             type="button"
             className="input-file-modal__button cancel-button button text-button"
             aria-label="Отмена прикрепления файлов"
+            onClick={() => dispatch(closeModal())}
           >
             Отменить
-          </button>
-          <button
+          </Button>
+          <Button
             type="button"
             className="input-file-modal__button button text-button"
             aria-label="Отправить сообщение"
           >
             Отправить
-          </button>
+          </Button>
         </div>
       </section>
 
-      <button
+      <Button
         type="button"
         className="input-file-modal__close-button button"
         aria-label="закрыть окно"
+        onClick={() => dispatch(closeModal())}
       >
         <svg
           className="svg-button"
@@ -67,7 +98,8 @@ export const InputFileModal = () => (
              12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"
           />
         </svg>
-      </button>
+      </Button>
     </section>
   </div>
-);
+  );
+};
