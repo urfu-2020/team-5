@@ -21,20 +21,16 @@ export function Ripple({ duration }) {
   }, [rippleArray.length, duration]);
 
   const addRipple = (event) => {
-    // Координаты контейнера
     const rippleContainer = event.currentTarget.getBoundingClientRect();
 
-    // Выбираем самую длинную сторону
     const size =
       rippleContainer.width > rippleContainer.height
         ? rippleContainer.width
         : rippleContainer.height;
 
-    // Координаты щелчка мыши
     const x = event.pageX - rippleContainer.left - size / 2;
     const y = event.pageY - rippleContainer.top - size / 2;
 
-    // Новая рябь
     const newRipple = {
       x,
       y,

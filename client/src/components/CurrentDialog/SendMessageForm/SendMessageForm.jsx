@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './send-message-form.css';
 
-import {Button} from '@components/Controls/Button/Button';
+import { Button } from '@components/Controls/Button/Button';
 import { openModal, setInputMessage } from '@slices/currentDialogSlice';
 
 
@@ -48,7 +48,7 @@ export const SendMessageForm = () => {
         autoComplete="off"
         placeholder="Введите сообщение..."
       />
-      <Button className="button" aria-label="отправить сообщение" type="button">
+      <Button aria-label="отправить сообщение">
         <svg
           className="svg-button send-message-form__send-button"
           xmlns="http://www.w3.org/2000/svg"

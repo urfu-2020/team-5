@@ -3,9 +3,9 @@
  */
 class Message {
   /**
-   * @param id {String}
+   * @param id {Number}
    * @param text {String}
-   * @param sender {String}
+   * @param sender {Number}
    * @param time {Date}
    * @param status {String} // [Read, Unread, UnSend]
    * @param attachments {Attachment}

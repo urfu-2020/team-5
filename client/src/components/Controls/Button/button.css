@@ -2,19 +2,27 @@
 
 .button {
   position: relative;
-  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
   overflow: hidden;
   color: var(--teal-500);
+  cursor: pointer;
   background-color: transparent;
   border: none;
-  border-radius: 7px;
+  border-radius: 2em;
   outline: none;
 }
 
-.button:hover,
-.button:focus {
-  cursor: pointer;
+.button:hover {
   background-color: var(--teal-50);
+}
+
+.button:focus-visible {
+  background-color: var(--teal-50);
+  box-shadow: 0 0 0 2px var(--teal-500);
+  transition: all 0.2s;
 }
 
 .svg-button {

@@ -3,10 +3,10 @@
  */
 class Dialog {
   /**
-   * @param id {String}
+   * @param id {Number}
    * @param name {String}
    * @param isOnline {Boolean}
-   * @param message {LastMessage}
+   * @param message {Message}
    * @param countUnreadMessage {Number}
    */
   constructor(id, name, isOnline, message, countUnreadMessage) {

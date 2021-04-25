@@ -7,6 +7,13 @@ import { Button } from '@components/Controls/Button/Button';
 import { closeModal, setInputMessage } from '@slices/currentDialogSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
+// так, тут файлы еще не загружены на сервер
+// const files = [
+//   { id: 123, originalTitle: 'file1.txt', type: 'Document', url: '/docs/1234.txt' },
+//   { id: 13, originalTitle: 'file2.txt', type: 'Document', url: '/docs/3123.txt' },
+//   { id: 32, originalTitle: 'file3.txt', type: 'Document', url: '/docs/23423.txt' }
+// ];
+
 const files = [
   { id: 123, title: 'file1.txt' },
   { id: 13, title: 'file2.txt' },
@@ -53,24 +60,21 @@ export const InputFileModal = () => {
       />
       <section className="input-file-modal__buttons">
         <Button
-          className="input-file-modal__button button text-button"
+          className="input-file-modal__button text-button"
           aria-label="Добавить файл"
-          type="button"
         >
           Добавить
         </Button>
         <div className="input-file-modal__last-two-buttons">
           <Button
-            type="button"
-            className="input-file-modal__button cancel-button button text-button"
+            className="input-file-modal__button cancel-button text-button"
             aria-label="Отмена прикрепления файлов"
             onClick={() => dispatch(closeModal())}
           >
             Отменить
           </Button>
           <Button
-            type="button"
-            className="input-file-modal__button button text-button"
+            className="input-file-modal__button text-button"
             aria-label="Отправить сообщение"
           >
             Отправить
@@ -79,8 +83,7 @@ export const InputFileModal = () => {
       </section>
 
       <Button
-        type="button"
-        className="input-file-modal__close-button button"
+        className="input-file-modal__close-button"
         aria-label="закрыть окно"
         onClick={() => dispatch(closeModal())}
       >

@@ -1,26 +1,20 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { CurrentDialog } from './CurrentDialog/CurrentDialog';
-import { InputFileModal } from './CurrentDialog/SendMessageForm/InputFileModal/InputFIleModal';
-import { SendMessageForm } from './CurrentDialog/SendMessageForm/SendMessageForm';
+import {LoginPage} from "./LoginPage/LoginPage";
+import {HomePage} from "./HomePage";
 
 const App = () => {
-  const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
+  const [user, setUser] = useState(null);
 
   return (
-    <>
-      <aside className="contactsListWrapper">
-        {/* {{> contact_list}} */}
-      </aside>
-
-      <main className="chat-container">
-        <CurrentDialog />
-        <SendMessageForm />
-        { isModalOpen && <InputFileModal /> }
-      </main>
-    </>
-  );
+    <Router>
+      <Switch>
+        <Route path="/" exact component={HomePage}/>
+        <Route path="/login" exact component={LoginPage} />
+      </Switch>
+    </Router>
+    );
 };
 
 export default App;

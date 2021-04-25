@@ -1,23 +1,4 @@
-* {
-  padding: 0;
-  margin: 0;
-}
-
-::-webkit-scrollbar {
-  width: 9px;
-  background-color: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background-color: var(--separator);
-  border-radius: 5px;
-}
-
-main {
-  background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
-}
-
-.contactsListWrapper {
+.navigation {
   display: grid;
   grid-template-rows: 1fr 11fr;
   width: 100%;
@@ -25,23 +6,36 @@ main {
   background-color: white;
 }
 
-.searchBarWrapper {
+.navigationWrapper {
+  display: grid;
+  grid-template-rows: 1fr 11fr;
+  width: 100%;
+  height: 100vh;
+  background-color: white;
+}
+
+.navigationHeaderWrapper {
   display: flex;
+  gap: 12px;
   align-items: center;
   justify-content: stretch;
+  padding: 0 12px;
+}
+
+.mainMenuButton__icon {
+  fill: var(--teal-500);
 }
 
 .search {
   display: flex;
   flex-grow: 1;
-  justify-content: stretch;
-  padding: 0 2em;
 }
 
 .search input {
   flex-grow: 1;
   padding: 0.5em 1em;
-  font-size: 1.2em;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1em;
   color: var(--primary-text);
   background-color: var(--grey-200);
   border: none;
@@ -60,7 +54,12 @@ main {
 ul {
   display: flex;
   flex-direction: column;
+  overflow-x: hidden;
   overflow-y: auto;
+}
+
+ul::-webkit-scrollbar {
+  background-color: transparent;
 }
 
 li {
@@ -119,7 +118,7 @@ li:hover {
 .dialogHeaader,
 h3 {
   overflow-x: hidden;
-  font-size: 1.2em;
+  font-size: 1em;
   color: var(--primary-text);
   text-overflow: ellipsis;
   white-space: nowrap;
