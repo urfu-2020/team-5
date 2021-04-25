@@ -3,7 +3,7 @@
  */
 class Attachment {
   /**
-   * @param id {String}
+   * @param id {Number}
    * @param type {String}
    * @param url {String}
    */
