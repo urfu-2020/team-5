@@ -1,22 +1,39 @@
 @import url("./_variables.css");
-@import url("./contact-list/contact-list.css");
+
+/* @import url("./contact-list/contact-list.css"); */
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-html,
-body,
-#root,
-.current-dialog {
-  height: 100vh;
+* {
+    padding: 0;
+    margin: 0;
+}
+
+::-webkit-scrollbar {
+    width: 9px;
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--separator);
+    border-radius: 5px;
+}
+
+main {
+    background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
+}
+
+html, body, #root, .current-dialog {
+    height: 100vh;
 }
 
 #root {
-  display: grid;
-  grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
-  min-width: 1024px;
-  margin: 0;
-  font-family: "Roboto", sans-serif;
-  background-color: var(--teal-200);
+    display: grid;
+    grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
+    min-width: 1024px;
+    margin: 0;
+    font-family: "Roboto", sans-serif;
+    background-color: var(--teal-200);
 }

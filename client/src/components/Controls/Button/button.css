@@ -1,35 +1,42 @@
 @import url("@css/_variables");
-
 .button {
-  position: relative;
-  padding: 0.35rem;
-  overflow: hidden;
-  color: var(--teal-500);
-  background-color: transparent;
-  border: none;
-  border-radius: 7px;
-  outline: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: .5rem;
+    overflow: hidden;
+    color: var(--teal-500);
+    background-color: transparent;
+    border: none;
+    border-radius: 2em;
+    outline: none;
+    cursor: pointer;
 }
 
-.button:hover,
-.button:focus {
-  cursor: pointer;
-  background-color: var(--teal-50);
+.button:hover {
+    background-color: var(--teal-50);
+}
+
+.button:focus-visible {
+    background-color: var(--teal-50);
+    box-shadow: 0 0 0 2px var(--teal-500);
+    transition: all 0.2s;
 }
 
 .svg-button {
-  width: 25px;
-  height: 25px;
-  fill: var(--teal-500);
+    width: 25px;
+    height: 25px;
+    fill: var(--teal-500);
 }
 
 .text-button {
-  font-size: 1rem;
-  text-transform: uppercase;
+    font-size: 1rem;
+    text-transform: uppercase;
 }
 
 .input-file-modal__close-button {
-  position: absolute;
-  top: 3%;
-  right: 3%;
+    position: absolute;
+    top: 3%;
+    right: 3%;
 }
