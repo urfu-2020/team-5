@@ -4,13 +4,13 @@ import { config } from '@config/config';
 
 const { staticBasePath } = config;
 
-export const ChatMessage = ({ message, time, isMyMessage, isMessageRead }) => (
+export const ChatMessage = ({ text, time, isMyMessage, status }) => (
   <div className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
     <div className={`cloud message__cloud
           ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}
     >
       <span className="message-text cloud__message-text">
-        {message}
+        {text}
       </span>
       <span className="message-time cloud__message-time">
         {time}
@@ -25,7 +25,7 @@ export const ChatMessage = ({ message, time, isMyMessage, isMessageRead }) => (
           fill="#000000"
         >
           {
-            isMessageRead ? (
+            status === "Read" ? (
               <>
                 <path d="M0 0h24v24H0V0z" fill="none" />
                 <path
@@ -37,8 +37,8 @@ export const ChatMessage = ({ message, time, isMyMessage, isMessageRead }) => (
               </>
             ) : (
               <>
-                <path d="M0 0h24v24H0V0z" fill="none"></path>
-                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"></path>
+                <path d="M0 0h24v24H0V0z" fill="none"/>
+                <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
               </>
             )
           }
@@ -73,12 +73,17 @@ export const ChatMessage = ({ message, time, isMyMessage, isMessageRead }) => (
 );
 
 ChatMessage.propTypes = {
-  message: PropTypes.string,
+  text: PropTypes.string,
   time: PropTypes.string.isRequired,
   isMyMessage: PropTypes.bool.isRequired,
-  isMessageRead: PropTypes.bool.isRequired
+  status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']).isRequired,
+  attachments: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired
+  }))
 };
 
 ChatMessage.defaultProps = {
-  message: ''
+  text: ''
 };
