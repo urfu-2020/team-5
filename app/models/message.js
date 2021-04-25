@@ -3,7 +3,7 @@
  */
 class Message {
   /**
-   * @param id {String}
+   * @param id {Number}
    * @param text {String}
    * @param sender {String}
    * @param time {Date}
