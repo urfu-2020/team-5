@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 
 import { CurrentDialog } from './CurrentDialog/CurrentDialog';
@@ -6,8 +6,6 @@ import { InputFileModal } from './CurrentDialog/SendMessageForm/InputFileModal/I
 import { SendMessageForm } from './CurrentDialog/SendMessageForm/SendMessageForm';
 
 const App = () => {
-
-  // вот это вот потом через redux делать
   const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
 
   return (

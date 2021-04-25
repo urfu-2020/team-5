@@ -1,19 +1,17 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './send-message-form.css';
 
 import {Button} from '@components/Controls/Button/Button';
-import { openModal } from '@reducers/currentDialogReducer';
-import { setInputMessage } from '../../../store/reducers/currentDialogReducer';
+import { openModal, setInputMessage } from '@slices/currentDialogSlice';
 
 
 export const SendMessageForm = () => {
-
-  const dispatch = useDispatch();
   const inputMessage = useSelector(state => state.currentDialog.message);
   const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
+
+  const dispatch = useDispatch();
 
   return (
     <form className="send-message-form" aria-label="отправить сообщение">
@@ -65,10 +63,4 @@ export const SendMessageForm = () => {
       </Button>
     </form>
   );
-};
-
-
-
-SendMessageForm.propTypes = {
-  setOpenModal: PropTypes.func.isRequired
 };

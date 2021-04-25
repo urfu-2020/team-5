@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
 import { Button } from '@components/Controls/Button/Button';
-import { closeModal, setInputMessage } from '@reducers/currentDialogReducer';
+import { closeModal, setInputMessage } from '@slices/currentDialogSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 const files = [
@@ -20,7 +19,7 @@ export const InputFileModal = () => {
   const inputMessage = useSelector(state => state.currentDialog.message);
 
   const handleEscape = e => {
-    if(e.target.key === 'Escape')
+    if(e.key === 'Escape')
       dispatch(closeModal());
   };
 
@@ -103,9 +102,4 @@ export const InputFileModal = () => {
     </section>
   </div>
   );
-};
-
-
-InputFileModal.propTypes = {
-  setOpenModal: PropTypes.func.isRequired
 };

@@ -1,13 +1,13 @@
-import {createStore, compose, applyMiddleware} from "redux";
-import thunk from 'redux-thunk';
+import { configureStore } from "@reduxjs/toolkit";
 
-import {rootReducer} from './reducers/rootReducer';
+import currentDialogSlice from '@slices/currentDialogSlice';
 
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-export const store = createStore(
-	rootReducer,
-	composeEnhancers(applyMiddleware(thunk))
-);
+export const store = configureStore({
+  reducer: {
+    currentDialog: currentDialogSlice
+  },
+  devTools: process.env.NODE_ENV === 'development'
+});
 
 export default store;
