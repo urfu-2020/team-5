@@ -4,14 +4,23 @@
 class Attachment {
   /**
    * @param id {Number}
-   * @param type {String}
+   * @param type {AttachmentType}
    * @param url {String}
+   * @param originalTitle {String}
    */
-  constructor(id, type, url) {
+  constructor(id, type, url, originalTitle) {
     this.id = id;
     this.type = type;
     this.url = url;
+    this.originalTitle = originalTitle;
   }
 }
 
-module.exports = { Attachment };
+const AttachmentType = {
+  Document: 'Document',
+  Movie: 'Movie',
+  Music: 'Music',
+  Picture: 'Picture'
+};
+
+module.exports = { Attachment, AttachmentType };
