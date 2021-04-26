@@ -7,6 +7,13 @@ import { Button } from '@components/Controls/Button/Button';
 import { closeModal, setInputMessage } from '@slices/currentDialogSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
+// так, тут файлы еще не загружены на сервер
+// const files = [
+//   { id: 123, originalTitle: 'file1.txt', type: 'Document', url: '/docs/1234.txt' },
+//   { id: 13, originalTitle: 'file2.txt', type: 'Document', url: '/docs/3123.txt' },
+//   { id: 32, originalTitle: 'file3.txt', type: 'Document', url: '/docs/23423.txt' }
+// ];
+
 const files = [
   { id: 123, title: 'file1.txt' },
   { id: 13, title: 'file2.txt' },
