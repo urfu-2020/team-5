@@ -79,7 +79,7 @@ ChatMessage.propTypes = {
   status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']).isRequired,
   attachments: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
+    type: PropTypes.oneOf(['Document', 'Movie', 'Music', 'Picture']).isRequired,
     url: PropTypes.string.isRequired
   }))
 };
