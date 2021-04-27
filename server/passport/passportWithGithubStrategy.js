@@ -4,7 +4,7 @@ const GitHubStrategy = require('passport-github').Strategy;
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: '/login/callback'
+  callbackURL: '/auth/github/login/callback'
 },
 ((accessToken, refreshToken, profile, cb) => {
   console.log(profile);

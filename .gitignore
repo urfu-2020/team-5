@@ -1,6 +1,4 @@
 node_modules/
-.env
-app/public/
+server/.env
+server/public/
 .idea/
-devBundle.js
-bundle.css
