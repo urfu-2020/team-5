@@ -5,7 +5,7 @@
   "scripts": {
     "start": "./node_modules/.bin/cross-env NODE_ENV=production node app.js",
     "dev": "./node_modules/.bin/cross-env NODE_ENV=development nodemon app.js",
-    "lint:server": "./node_modules/.bin/eslint --fix ./**/*.js"
+    "lint:server": "./node_modules/.bin/eslint --fix \"./**/*.js\""
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",

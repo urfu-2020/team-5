@@ -13,6 +13,7 @@
   "parserOptions": {
     "ecmaVersion": 2021
   },
+  "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx", "build/**/*.js"],
   "rules": {
     "linebreak-style":"off",
     "import/no-dynamic-require": "off",
