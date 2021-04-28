@@ -7,14 +7,21 @@ const morgan = require('morgan');
 const cors = require('cors');
 const expressSession = require('express-session');
 // наши импорты
-const config = require('./config/config');
+const config = require('./config');
 const passport = require('./passport/passportWithGithubStrategy');
 const githubAuthRouter = require('./routes/githubAuthRouter');
 
 const app = express();
 
+const allowedOrigins = [process.env.CLIENT_URL, process.env.DATABASE_URL];
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin(origin, callback) {
+    if (!origin) return callback(null, true); if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not '
+        + 'allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    } return callback(null, true);
+  },
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true
 }));

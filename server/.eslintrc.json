@@ -19,10 +19,11 @@
     "no-console": "warn",
     "semi": ["warn", "always"],
     "no-unused-vars": "warn",
-    "max-len": ["error", 100],
+    "max-len": ["error", 120],
     "comma-dangle": "off",
     "global-require": "off",
     "import/no-extraneous-dependencies": "off",
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off"
   }
 }
