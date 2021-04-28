@@ -8,12 +8,12 @@ const User = require('../models/user');
  */
 async function getUsers() {
   try {
-    const pool = await mssql.connect(config);
-    const users = (await pool.request().query`SELECT * FROM Users`).recordset
+    const sql = await mssql.connect(config);
+    const users = (await sql.request().query`SELECT * FROM Users`).recordset
       .map(({
         Id, Username, AvatarUrl, GithubUrl
       }) => new User(Id, Username, AvatarUrl, GithubUrl));
-    return users.recordset;
+    return users;
   } catch (e) {
     return console.error(e);
   }
@@ -27,7 +27,6 @@ async function getUserByName(username) {
   try {
     const sql = await mssql.connect(config);
     const queryArr = (await sql.request().query`SELECT * FROM Users WHERE Username=${username}`).recordset;
-    console.log(queryArr);
     if (queryArr.length === 0) return false;
     const {
       Id, Username, AvatarUrl, GithubUrl

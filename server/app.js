@@ -10,6 +10,7 @@ const expressSession = require('express-session');
 const config = require('./config');
 const passport = require('./passport/passportWithGithubStrategy');
 const githubAuthRouter = require('./routes/githubAuthRouter');
+const userRouter = require('./routes/userRouter');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(passport.session());
 
 // роуты
 app.use('/auth/github/', githubAuthRouter);
+app.use('/user/', userRouter);
 
 if (config.debug) {
   app.use(morgan('dev'));

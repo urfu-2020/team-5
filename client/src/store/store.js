@@ -1,11 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import userSlice from "./slices/userSlice";
 import currentDialogSlice from "./slices/currentDialogSlice";
+import appSlice from "./slices/appSlice";
 
 export const store = configureStore({
   reducer: {
-    user: userSlice,
+    app: appSlice,
     currentDialog: currentDialogSlice
   },
   devTools: process.env.NODE_ENV === 'development'

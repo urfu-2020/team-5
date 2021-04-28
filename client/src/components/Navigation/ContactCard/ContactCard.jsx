@@ -4,7 +4,7 @@ import { config } from '@config/config';
 
 const { staticBasePath } = config;
 
-export const ContactCard = ({ id, name, isOnline, message, countUnreadMessage }) => (
+export const ContactCard = ({ id, name, isOnline, message, countUnreadMessage, avatarUrl }) => (
   <div className="card">
     <div className="card__avatar">
       <svg role="none" style={{ height: '64px', width: '64px' }}>
@@ -19,7 +19,7 @@ export const ContactCard = ({ id, name, isOnline, message, countUnreadMessage })
         </defs>
         <g mask={`${isOnline ? 'url(#circle_online)' : 'url(#circle_offline)'}`}>
           <image x="0" y="0" height="100%" preserveAspectRatio="xMidYMid slice" width="100%"
-            xlinkHref={`${staticBasePath}images/unnamed.jpg`} style={{ height: '64px', width: '64px' }}></image>
+            xlinkHref={avatarUrl} style={{ height: '64px', width: '64px' }}></image>
           <circle className="avatar__border" cx="32" cy="32" r="32"></circle>
         </g>
       </svg>
@@ -70,16 +70,17 @@ export const ContactCard = ({ id, name, isOnline, message, countUnreadMessage })
 );
 
 ContactCard.propTypes = {
-  id: PropTypes.number,
-  name: PropTypes.string,
-  isOnline: PropTypes.bool,
-  message: {
-    id: PropTypes.number,
-    text: PropTypes.string,
-    sender: PropTypes.number,
-    time: PropTypes.Date,
-    status: PropTypes.string, // [Read, Unread, UnSend]
+  id: PropTypes.number.isRequired,
+  name: PropTypes.string.isRequired,
+  isOnline: PropTypes.bool.isRequired,
+  message: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    sender: PropTypes.number.isRequired,
+    time: PropTypes.string.isRequired,
+    status: PropTypes.oneOf(["Read", "Unread", "UnSend"]).isRequired,
     attachments: PropTypes.Attachments
-  },
-  countUnreadMessage: PropTypes.number
+  }),
+  countUnreadMessage: PropTypes.number,
+  avatarUrl: PropTypes.string
 };

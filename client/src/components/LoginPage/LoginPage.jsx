@@ -2,11 +2,9 @@ import React from "react";
 
 import './login-page.css';
 import {Button} from "../Controls/Button/Button";
-import {useDispatch} from "react-redux";
-import {login} from "../../store/slices/userSlice";
+
 
 export const LoginPage = () => {
-
   return (
     <div className="login-page">
       <Button
