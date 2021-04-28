@@ -6,7 +6,7 @@ const dbapi = require('../db/dbapi');
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
   clientSecret: process.env.GITHUB_CLIENT_SECRET,
-  callbackURL: '/auth/github/login/callback'
+  callbackURL: `${process.env.SERVER_URL}/auth/github/login/callback`
 }, async (accessToken, refreshToken, profile, cb) => {
   try {
     const jsonUser = profile._json;

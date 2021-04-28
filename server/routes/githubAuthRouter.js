@@ -5,9 +5,8 @@ const router = express.Router();
 
 router.get('/login', passport.authenticate('github'));
 
-router.get('/login/callback', passport.authenticate('github',
-  { failureRedirect: process.env.CLIENT_URL }),
-(req, res) => res.redirect(process.env.CLIENT_URL));
+router.get('/login/callback', passport.authenticate('github'),
+  (req, res) => res.redirect(process.env.CLIENT_URL));
 
 router.get('/logout', (req, res, next) => {
   req.logout();
