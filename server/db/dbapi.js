@@ -1,14 +1,15 @@
 const mssql = require('mssql');
 
-const config = require('./dbconfig');
 const User = require('../models/user');
+
+const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
 /**
  * @returns {Array<User> | boolean}
  */
 async function getUsers() {
   try {
-    const sql = await mssql.connect(config);
+    const sql = await mssql.connect(CONNECTION_URL);
     const users = (await sql.request().query`SELECT * FROM Users`).recordset
       .map(({
         Id, Username, AvatarUrl, GithubUrl
@@ -25,7 +26,7 @@ async function getUsers() {
  */
 async function getUserByName(username) {
   try {
-    const sql = await mssql.connect(config);
+    const sql = await mssql.connect(CONNECTION_URL);
     const queryArr = (await sql.request().query`SELECT * FROM Users WHERE Username=${username}`).recordset;
     if (queryArr.length === 0) return false;
     const {
@@ -45,7 +46,7 @@ async function getUserByName(username) {
  */
 async function createUser(username, avatarUrl, githubUrl) {
   try {
-    const sql = await mssql.connect(config);
+    const sql = await mssql.connect(CONNECTION_URL);
     await sql.request().query`exec InsertUser
       @Username=${username},
       @AvatarUrl=${avatarUrl},
