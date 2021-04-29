@@ -22,18 +22,14 @@ main {
   background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
 }
 
-html,
-body,
-#root,
-.current-dialog {
-  height: 100vh;
+body {
+  font-family: "Roboto", sans-serif;
 }
 
-#root {
+#app {
   display: grid;
   grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
   min-width: 1024px;
   margin: 0;
-  font-family: "Roboto", sans-serif;
   background-color: var(--teal-200);
 }

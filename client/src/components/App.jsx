@@ -1,27 +1,48 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useState} from 'react';
 
-import { CurrentDialog } from './CurrentDialog/CurrentDialog';
-import { InputFileModal } from './CurrentDialog/SendMessageForm/InputFileModal/InputFIleModal';
-import { SendMessageForm } from './CurrentDialog/SendMessageForm/SendMessageForm';
-import { Navigation } from './Navigation/Navigation';
+import {LoginPage} from "./LoginPage/LoginPage";
+import {HomePage} from "./HomePage";
+import {Spinner} from "./Spinner/Spinner";
+import {useDispatch, useSelector} from "react-redux";
+import {setContacts, setCurrentUser, setLoading} from "../store/slices/appSlice";
 
 const App = () => {
-  const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.app.currentUser);
+  const isLoading = useSelector(state => state.app.isLoading);
 
-  return (
-    <>
-      <nav className="navigation">
-        <Navigation />
-      </nav>
+  const fetchAppData = () => async dispatch => {
+    dispatch(setLoading(true));
+    const {user} = await (await fetch('/user/own')).json();
+    if (user) {
+      dispatch(setCurrentUser(user));
+      const {contacts} = await (await fetch('/user/contacts')).json();
+      dispatch(setContacts(contacts));
+    }
+    dispatch(setLoading(false));
+  };
 
-      <main className="chat-container">
-        <CurrentDialog />
-        <SendMessageForm />
-        {isModalOpen && <InputFileModal />}
-      </main>
-    </>
-  );
+  useEffect( () => {
+    if(!currentUser)
+      dispatch(fetchAppData());
+  }, []);
+
+  return isLoading ? <Spinner className="main-spinner" /> : currentUser ? <HomePage /> : <LoginPage />;
+
+  // Потом разберусь с роутером и сделаю нормально
+  // return (
+  //   <Router>
+  //       { userId ? (
+  //         <Switch>
+  //           <Route path="/" exact component={HomePage}/>
+  //         </Switch>
+  //       ) : (
+  //         <Switch>
+  //           <Route path="/login" exact component={LoginPage} />
+  //         </Switch>
+  //       )}
+  //   </Router>
+  //   );
 };
 
 export default App;

@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === 'production') {
   config = {
     debug: true,
     port: 3001,
+    clientPort: 3000,
     staticBasePath: '/'
   };
 }

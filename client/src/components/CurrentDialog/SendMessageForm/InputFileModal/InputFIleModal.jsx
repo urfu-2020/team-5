@@ -60,24 +60,21 @@ export const InputFileModal = () => {
       />
       <section className="input-file-modal__buttons">
         <Button
-          className="input-file-modal__button button text-button"
+          className="input-file-modal__button text-button"
           aria-label="Добавить файл"
-          type="button"
         >
           Добавить
         </Button>
         <div className="input-file-modal__last-two-buttons">
           <Button
-            type="button"
-            className="input-file-modal__button cancel-button button text-button"
+            className="input-file-modal__button cancel-button text-button"
             aria-label="Отмена прикрепления файлов"
             onClick={() => dispatch(closeModal())}
           >
             Отменить
           </Button>
           <Button
-            type="button"
-            className="input-file-modal__button button text-button"
+            className="input-file-modal__button text-button"
             aria-label="Отправить сообщение"
           >
             Отправить
@@ -86,8 +83,7 @@ export const InputFileModal = () => {
       </section>
 
       <Button
-        type="button"
-        className="input-file-modal__close-button button"
+        className="input-file-modal__close-button"
         aria-label="закрыть окно"
         onClick={() => dispatch(closeModal())}
       >

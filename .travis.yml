@@ -2,11 +2,13 @@ language: node_js
 node_js:
   - 14
 install:
+  - cd server
   - npm install
-  - npm install --prefix client
+  - cd ../client
+  - npm install
+  - cd ..
 script:
-  - npm run lint:server
-  - npm run lint:client --prefix client
+  - npm run lint
 deploy:
   - provider: surge
     project: ./client/public/

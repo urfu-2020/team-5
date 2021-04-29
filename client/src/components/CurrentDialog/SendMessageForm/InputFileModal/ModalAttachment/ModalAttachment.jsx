@@ -30,7 +30,7 @@ export const ModalAttachment = ({ title }) => (
       </p>
     </div>
     <div className="attachment__file-buttons">
-      <Button className="button" aria-label="Редактировать файл" type="button">
+      <Button aria-label="Редактировать файл">
         <svg
           className="svg-button"
           xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@ export const ModalAttachment = ({ title }) => (
           />
         </svg>
       </Button>
-      <Button className="button" aria-label="Открепить файл" type="button">
+      <Button aria-label="Открепить файл">
         <svg
           className="svg-button"
           xmlns="http://www.w3.org/2000/svg"

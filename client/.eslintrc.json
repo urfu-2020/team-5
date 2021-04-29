@@ -20,7 +20,7 @@
     "sourceType": "module"
   },
   "parser": "babel-eslint",
-  "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx"],
+  "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx", "build/**/*.js"],
   "rules": {
     "linebreak-style":"off",
     "import/no-dynamic-require": "off",
@@ -33,6 +33,7 @@
     "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
     "import/no-mutable-exports": "off",
+    "import/no-named-as-default": "off",
     "jsx-quotes": [
       1,
       "prefer-double"

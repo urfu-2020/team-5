@@ -1,29 +1,24 @@
 {
-  "name": "playground",
-  "version": "0.0.0",
-  "private": true,
+  "name": "team5",
+  "version": "1.0.0",
+  "description": "Simple messenger",
+  "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node ./app/app.js",
-    "dev": "cross-env NODE_ENV=development nodemon ./app/app.js",
-    "lint:server": "eslint --fix ./app/**/*.js",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+    "start": "node ./server/app.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+    "lint": "npm run lint:server --prefix server && npm run lint:client --prefix client"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/urfu-2020/team-5.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/urfu-2020/team-5/issues"
+  },
+  "homepage": "https://kilogram-team5.herokuapp.com",
   "dependencies": {
-    "cookie-parser": "~1.4.4",
-    "cross-env": "^7.0.3",
-    "debug": "~2.6.9",
-    "dotenv": "^8.2.0",
-    "express": "~4.16.1",
-    "focus-trap": "^6.3.0",
-    "http-errors": "~1.6.3",
-    "morgan": "~1.9.1",
-    "npm-run-all": "^4.1.5",
-    "surge": "^0.23.0"
-  },
-  "devDependencies": {
-    "eslint": "^7.2.0",
-    "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.22.1",
-    "nodemon": "^2.0.7"
+    "client": "file:client",
+    "server": "file:server"
   }
 }
