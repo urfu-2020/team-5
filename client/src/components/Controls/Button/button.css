@@ -1,0 +1,58 @@
+@import url("@css/_variables");
+
+.button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  overflow: hidden;
+  color: var(--teal-500);
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  border-radius: 2em;
+  outline: none;
+}
+
+.button:hover {
+  background-color: var(--teal-50);
+}
+
+.button:focus-visible {
+  background-color: var(--teal-50);
+  box-shadow: 0 0 0 2px var(--teal-500);
+  transition: all 0.2s;
+}
+
+.svg-button {
+  width: 25px;
+  height: 25px;
+  fill: var(--teal-500);
+}
+
+.text-button {
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.input-file-modal__close-button {
+  position: absolute;
+  top: 3%;
+  right: 3%;
+}
+
+.login-page__github-login-button {
+  width: 512px;
+  height: 512px;
+  padding: 0;
+  border-radius: 100%;
+  transition: transform 0.5s;
+}
+
+.login-page__github-login-button:hover,
+.login-page__github-login-button:focus {
+  cursor: pointer;
+  background-color: transparent;
+  transform: scale(1.1);
+}

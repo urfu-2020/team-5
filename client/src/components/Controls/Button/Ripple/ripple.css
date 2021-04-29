@@ -1,0 +1,28 @@
+@import url("@css/_variables");
+
+.ripple-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.ripple-container span {
+  position: absolute;
+  background-color: var(--teal-500);
+  border-radius: 100%;
+  opacity: 0.25;
+  transform: scale(0);
+  animation-name: ripple;
+}
+
+@keyframes ripple {
+  to {
+    opacity: 0;
+    transform: scale(2);
+  }
+}

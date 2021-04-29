@@ -1,0 +1,12 @@
+:root {
+  --teal-50: #e0f2f1;
+  --teal-200: #80cbc4;
+  --teal-500: #009688;
+  --green-500: #4caf50;
+  --bg-color: #fff;
+  --primary-text: #050505;
+  --secondary-text: #757575;
+  --grey-200: #eee;
+  --separator: #bdbdbd;
+  --accent-text: var(--teal-500);
+}

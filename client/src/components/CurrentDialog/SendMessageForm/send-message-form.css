@@ -1,0 +1,31 @@
+.send-message-form {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 5px;
+  background-color: var(--bg-color);
+  border-left: var(--separator) solid 1px;
+}
+
+.input-message {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.2rem;
+  color: var(--primary-text);
+  outline: none;
+}
+
+.send-message-form__input-text {
+  flex-grow: 1;
+  height: 100%;
+  padding: 0;
+  padding-left: 0.5rem;
+  font-weight: 300;
+  border: none;
+}
+
+.send-message-form__attach-files-button,
+.send-message-form__send-button {
+  width: 30px;
+  height: 30px;
+}
