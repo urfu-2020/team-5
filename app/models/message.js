@@ -1,5 +1,5 @@
 /**
- * Сообщение в чате
+ * Сообщение
  */
 class Message {
   /**
@@ -7,7 +7,7 @@ class Message {
    * @param text {String}
    * @param sender {Number}
    * @param time {Date}
-   * @param status {String} // [Read, Unread, UnSend]
+   * @param status {MessageType}
    * @param attachments {Attachment}
    */
   constructor(id, text, sender, time, status, attachments) {
@@ -20,4 +20,10 @@ class Message {
   }
 }
 
-module.exports = { Message };
+const MessageType = {
+  Read: 'Read',
+  Unread: 'UnRead',
+  UnSend: 'UnSend'
+};
+
+module.exports = { Message, MessageType };
