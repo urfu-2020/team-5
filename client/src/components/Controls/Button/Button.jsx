@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import './button.css';
 import { Ripple } from './Ripple/Ripple';
 
-
 export const Button = ({children, className, type, ...otherProps}) => {
   return (
     <button className={`button ${className ? className : ''}`} type={type ? type : "button"} {...otherProps}>

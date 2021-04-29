@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { config } from '@config/config';
 
-const { staticBasePath } = config;
-
 export const ContactCard = ({ id, name, isOnline, message, countUnreadMessage, avatarUrl }) => (
   <div className="card">
     <div className="card__avatar">
