@@ -3,27 +3,23 @@
  */
 class Message {
   /**
-   * @param id {Number}
-   * @param text {String}
-   * @param sender {Number}
-   * @param time {Date}
-   * @param status {MessageType}
-   * @param attachments {Attachment}
+   * @param Id {Number}
+   * @param ChatId {Number}
+   * @param SenderId {Number}
+   * @param Text {String}
+   * @param HasAttachments {Bit}
+   * @param Status {('Read'|'UnRead'|'UnSend')}
+   * @param Time {DateTime}
    */
-  constructor(id, text, sender, time, status, attachments) {
-    this.id = id;
-    this.text = text;
-    this.sender = sender;
-    this.time = time;
-    this.status = status;
-    this.attachments = attachments;
+  constructor(Id, ChatId, SenderId, Text, HasAttachments, Status, Time) {
+    this.Id = Id;
+    this.ChatId = ChatId;
+    this.SenderId = SenderId;
+    this.Text = Text;
+    this.HasAttachments = HasAttachments;
+    this.Status = Status;
+    this.Time = Time;
   }
 }
 
-const MessageType = {
-  Read: 'Read',
-  Unread: 'UnRead',
-  UnSend: 'UnSend'
-};
-
-module.exports = { Message, MessageType };
+module.exports = Message;

@@ -1,6 +1,8 @@
 const mssql = require('mssql');
 
 const User = require('../models/user');
+const Chat = require('../models/chat');
+const Message = require('../models/message');
 
 const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
@@ -10,11 +12,10 @@ const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 async function getUsers() {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    const users = (await sql.request().query`SELECT * FROM Users`).recordset
+    return (await sql.request().query`SELECT * FROM Users`).recordset
       .map(({
         Id, Username, AvatarUrl, GithubUrl
       }) => new User(Id, Username, AvatarUrl, GithubUrl));
-    return users;
   } catch (e) {
     return console.error(e);
   }
@@ -42,7 +43,6 @@ async function getUserByName(username) {
  * @param username {String}
  * @param avatarUrl {String}
  * @param githubUrl {String}
- * @returns boolean
  */
 async function createUser(username, avatarUrl, githubUrl) {
   try {
@@ -51,15 +51,73 @@ async function createUser(username, avatarUrl, githubUrl) {
       @Username=${username},
       @AvatarUrl=${avatarUrl},
       @GithubUrl=${githubUrl}`;
-    return true;
   } catch (e) {
     console.error(e);
-    return false;
+  }
+}
+
+/**
+ * @param username {String}
+ */
+async function addDialogsWithNewUser(username) {
+  try {
+    const sql = await mssql.connect(CONNECTION_URL);
+    await sql.request().query`exec AddDialogsWithNewUser @newUserUsername=${username}`;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/**
+ * @param userId {Number}
+ * @returns Array<Chat>
+ */
+async function getUserChats(userId) {
+  try {
+    const sql = await mssql.connect(CONNECTION_URL);
+    return (await sql.request().query`SELECT * FROM GetUserChats(${userId})`).recordset
+      .map((rawChat) => new Chat(
+        rawChat.ChatId,
+        rawChat.ChatType,
+        rawChat.ChatAvatarUrl,
+        rawChat.ChatTitle,
+        rawChat.SobesednikId,
+        rawChat.SobesednikUsername,
+        rawChat.SobesednikAvatarUrl,
+        rawChat.SobesednikGHUrl
+      ));
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/**
+ * @param userId {Number}
+ * @returns Array<Message>
+ */
+async function getUserChatsMessages(userId) {
+  try {
+    const sql = await mssql.connect(CONNECTION_URL);
+    return (await sql.request().query`SELECT * FROM GetUserChatsMessages(${userId})`).recordset
+      .map((rawMessage) => new Message(
+        rawMessage.Id,
+        rawMessage.ChatId,
+        rawMessage.SenderId,
+        rawMessage.Status,
+        rawMessage.Text,
+        rawMessage.HasAttachments,
+        rawMessage.Time
+      ));
+  } catch (e) {
+    console.error(e);
   }
 }
 
 module.exports = {
   getUsers,
   getUserByName,
-  createUser
+  createUser,
+  addDialogsWithNewUser,
+  getUserChats,
+  getUserChatsMessages
 };

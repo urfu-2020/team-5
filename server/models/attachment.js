@@ -4,7 +4,7 @@
 class Attachment {
   /**
    * @param id {Number}
-   * @param type {AttachmentType}
+   * @param type {('Document'|'Movie'|'Music'|'Picture')}
    * @param url {String}
    * @param originalTitle {String}
    */
@@ -16,11 +16,4 @@ class Attachment {
   }
 }
 
-const AttachmentType = {
-  Document: 'Document',
-  Movie: 'Movie',
-  Music: 'Music',
-  Picture: 'Picture'
-};
-
-module.exports = { Attachment, AttachmentType };
+module.exports = Attachment;
