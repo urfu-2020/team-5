@@ -20,6 +20,9 @@ export const appSlice = createSlice({
     setChatsMessages(state, {payload}) {
       state.chatsMessages = payload;
     },
+    addChatMessage(state, {payload}) {
+      state.chatsMessages[payload.ChatId].push(payload);
+    },
     setLoading(state, {payload}) {
       state.isLoading = payload;
     }

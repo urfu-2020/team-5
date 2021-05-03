@@ -1,5 +1,6 @@
 // чужие импорты
 const path = require('path');
+const http = require('http');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
@@ -10,6 +11,7 @@ const config = require('./config');
 const passport = require('./passport/passportWithGithubStrategy');
 const githubAuthRouter = require('./routes/githubAuthRouter');
 const userRouter = require('./routes/userRouter');
+const { configureSocket } = require('./socket/configureSocket');
 
 const app = express();
 
@@ -32,7 +34,6 @@ if (config.debug) {
   app.use(morgan('dev'));
 }
 
-// в проде отдаем билд реакта, в дев отдаем исходники
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/build')));
 
@@ -43,8 +44,11 @@ if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../client/public')));
 }
 
+const server = http.createServer(app);
+configureSocket(server);
+
 const { port } = config;
-app.listen(port, () => {
+server.listen(port, () => {
   /* eslint no-console: "off" */
   console.info(`Server started on ${port}`);
 });

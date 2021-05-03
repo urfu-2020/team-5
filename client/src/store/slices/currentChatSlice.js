@@ -22,12 +22,15 @@ export const currentChatSlice = createSlice({
     },
     setInputMessage(state, {payload}) {
       state.message = payload;
+    },
+    sendMessage(state) {
+      state.message = '';
     }
   }
 });
 
 const { actions, reducer } = currentChatSlice;
 
-export const { openNewCurrentChat, openModal, closeModal, setInputMessage } = actions;
+export const { openNewCurrentChat, openModal, closeModal, setInputMessage, sendMessage } = actions;
 
 export default reducer;

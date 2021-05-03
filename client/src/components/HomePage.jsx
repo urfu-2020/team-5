@@ -2,9 +2,9 @@ import React from "react";
 import {useSelector} from "react-redux";
 
 import {Navigation} from "./Navigation/Navigation";
-import {CurrentChat} from "./CurrentDialog/CurrentChat";
-import {SendMessageForm} from "./CurrentDialog/SendMessageForm/SendMessageForm";
-import {InputFileModal} from "./CurrentDialog/SendMessageForm/InputFileModal/InputFIleModal";
+import {CurrentChat} from "./CurrentChat/CurrentChat";
+import {SendMessageForm} from "./CurrentChat/SendMessageForm/SendMessageForm";
+import {InputFileModal} from "./CurrentChat/SendMessageForm/InputFileModal/InputFIleModal";
 
 export const HomePage = () => {
   const isModalOpen = useSelector(state => state.currentChat.isModalOpen);

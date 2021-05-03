@@ -10,6 +10,7 @@ const App = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.app.currentUser);
   const isLoading = useSelector(state => state.app.isLoading);
+  const chatsId = (useSelector(state => state.app.chatsInfo)).map(chatInfo => chatInfo.ChatId);
 
   const fetchAppData = () => async dispatch => {
     dispatch(setLoading(true));
@@ -23,9 +24,10 @@ const App = () => {
     dispatch(setLoading(false));
   };
 
-  useEffect( () => {
-    if(!currentUser)
+  useEffect(  () => {
+    if(!currentUser) {
       dispatch(fetchAppData());
+    }
   }, []);
 
   return isLoading ? <Spinner className="main-spinner" /> : currentUser ? <HomePage /> : <LoginPage />;

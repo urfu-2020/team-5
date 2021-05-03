@@ -47,7 +47,7 @@ async function getUserByName(username) {
 async function createUser(username, avatarUrl, githubUrl) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    await sql.request().query`exec InsertUser
+    await sql.request().query`EXEC InsertUser
       @Username=${username},
       @AvatarUrl=${avatarUrl},
       @GithubUrl=${githubUrl}`;
@@ -62,7 +62,7 @@ async function createUser(username, avatarUrl, githubUrl) {
 async function addDialogsWithNewUser(username) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    await sql.request().query`exec AddDialogsWithNewUser @newUserUsername=${username}`;
+    await sql.request().query`EXEC AddDialogsWithNewUser @newUserUsername=${username}`;
   } catch (e) {
     console.error(e);
   }
@@ -117,6 +117,29 @@ async function getUserChatsMessages(userId) {
   }
 }
 
+/**
+ * @returns number
+ */
+async function storeChatMessage({
+  chatId, senderId, text, hasAttachments, status, time
+}) {
+  try {
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    await request.query`EXEC StoreChatMessage
+     @ChatId=${chatId},
+     @SenderId=${senderId},
+     @Text=${text},
+     @HasAttachments=${hasAttachments},
+     @Status=${status},
+     @Time=${time}
+     `;
+
+    return (await request.query`SELECT @@Identity`).recordset[0][''];
+  } catch (e) {
+    console.error(e);
+  }
+}
+
 // (async () => {
 //   console.log(await getUserChats(4));
 // })();
@@ -127,5 +150,6 @@ module.exports = {
   createUser,
   addDialogsWithNewUser,
   getUserChats,
-  getUserChatsMessages
+  getUserChatsMessages,
+  storeChatMessage
 };

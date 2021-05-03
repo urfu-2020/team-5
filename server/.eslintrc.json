@@ -15,7 +15,7 @@
   },
   "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx", "build/**/*.js"],
   "rules": {
-    "linebreak-style":"off",
+    "linebreak-style": "off",
     "import/no-dynamic-require": "off",
     "no-console": "warn",
     "semi": ["warn", "always"],

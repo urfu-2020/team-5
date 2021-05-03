@@ -5,16 +5,25 @@ import './send-message-form.css';
 
 import { Button } from '@components/Controls/Button/Button';
 import { openModal, setInputMessage } from '@slices/currentChatSlice';
+import { sendMessage } from "../../../store/slices/currentChatSlice";
 
 
 export const SendMessageForm = () => {
   const inputMessage = useSelector(state => state.currentChat.message);
   const isModalOpen = useSelector(state => state.currentChat.isModalOpen);
+  const chatId = useSelector(state => state.currentChat.id);
+
 
   const dispatch = useDispatch();
 
+  const sendMessageHandler = e => {
+    e.preventDefault();
+    dispatch(sendMessage({chatId,
+      text: inputMessage, hasAttachments: false, status: 'Unread', time: new Date().toISOString()}));
+  };
+
   return (
-    <form className="send-message-form" aria-label="отправить сообщение">
+    <form className="send-message-form" aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
       <label
         htmlFor="input-file"
         className="button"
