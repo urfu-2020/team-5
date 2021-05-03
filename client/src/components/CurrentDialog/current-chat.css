@@ -126,8 +126,6 @@
 }
 
 .cloud_income {
-  /* Поставил ордер 1 чтобы была одинаковая верстка у моих и чужих сообщений;
-      Спросить, ничего ли это не сломает */
   order: 1;
   background-color: var(--bg-color);
   border-radius: 7px 7px 7px 0;

@@ -12,7 +12,7 @@ const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 async function getUsers() {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    return (await sql.request().query`SELECT * FROM Users`).recordset
+    return (await sql.request().query`SELECT * FROM [User]`).recordset
       .map(({
         Id, Username, AvatarUrl, GithubUrl
       }) => new User(Id, Username, AvatarUrl, GithubUrl));
@@ -28,7 +28,7 @@ async function getUsers() {
 async function getUserByName(username) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    const queryArr = (await sql.request().query`SELECT * FROM Users WHERE Username=${username}`).recordset;
+    const queryArr = (await sql.request().query`SELECT * FROM [User] WHERE Username=${username}`).recordset;
     if (queryArr.length === 0) return false;
     const {
       Id, Username, AvatarUrl, GithubUrl
@@ -76,16 +76,20 @@ async function getUserChats(userId) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
     return (await sql.request().query`SELECT * FROM GetUserChats(${userId})`).recordset
-      .map((rawChat) => new Chat(
-        rawChat.ChatId,
-        rawChat.ChatType,
-        rawChat.ChatAvatarUrl,
-        rawChat.ChatTitle,
-        rawChat.SobesednikId,
-        rawChat.SobesednikUsername,
-        rawChat.SobesednikAvatarUrl,
-        rawChat.SobesednikGHUrl
-      ));
+      .map((rawChat) => {
+        const chatTitle = rawChat.ChatType === 'Group' ? rawChat.ChatTitle : rawChat.SobesednikUsername;
+        const chatAvatarUrl = rawChat.ChatType === 'Group' ? rawChat.ChatAvatarUrl : rawChat.SobesednikAvatarUrl;
+        return new Chat(
+          rawChat.ChatId,
+          rawChat.ChatType,
+          chatAvatarUrl,
+          chatTitle,
+          rawChat.SobesednikId,
+          rawChat.SobesednikUsername,
+          rawChat.SobesednikAvatarUrl,
+          rawChat.SobesednikGHUrl
+        );
+      });
   } catch (e) {
     console.error(e);
   }
@@ -103,15 +107,19 @@ async function getUserChatsMessages(userId) {
         rawMessage.Id,
         rawMessage.ChatId,
         rawMessage.SenderId,
-        rawMessage.Status,
         rawMessage.Text,
         rawMessage.HasAttachments,
+        rawMessage.Status,
         rawMessage.Time
       ));
   } catch (e) {
     console.error(e);
   }
 }
+
+// (async () => {
+//   console.log(await getUserChats(4));
+// })();
 
 module.exports = {
   getUsers,

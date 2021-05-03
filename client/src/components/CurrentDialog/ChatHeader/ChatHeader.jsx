@@ -2,12 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 /* eslint max-len: "off" */
-export const DialogHeader = ({ name, isOnline }) => (
+export const ChatHeader = ({ title, isOnline }) => (
   <>
     <header className="chat-header chat-container__chat-header">
       <section className="chat-header__chat-data">
         <h4 className="chat-data__chat-name chat-name">
-          {name}
+          {title}
         </h4>
         <p className="chat-data__chat-status chat-status">
           {isOnline ? 'В сети' : 'Не в сети'}
@@ -35,7 +35,7 @@ export const DialogHeader = ({ name, isOnline }) => (
   </>
 );
 
-DialogHeader.propTypes = {
-  name: PropTypes.string.isRequired,
+ChatHeader.propTypes = {
+  title: PropTypes.string.isRequired,
   isOnline: PropTypes.bool.isRequired
 };

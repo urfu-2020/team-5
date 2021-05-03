@@ -1,14 +1,13 @@
 import React from "react";
 import {useSelector} from "react-redux";
-import PropTypes from 'prop-types';
 
 import {Navigation} from "./Navigation/Navigation";
-import {CurrentDialog} from "./CurrentDialog/CurrentDialog";
+import {CurrentChat} from "./CurrentDialog/CurrentChat";
 import {SendMessageForm} from "./CurrentDialog/SendMessageForm/SendMessageForm";
 import {InputFileModal} from "./CurrentDialog/SendMessageForm/InputFileModal/InputFIleModal";
 
 export const HomePage = () => {
-  const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
+  const isModalOpen = useSelector(state => state.currentChat.isModalOpen);
 
   return (
     <div id="app">
@@ -17,7 +16,7 @@ export const HomePage = () => {
       </nav>
 
       <main className="chat-container">
-        <CurrentDialog />
+        <CurrentChat />
         <SendMessageForm />
         { isModalOpen && <InputFileModal /> }
       </main>

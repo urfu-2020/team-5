@@ -3,7 +3,8 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialState = {
   isLoading: true,
   currentUser: null,
-  contacts: []
+  chatsInfo: [],
+  chatsMessages: {}
 };
 
 export const appSlice = createSlice({
@@ -13,8 +14,11 @@ export const appSlice = createSlice({
     setCurrentUser(state, {payload}) {
       state.currentUser = payload;
     },
-    setContacts(state, {payload}) {
-      state.contacts = payload;
+    setChatsInfo(state, {payload}) {
+      state.chatsInfo = payload;
+    },
+    setChatsMessages(state, {payload}) {
+      state.chatsMessages = payload;
     },
     setLoading(state, {payload}) {
       state.isLoading = payload;
@@ -24,6 +28,6 @@ export const appSlice = createSlice({
 
 const { actions, reducer } = appSlice;
 
-export const { setCurrentUser, setContacts, setLoading } = actions;
+export const { setCurrentUser, setChatsInfo, setChatsMessages, setLoading } = actions;
 
 export default reducer;

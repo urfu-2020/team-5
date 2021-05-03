@@ -9,7 +9,7 @@ class Message {
    * @param Text {String}
    * @param HasAttachments {Bit}
    * @param Status {('Read'|'UnRead'|'UnSend')}
-   * @param Time {DateTime}
+   * @param Time {String}
    */
   constructor(Id, ChatId, SenderId, Text, HasAttachments, Status, Time) {
     this.Id = Id;

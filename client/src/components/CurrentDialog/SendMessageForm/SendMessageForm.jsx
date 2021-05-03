@@ -4,12 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import './send-message-form.css';
 
 import { Button } from '@components/Controls/Button/Button';
-import { openModal, setInputMessage } from '@slices/currentDialogSlice';
+import { openModal, setInputMessage } from '@slices/currentChatSlice';
 
 
 export const SendMessageForm = () => {
-  const inputMessage = useSelector(state => state.currentDialog.message);
-  const isModalOpen = useSelector(state => state.currentDialog.isModalOpen);
+  const inputMessage = useSelector(state => state.currentChat.message);
+  const isModalOpen = useSelector(state => state.currentChat.isModalOpen);
 
   const dispatch = useDispatch();
 

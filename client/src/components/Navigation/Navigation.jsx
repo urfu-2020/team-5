@@ -3,11 +3,11 @@ import React from 'react';
 import './navigation.css';
 
 import { NavigationHeader } from './NavigationHeader/NavigationHeader';
-import { ContactList } from './ContactList/ContactList';
+import { ChatList } from './ChatList/ChatList';
 
 export const Navigation = () => (
   <>
     <NavigationHeader />
-    <ContactList />
+    <ChatList />
   </>
 );

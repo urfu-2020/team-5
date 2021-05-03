@@ -4,7 +4,7 @@ import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
 import { Button } from '@components/Controls/Button/Button';
-import { closeModal, setInputMessage } from '@slices/currentDialogSlice';
+import { closeModal, setInputMessage } from '@slices/currentChatSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 // так, тут файлы еще не загружены на сервер
@@ -23,7 +23,7 @@ const files = [
 
 export const InputFileModal = () => {
   const dispatch = useDispatch();
-  const inputMessage = useSelector(state => state.currentDialog.message);
+  const inputMessage = useSelector(state => state.currentChat.message);
 
   const handleEscape = e => {
     if(e.key === 'Escape')

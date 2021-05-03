@@ -1,6 +1,6 @@
 import React, {Component, useEffect, useState} from 'react';
 
-import { ContactCard } from '../ContactCard/ContactCard';
+import { ChatCard } from '../ChatCard/ChatCard';
 import PropTypes from "prop-types";
 import {HomePage} from "../../HomePage";
 import {useSelector} from "react-redux";
@@ -64,32 +64,26 @@ const cards = [
 
 
 
-export const ContactList = () => {
-  const contacts = useSelector(state => state.app.contacts);
-
-  console.log(contacts);
-
-  const mixContactsWithFakeData = contacts.map(contact => {
-    const randomCard = cards[Math.floor(Math.random() * cards.length)];
-    return {...randomCard, ...contact};
-  });
+export const ChatList = () => {
+  const chatsInfo = useSelector(state => state.app.chatsInfo);
 
   return (
     <>
       <ul>
         <li>
           {
-            mixContactsWithFakeData.map(({
-                         Id, Username, AvatarUrl, isOnline, message, countUnreadMessage
+            chatsInfo.map(({
+                             ChatId, ChatType, ChatAvatarUrl, ChatTitle
                        }) => (
-              <ContactCard
-                key={Id}
-                id={Id}
-                name={Username}
-                isOnline={isOnline}
-                message={message}
-                countUnreadMessage={countUnreadMessage}
-                avatarUrl={AvatarUrl}
+              <ChatCard
+                key={ChatId}
+                id={ChatId}
+                title={ChatTitle}
+                avatarUrl={ChatAvatarUrl}
+
+                isOnline={true}
+                message={{ text: 'TODO'}}
+                countUnreadMessage={1}
               />
             ))
           }
@@ -97,13 +91,4 @@ export const ContactList = () => {
       </ul>
     </>
   );
-};
-
-ContactList.propTypes = {
-  users: PropTypes.arrayOf(PropTypes.shape({
-    Id: PropTypes.number,
-    Username: PropTypes.string,
-    AvatarUrl: PropTypes.string,
-    GithubUrl: PropTypes.string
-  }))
 };

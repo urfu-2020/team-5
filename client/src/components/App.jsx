@@ -4,7 +4,7 @@ import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage";
 import {Spinner} from "./Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
-import {setContacts, setCurrentUser, setLoading} from "../store/slices/appSlice";
+import {setChatsInfo, setChatsMessages, setCurrentUser, setLoading} from "../store/slices/appSlice";
 
 const App = () => {
   const dispatch = useDispatch();
@@ -13,11 +13,12 @@ const App = () => {
 
   const fetchAppData = () => async dispatch => {
     dispatch(setLoading(true));
-    const {user} = await (await fetch('/user/own')).json();
+    const {user} = await (await fetch('/user/self')).json();
     if (user) {
       dispatch(setCurrentUser(user));
-      const {contacts} = await (await fetch('/user/contacts')).json();
-      dispatch(setContacts(contacts));
+      const {chatsInfo, chatsMessages} = await (await fetch(`/user/${user.Id}/chatsData`)).json();
+      dispatch(setChatsInfo(chatsInfo));
+      dispatch(setChatsMessages(chatsMessages));
     }
     dispatch(setLoading(false));
   };

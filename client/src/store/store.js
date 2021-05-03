@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import currentDialogSlice from "./slices/currentDialogSlice";
+import currentChatSlice from "./slices/currentChatSlice";
 import appSlice from "./slices/appSlice";
 
 export const store = configureStore({
   reducer: {
     app: appSlice,
-    currentDialog: currentDialogSlice
+    currentChat: currentChatSlice
   },
   devTools: process.env.NODE_ENV === 'development'
 });
