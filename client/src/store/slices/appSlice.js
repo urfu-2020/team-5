@@ -1,10 +1,12 @@
 import {createSlice} from '@reduxjs/toolkit';
 
+/**
+ *
+ * @type {{currentUser: UserModel | null, chatsMessages: {number: ChatModel}, chatsInfo: {number: Array<MessageModel>}}}
+ */
 const initialState = {
-  isLoading: true,
   currentUser: null,
-  chatsInfo: {},
-  chatsMessages: {}
+  chats: {}
 };
 
 export const appSlice = createSlice({
@@ -14,23 +16,17 @@ export const appSlice = createSlice({
     setCurrentUser(state, {payload}) {
       state.currentUser = payload;
     },
-    setChatsInfo(state, {payload}) {
-      state.chatsInfo = payload;
-    },
-    setChatsMessages(state, {payload}) {
-      state.chatsMessages = payload;
+    setChatsData(state, {payload}) {
+      state.chats = payload;
     },
     addChatMessage(state, {payload}) {
-      state.chatsMessages[payload.ChatId].push(payload);
-    },
-    setLoading(state, {payload}) {
-      state.isLoading = payload;
+      state.chats[payload.chatId].messages.push(payload);
     }
   }
 });
 
 const { actions, reducer } = appSlice;
 
-export const { setCurrentUser, setChatsInfo, setChatsMessages, setLoading, addChatMessage } = actions;
+export const { setCurrentUser, setChatsData, addChatMessage } = actions;
 
 export default reducer;

@@ -1,16 +1,16 @@
-class User {
+class UserModel {
   /**
-   * @param Id {Number}
-   * @param Username {String}
-   * @param AvatarUrl {String}
-   * @param GithubUrl {String}
+   * @param id {Number}
+   * @param username {String}
+   * @param avatarUrl {String}
+   * @param githubUrl {String}
    */
-  constructor(Id, Username, AvatarUrl, GithubUrl) {
-    this.Id = Id;
-    this.Username = Username;
-    this.AvatarUrl = AvatarUrl;
-    this.GithubUrl = GithubUrl;
+  constructor(id, username, avatarUrl, githubUrl) {
+    this.id = id;
+    this.username = username;
+    this.avatarUrl = avatarUrl;
+    this.githubUrl = githubUrl;
   }
 }
 
-module.exports = User;
+module.exports = UserModel;

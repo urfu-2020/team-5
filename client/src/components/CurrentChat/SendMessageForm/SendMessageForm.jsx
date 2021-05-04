@@ -14,6 +14,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
 
   const sendMessageHandler = e => {
     e.preventDefault();
+    if(inputMessage === '') return;
     dispatch(
       sendMessage({
         chatId: +chatId,
@@ -23,6 +24,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         time: new Date().toISOString()
       })
     );
+    setInputMessage('');
   };
 
   return (
@@ -60,7 +62,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         autoComplete="off"
         placeholder="Введите сообщение..."
       />
-      <Button aria-label="отправить сообщение">
+      <Button type="submit" aria-label="отправить сообщение">
         <svg
           className="svg-button send-message-form__send-button"
           xmlns="http://www.w3.org/2000/svg"

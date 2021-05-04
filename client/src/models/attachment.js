@@ -1,7 +1,7 @@
 /**
  * Вложение в сообщение
  */
-class Attachment {
+class AttachmentModel {
   /**
    * @param id {Number}
    * @param type {('Document'|'Movie'|'Music'|'Picture')}
@@ -16,4 +16,4 @@ class Attachment {
   }
 }
 
-module.exports = Attachment;
+module.exports = AttachmentModel;

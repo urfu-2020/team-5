@@ -4,7 +4,7 @@ import { ChatCard } from '../ChatCard/ChatCard';
 import {useSelector} from "react-redux";
 
 export const ChatList = () => {
-  const chatsInfo = useSelector(state => state.app.chatsInfo);
+  const chatsInfo = useSelector(state => state.app.chats);
 
   return (
     <>
@@ -12,13 +12,13 @@ export const ChatList = () => {
         <li>
           {
             Object.values(chatsInfo).map(({
-                             ChatId, ChatType, ChatAvatarUrl, ChatTitle
+                             chatId, chatType, chatAvatarUrl, chatTitle
                        }) => (
               <ChatCard
-                key={ChatId}
-                id={ChatId}
-                title={ChatTitle}
-                avatarUrl={ChatAvatarUrl}
+                key={chatId}
+                id={chatId}
+                title={chatTitle}
+                avatarUrl={chatAvatarUrl}
 
                 isOnline={true}
                 message={{ text: 'TODO'}}

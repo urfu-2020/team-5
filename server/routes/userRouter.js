@@ -12,31 +12,27 @@ router.get('/contacts', async (req, res) => {
   });
 });
 
-function groupMessagesByChats(messages) {
-  const res = {};
+function groupMessagesByChats(chats, messages) {
   messages.forEach((message) => {
-    const key = message.ChatId;
-    const collection = res[key];
+    const key = message.chatId;
+    const collection = chats[key].messages;
     if (!collection) {
-      res[key] = [message];
+      chats[key].messages = [message];
     } else {
       collection.push(message);
     }
   });
-  return res;
+  return chats;
 }
 
 router.get('/:userId/chatsData', async (req, res) => {
   const { userId } = req.params;
   const rawChatsInfo = await getUserChats(userId);
   const chatsInfo = {};
-  rawChatsInfo.forEach((chat) => chatsInfo[chat.ChatId] = chat);
-  const chatsMessages = groupMessagesByChats(await getUserChatsMessages(userId));
+  rawChatsInfo.forEach((chat) => chatsInfo[chat.chatId] = { ...chat, messages: [] });
+  const chats = groupMessagesByChats(chatsInfo, await getUserChatsMessages(userId));
 
-  res.json({
-    chatsInfo,
-    chatsMessages
-  });
+  res.json({ chats });
 });
 
 router.get('/self', async (req, res) => {

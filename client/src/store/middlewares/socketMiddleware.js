@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import {addChatMessage, setChatsInfo, setCurrentUser} from "../slices/appSlice";
+import {addChatMessage, setChatsData, setCurrentUser} from "../slices/appSlice";
 
 const SEND_MESSAGE = 'socket/sendMessage';
 export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
@@ -8,7 +8,9 @@ let socket;
 
 const initSocket = (store) => {
   socket = io();
+  console.log('init socket');
   socket.on('chatMessage', message => {
+    console.log('chat message', message);
     store.dispatch({ type: addChatMessage.type, payload: message});
   });
 };
@@ -18,19 +20,18 @@ export const socketMiddleware = store => next => action => {
     case setCurrentUser.type: {
       // socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
       initSocket(store);
-      const {Id} = action.payload;
-      socket.emit('setUserId', Id);
+      const {id} = action.payload;
+      socket.emit('setUserId', id);
       return next(action);
     }
 
-    case setChatsInfo.type: {
+    case setChatsData.type: {
       const chatIds = Object.keys(action.payload);
       socket.emit('setChats', chatIds);
       return next(action);
     }
 
     case SEND_MESSAGE: {
-      console.log(action.payload);
       socket.emit('chatMessage', action.payload);
       return;
     }

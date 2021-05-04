@@ -18,6 +18,7 @@ function configureSocket(server) {
     });
 
     socket.on('setChats', (chatIds) => {
+      console.log('set chats', chatIds);
       chatIds.forEach((chatId) => socket.join(chatId));
     });
 
@@ -31,8 +32,8 @@ function configureSocket(server) {
       });
 
       const resultMessage = new Message(messageId, chatId, senderId, text, hasAttachments, status, time);
-      console.log(resultMessage);
-      io.in(chatId).emit('chatMessage', resultMessage);
+      console.log('send message', resultMessage);
+      io.in(chatId.toString()).emit('chatMessage', resultMessage);
     });
   });
 }

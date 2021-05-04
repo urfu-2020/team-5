@@ -1,11 +1,11 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
 
 import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
 import {Spinner} from "./Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
-import {setChatsInfo, setChatsMessages, setCurrentUser, setLoading} from "../store/slices/appSlice";
+import {setChatsData, setChatsInfo, setChatsMessages, setCurrentUser} from "../store/slices/appSlice";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./CurrentChat/Chat";
 import {Navigation} from "./Navigation/Navigation";
@@ -13,23 +13,22 @@ import {Navigation} from "./Navigation/Navigation";
 const App = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.app.currentUser);
-  const isLoading = useSelector(state => state.app.isLoading);
+  const [isLoading, setLoading] = useState(true);
 
-  const fetchAppData = () => async dispatch => {
-    dispatch(setLoading(true));
+  const fetchChatsData = () => async dispatch => {
+    setLoading(true);
     const {user} = await (await fetch('/user/self')).json();
     if (user) {
       dispatch(setCurrentUser(user));
-      const {chatsInfo, chatsMessages} = await (await fetch(`/user/${user.Id}/chatsData`)).json();
-      dispatch(setChatsInfo(chatsInfo));
-      dispatch(setChatsMessages(chatsMessages));
+      const {chats} = await (await fetch(`/user/${user.id}/chatsData`)).json();
+      dispatch(setChatsData(chats));
     }
-    dispatch(setLoading(false));
+    setLoading(false);
   };
 
   useEffect(  () => {
     if(!currentUser) {
-      dispatch(fetchAppData());
+      dispatch(fetchChatsData());
     }
   }, []);
 

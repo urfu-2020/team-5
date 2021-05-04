@@ -1,58 +1,78 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
+import {useSelector} from "react-redux";
+import PropTypes from 'prop-types';
 
 import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
-import {useSelector} from "react-redux";
-import {useParams} from "react-router";
 
-export const ChatMessages = () => {
-  const {chatId} = useParams();
-  const myId = useSelector(state => state.app.currentUser.Id);
 
-  const currentChatInfo = (useSelector(state => state.app.chatsInfo))[chatId];
-  const messages = (useSelector(state => state.app.chatsMessages))[chatId];
-
+const ChatMessages = ({chatId}) => {
+  const myId = useSelector(state => state.app.currentUser.id);
+  const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
+  const messages = currentChatInfo.messages;
   const isMyMessage = senderId => senderId === myId;
+  const lastMessageRef = useRef(null);
+
+  // TODO
+  // Делать скролл к ласт мессаге если окно прокручено до конца или если currentUser ввел сообщение.
+  // Если currentUser листает этот чат, а собеседник пишет,
+  // то выводить кругляшок с количеством непрочитанных сообщений справа снизу
+  useEffect(() => {
+    if(lastMessageRef.current) {
+      lastMessageRef.current.scrollIntoView();
+    }
+  });
 
   const isNewDay = index => {
     if(index === 0) return true;
-    const prevMessageTime = new Date(messages[index - 1].Time);
-    const newMessageTime = new Date(messages[index].Time);
+    const prevMessageTime = new Date(messages[index - 1].time);
+    const newMessageTime = new Date(messages[index].time);
     return  newMessageTime.getFullYear() !== prevMessageTime.getFullYear() ||
             newMessageTime.getMonth() !== prevMessageTime.getMonth() ||
             newMessageTime.getDate() !== prevMessageTime.getDate();
   };
 
+  const getLocalTime = time => new Date(time).toLocaleTimeString("ru-RU", { hour: "numeric", minute: "numeric" });
+
   return (
     <>
-      <ChatHeader title={currentChatInfo.ChatTitle} isOnline={true} />
+      <ChatHeader title={currentChatInfo.chatTitle} isOnline={true} />
       <div className="chat-area chat-container__chat-area">
         {
-          messages ? (
-            messages.map(({Id, Text, SenderId, Time, Status}, index) => (
-              <React.Fragment key={Id}>
-                {
-                  isNewDay(index) ? (
-                    <h4 className="chat-date chat-area__chat-date">
-                      {new Date(Time).toLocaleDateString("ru-RU", { day: "numeric", month: "long"})}
-                    </h4>
-                  ) : null
-                }
-                <ChatMessage
-                  text={Text}
-                  time={new Date(Time).toLocaleTimeString("ru-RU", { hour: "numeric", minute: "numeric" })}
-                  isMyMessage={isMyMessage(SenderId)}
-                  status={Status}
-                  attachments={[]}
-                />
-              </React.Fragment>
-            ))
+          messages.length >  0 ? (
+            messages.map(({id, text, senderId, time, status}, index) => {
+              return (
+                <React.Fragment key={id}>
+                  {
+                    isNewDay(index) ? (
+                      <h4 className="chat-date chat-area__chat-date">
+                        {getLocalTime(time)}
+                      </h4>
+                    ) : null
+                  }
+                  <ChatMessage
+                    lastMessageRef={index === messages.length - 1 ? lastMessageRef : null}
+                    text={text}
+                    time={getLocalTime(time)}
+                    isMyMessage={isMyMessage(senderId)}
+                    status={status}
+                    attachments={[]}
+                  />
+                </React.Fragment>
+              );
+            })
           ) : <p> Сообщений пока нет. </p>
         }
       </div>
     </>
   );
+};
+
+export const MemoizedChatMessages = React.memo(ChatMessages);
+
+ChatMessages.propTypes = {
+  chatId: PropTypes.number.isRequired
 };
 
