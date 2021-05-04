@@ -1,8 +1,6 @@
 const mssql = require('mssql');
 
-const User = require('../models/user');
-const Chat = require('../models/chat');
-const Message = require('../models/message');
+const User = require('../../client/src/models/user');
 
 const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
@@ -76,20 +74,11 @@ async function getUserChats(userId) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
     return (await sql.request().query`SELECT * FROM GetUserChats(${userId})`).recordset
-      .map((rawChat) => {
-        const chatTitle = rawChat.ChatType === 'Group' ? rawChat.ChatTitle : rawChat.SobesednikUsername;
-        const chatAvatarUrl = rawChat.ChatType === 'Group' ? rawChat.ChatAvatarUrl : rawChat.SobesednikAvatarUrl;
-        return new Chat(
-          rawChat.ChatId,
-          rawChat.ChatType,
-          chatAvatarUrl,
-          chatTitle,
-          rawChat.SobesednikId,
-          rawChat.SobesednikUsername,
-          rawChat.SobesednikAvatarUrl,
-          rawChat.SobesednikGHUrl
-        );
-      });
+      .map((rawChat) => ({
+        ...rawChat,
+        ChatTitle: rawChat.ChatType === 'Group' ? rawChat.ChatTitle : rawChat.SobesednikUsername,
+        ChatAvatarUrl: rawChat.ChatType === 'Group' ? rawChat.ChatAvatarUrl : rawChat.SobesednikAvatarUrl,
+      }));
   } catch (e) {
     console.error(e);
   }
@@ -102,16 +91,7 @@ async function getUserChats(userId) {
 async function getUserChatsMessages(userId) {
   try {
     const sql = await mssql.connect(CONNECTION_URL);
-    return (await sql.request().query`SELECT * FROM GetUserChatsMessages(${userId})`).recordset
-      .map((rawMessage) => new Message(
-        rawMessage.Id,
-        rawMessage.ChatId,
-        rawMessage.SenderId,
-        rawMessage.Text,
-        rawMessage.HasAttachments,
-        rawMessage.Status,
-        rawMessage.Time
-      ));
+    return (await sql.request().query`SELECT * FROM GetUserChatsMessages(${userId})`).recordset;
   } catch (e) {
     console.error(e);
   }
@@ -125,6 +105,7 @@ async function storeChatMessage({
 }) {
   try {
     const request = (await mssql.connect(CONNECTION_URL)).request();
+    // найти как из процедуры доставать аут параметр тут и вытаскивать id 1 запросом
     await request.query`EXEC StoreChatMessage
      @ChatId=${chatId},
      @SenderId=${senderId},
@@ -139,10 +120,6 @@ async function storeChatMessage({
     console.error(e);
   }
 }
-
-// (async () => {
-//   console.log(await getUserChats(4));
-// })();
 
 module.exports = {
   getUsers,

@@ -1,11 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
 import { Button } from '@components/Controls/Button/Button';
-import { closeModal, setInputMessage } from '@slices/currentChatSlice';
-import { useDispatch, useSelector } from 'react-redux';
 
 // так, тут файлы еще не загружены на сервер
 // const files = [
@@ -21,18 +20,15 @@ const files = [
 ];
 
 
-export const InputFileModal = () => {
-  const dispatch = useDispatch();
-  const inputMessage = useSelector(state => state.currentChat.message);
-
+export const InputFileModal = ({inputMessage, setInputMessage, setModalOpen }) => {
   const handleEscape = e => {
     if(e.key === 'Escape')
-      dispatch(closeModal());
+      setModalOpen(false);
   };
 
   const handleOverlayClick = e => {
     if(e.target.classList.contains('modal-overlay'))
-      dispatch(closeModal());
+      setModalOpen(false);
   };
 
   return (
@@ -52,7 +48,7 @@ export const InputFileModal = () => {
       </section>
       <input
         value={inputMessage}
-        onChange={e => dispatch(setInputMessage(e.target.value))}
+        onChange={e => setInputMessage(e.target.value)}
         type="text"
         className="input-file-modal__input-text input-message"
         autoComplete="off"
@@ -69,7 +65,7 @@ export const InputFileModal = () => {
           <Button
             className="input-file-modal__button cancel-button text-button"
             aria-label="Отмена прикрепления файлов"
-            onClick={() => dispatch(closeModal())}
+            onClick={() => setModalOpen(false)}
           >
             Отменить
           </Button>
@@ -85,7 +81,7 @@ export const InputFileModal = () => {
       <Button
         className="input-file-modal__close-button"
         aria-label="закрыть окно"
-        onClick={() => dispatch(closeModal())}
+        onClick={() => setModalOpen(false)}
       >
         <svg
           className="svg-button"
@@ -105,4 +101,11 @@ export const InputFileModal = () => {
     </section>
   </div>
   );
+};
+
+
+InputFileModal.propTypes = {
+  inputMessage: PropTypes.string,
+  setInputMessage: PropTypes.func.isRequired,
+  setModalOpen: PropTypes.func.isRequired
 };

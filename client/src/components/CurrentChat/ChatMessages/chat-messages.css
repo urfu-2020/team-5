@@ -3,12 +3,6 @@
   border-left: var(--separator) solid 1px;
 }
 
-.chat-container {
-  display: grid;
-  grid-template-rows: 1fr 10fr 1fr;
-  height: 100vh;
-}
-
 .chat-container__chat-header {
   display: flex;
   align-items: center;

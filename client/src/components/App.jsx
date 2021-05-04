@@ -1,16 +1,19 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {Switch, Route, Redirect} from 'react-router-dom';
 
 import {LoginPage} from "./LoginPage/LoginPage";
-import {HomePage} from "./HomePage";
+import {HomePage} from "./HomePage/HomePage";
 import {Spinner} from "./Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
 import {setChatsInfo, setChatsMessages, setCurrentUser, setLoading} from "../store/slices/appSlice";
+import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
+import {Chat} from "./CurrentChat/Chat";
+import {Navigation} from "./Navigation/Navigation";
 
 const App = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.app.currentUser);
   const isLoading = useSelector(state => state.app.isLoading);
-  const chatsId = (useSelector(state => state.app.chatsInfo)).map(chatInfo => chatInfo.ChatId);
 
   const fetchAppData = () => async dispatch => {
     dispatch(setLoading(true));
@@ -30,22 +33,28 @@ const App = () => {
     }
   }, []);
 
-  return isLoading ? <Spinner className="main-spinner" /> : currentUser ? <HomePage /> : <LoginPage />;
 
-  // Потом разберусь с роутером и сделаю нормально
-  // return (
-  //   <Router>
-  //       { userId ? (
-  //         <Switch>
-  //           <Route path="/" exact component={HomePage}/>
-  //         </Switch>
-  //       ) : (
-  //         <Switch>
-  //           <Route path="/login" exact component={LoginPage} />
-  //         </Switch>
-  //       )}
-  //   </Router>
-  //   );
+  return  isLoading ? <Spinner className="main-spinner" /> :
+          currentUser ? (
+            <div id="app">
+              <nav className="navigation">
+                <Navigation />
+              </nav>
+              <Switch>
+                <Route path="/" exact component={HomePage} />
+                {/* Несуществующие айдишники чатов отображает как пустой чат, потом починить */}
+                <Route path={`/chat/:chatId`} exact component={Chat} />
+                <Route path="*" component={NotFoundPage} />
+              </Switch>
+            </div>
+          ) : (
+            <>
+              <Redirect to={"/login"} />
+              <Switch>
+                <Route path="/login" exact component={LoginPage} />
+              </Switch>
+            </>
+          );
 };
 
 export default App;

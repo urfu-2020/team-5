@@ -1,22 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {useDispatch} from "react-redux";
-import {openNewCurrentChat} from "../../../store/slices/currentChatSlice";
+import {useHistory} from "react-router-dom";
 
 export const ChatCard = ({ id, title, isOnline, message, countUnreadMessage, avatarUrl }) => {
-  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const openChatOnClick = () => {
-    dispatch(openNewCurrentChat(id));
+  const openChatOnHandler = () => {
+    history.push(`/chat/${id}`);
   };
 
   const openChatOnEnter = (e) => {
     if(e.key === 'Enter')
-      dispatch(openNewCurrentChat(id));
+      openChatOnHandler();
   };
 
   return (
-    <div className="card" role={"button"} tabIndex={0} onClick={openChatOnClick} onKeyDown={openChatOnEnter}>
+    <div className="card" role={"button"} tabIndex={0} onClick={openChatOnHandler} onKeyDown={openChatOnEnter}>
       <div className="card__avatar">
         <svg role="none" style={{height: '64px', width: '64px'}}>
           <defs>
@@ -46,7 +45,7 @@ export const ChatCard = ({ id, title, isOnline, message, countUnreadMessage, ava
               <p className="messagePreview"><span className="messageSender">Вы:</span> {message.text}</p>
               <p className="messageTime">{message.time}</p>
               {
-                message.status == "Read" ? (
+                message.status === "Read" ? (
                   <svg
                     className="messageStatus"
                     height="20px"

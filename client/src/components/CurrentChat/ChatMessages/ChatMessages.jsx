@@ -1,17 +1,18 @@
 import React from 'react';
 
-import './current-chat.css';
+import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
-import { ChatHeader } from './ChatHeader/ChatHeader';
+import { ChatHeader } from '../ChatHeader/ChatHeader';
 import {useSelector} from "react-redux";
+import {useParams} from "react-router";
 
-export const CurrentChat = () => {
-  const currentChatId = useSelector(state => state.currentChat.id);
+export const ChatMessages = () => {
+  const {chatId} = useParams();
   const myId = useSelector(state => state.app.currentUser.Id);
-  // заменить везде chatsInfo на объект ид => чат
-  const currentChatInfo = (useSelector(state => state.app.chatsInfo)).filter(chat => chat.ChatId === currentChatId);
-  const messages = (useSelector(state => state.app.chatsMessages))[currentChatId];
+
+  const currentChatInfo = (useSelector(state => state.app.chatsInfo))[chatId];
+  const messages = (useSelector(state => state.app.chatsMessages))[chatId];
 
   const isMyMessage = senderId => senderId === myId;
 

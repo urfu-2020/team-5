@@ -1,25 +1,28 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import PropTypes from 'prop-types';
+import {useParams} from "react-router";
 
 import './send-message-form.css';
 
 import { Button } from '@components/Controls/Button/Button';
-import { openModal, setInputMessage } from '@slices/currentChatSlice';
-import { sendMessage } from "../../../store/slices/currentChatSlice";
+import {sendMessage} from "../../../store/middlewares/socketMiddleware";
 
-
-export const SendMessageForm = () => {
-  const inputMessage = useSelector(state => state.currentChat.message);
-  const isModalOpen = useSelector(state => state.currentChat.isModalOpen);
-  const chatId = useSelector(state => state.currentChat.id);
-
-
+export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
+  const {chatId} = useParams();
   const dispatch = useDispatch();
 
   const sendMessageHandler = e => {
     e.preventDefault();
-    dispatch(sendMessage({chatId,
-      text: inputMessage, hasAttachments: false, status: 'Unread', time: new Date().toISOString()}));
+    dispatch(
+      sendMessage({
+        chatId: +chatId,
+        text: inputMessage,
+        hasAttachments: false,
+        status: 'Unread',
+        time: new Date().toISOString()
+      })
+    );
   };
 
   return (
@@ -31,7 +34,7 @@ export const SendMessageForm = () => {
         role="button"
         tabIndex="0"
       >
-        <input type="file" id="input-file" hidden multiple onChange={() => dispatch(openModal())} />
+        <input type="file" id="input-file" hidden multiple onChange={() => setModalOpen(true)} />
         <svg
           className="svg-button send-message-form__attach-files-button"
           xmlns="http://www.w3.org/2000/svg"
@@ -51,7 +54,7 @@ export const SendMessageForm = () => {
       </label>
       <input
         value={isModalOpen ? '' : inputMessage}
-        onChange={e => dispatch(setInputMessage(e.target.value))}
+        onChange={e => setInputMessage(e.target.value)}
         type="text"
         className="send-message-form__input-text input-message"
         autoComplete="off"
@@ -72,4 +75,12 @@ export const SendMessageForm = () => {
       </Button>
     </form>
   );
+};
+
+
+SendMessageForm.propTypes = {
+  isModalOpen: PropTypes.bool.isRequired,
+  setModalOpen: PropTypes.func.isRequired,
+  inputMessage: PropTypes.string.isRequired,
+  setInputMessage: PropTypes.func.isRequired
 };

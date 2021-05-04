@@ -3,7 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 const initialState = {
   isLoading: true,
   currentUser: null,
-  chatsInfo: [],
+  chatsInfo: {},
   chatsMessages: {}
 };
 
@@ -31,6 +31,6 @@ export const appSlice = createSlice({
 
 const { actions, reducer } = appSlice;
 
-export const { setCurrentUser, setChatsInfo, setChatsMessages, setLoading } = actions;
+export const { setCurrentUser, setChatsInfo, setChatsMessages, setLoading, addChatMessage } = actions;
 
 export default reducer;

@@ -28,7 +28,9 @@ function groupMessagesByChats(messages) {
 
 router.get('/:userId/chatsData', async (req, res) => {
   const { userId } = req.params;
-  const chatsInfo = await getUserChats(userId);
+  const rawChatsInfo = await getUserChats(userId);
+  const chatsInfo = {};
+  rawChatsInfo.forEach((chat) => chatsInfo[chat.ChatId] = chat);
   const chatsMessages = groupMessagesByChats(await getUserChatsMessages(userId));
 
   res.json({

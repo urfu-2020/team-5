@@ -1,7 +1,7 @@
 // const WebSocket = require('ws');
 const { Server } = require('socket.io');
 const dbapi = require('../db/dbapi');
-const Message = require('../models/message');
+const Message = require('../../client/src/models/message');
 
 /**
  * Настраиваем сокеты
@@ -24,12 +24,14 @@ function configureSocket(server) {
     socket.on('chatMessage', async ({
       chatId, text, hasAttachments, status, time
     }) => {
+      console.log('sender uid', socket.userId);
       const senderId = socket.userId;
       const messageId = await dbapi.storeChatMessage({
         chatId, senderId, text, hasAttachments, status, time
       });
 
       const resultMessage = new Message(messageId, chatId, senderId, text, hasAttachments, status, time);
+      console.log(resultMessage);
       io.in(chatId).emit('chatMessage', resultMessage);
     });
   });
