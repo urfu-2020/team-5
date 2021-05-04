@@ -34,8 +34,6 @@ const ChatMessages = ({chatId}) => {
             newMessageTime.getDate() !== prevMessageTime.getDate();
   };
 
-  const getLocalTime = time => new Date(time).toLocaleTimeString("ru-RU", { hour: "numeric", minute: "numeric" });
-
   return (
     <>
       <ChatHeader title={currentChatInfo.chatTitle} isOnline={true} />
@@ -48,14 +46,14 @@ const ChatMessages = ({chatId}) => {
                   {
                     isNewDay(index) ? (
                       <h4 className="chat-date chat-area__chat-date">
-                        {getLocalTime(time)}
+                        {new Date(time).toLocaleDateString("ru-RU", { day: "numeric", month: "long"})}
                       </h4>
                     ) : null
                   }
                   <ChatMessage
                     lastMessageRef={index === messages.length - 1 ? lastMessageRef : null}
                     text={text}
-                    time={getLocalTime(time)}
+                    time={new Date(time).toLocaleTimeString("ru-RU", {hour: "numeric", minute: "numeric"})}
                     isMyMessage={isMyMessage(senderId)}
                     status={status}
                     attachments={[]}

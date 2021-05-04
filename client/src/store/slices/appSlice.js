@@ -1,11 +1,8 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-/**
- *
- * @type {{currentUser: UserModel | null, chatsMessages: {number: ChatModel}, chatsInfo: {number: Array<MessageModel>}}}
- */
 const initialState = {
   currentUser: null,
+  currentChatId: null,
   chats: {}
 };
 
@@ -21,12 +18,15 @@ export const appSlice = createSlice({
     },
     addChatMessage(state, {payload}) {
       state.chats[payload.chatId].messages.push(payload);
+    },
+    setCurrentChatId(state, {payload}) {
+      state.currentChatId = payload;
     }
   }
 });
 
 const { actions, reducer } = appSlice;
 
-export const { setCurrentUser, setChatsData, addChatMessage } = actions;
+export const { setCurrentUser, setChatsData, addChatMessage, setCurrentChatId } = actions;
 
 export default reducer;

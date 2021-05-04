@@ -5,10 +5,11 @@ import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
 import {Spinner} from "./Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
-import {setChatsData, setChatsInfo, setChatsMessages, setCurrentUser} from "../store/slices/appSlice";
+import {setChatsData, setCurrentUser} from "../store/slices/appSlice";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./CurrentChat/Chat";
 import {Navigation} from "./Navigation/Navigation";
+
 
 const App = () => {
   const dispatch = useDispatch();
