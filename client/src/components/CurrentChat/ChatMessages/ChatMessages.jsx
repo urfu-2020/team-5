@@ -35,6 +35,7 @@ const ChatMessages = ({ currentChatInfo}) => {
   const [messages, setMessages] = useState([]);
   const [isStartLoading, setStartLoading] = useState(true);
   const [isAddMessagesLoading, setAddMessagesLoading] = useState(false);
+  const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
 
   // FIXME скролл сделан криво, переделать потом
   const chatMessagesRef = useRef(null);
@@ -74,14 +75,18 @@ const ChatMessages = ({ currentChatInfo}) => {
   const isMyMessage = senderId => senderId === myId;
 
   const addMessagesOnScroll = async e => {
-    if(e.target.scrollTop === 0) {
+    if(e.target.scrollTop === 0 && !isAllMessagesLoaded && !isAddMessagesLoading) {
       setAddMessagesLoading(true);
       const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${chatOffset}`)).json();
       // за то время, пока делали фетч, пользователь мог сменить чат, а chatId замыкается на старый.
       const currentChatId = window.location.pathname.split('/').pop();
       if(chatId === currentChatId) {
-        setMessages(currentMessages => [...oldMessages, ...currentMessages]);
-        setChatOffset(currentOffset => currentOffset + oldMessages.length);
+        if(oldMessages.length === 0) {
+          setIsAllMessagesLoaded(true);
+        } else {
+          setMessages(currentMessages => [...oldMessages, ...currentMessages]);
+          setChatOffset(currentOffset => currentOffset + oldMessages.length);
+        }
       }
       setAddMessagesLoading(false);
     }
@@ -94,7 +99,8 @@ const ChatMessages = ({ currentChatInfo}) => {
          onScroll={debounce(addMessagesOnScroll, 300)}
     >
       {
-        isAddMessagesLoading ? <Spinner className="spinner_chat-load-messages" /> : null
+        isAddMessagesLoading ? <Spinner className="spinner_chat-load-messages" /> :
+          isAllMessagesLoaded ? <p> Начало диалога. </p> : null
       }
       {
         messages.length >  0 ? (
@@ -109,7 +115,7 @@ const ChatMessages = ({ currentChatInfo}) => {
                   ) : null
                 }
                 <ChatMessage
-                  lastMessageRef={id === lastMessage.id ? lastMessageRef : null}
+                  lastMessageRef={lastMessage && id === lastMessage.id ? lastMessageRef : null}
                   text={text}
                   time={getTimeInLocaleString(time)}
                   isMyMessage={isMyMessage(senderId)}
