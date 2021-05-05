@@ -8,6 +8,7 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import {debounce} from "../../../utils/debounce";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
+import {useParams} from "react-router";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //
@@ -19,7 +20,8 @@ import {Spinner} from "../../Controls/Spinner/Spinner";
 //          2) Скроллим чат (находимся не внизу чата), а другой участник отправляет сообщение
 //             (Можно будет допилить и показывать кружок с количеством непрочитанных сообщений)`
 
-const ChatMessages = ({chatId, currentChatInfo}) => {
+const ChatMessages = ({ currentChatInfo}) => {
+  const {chatId} = useParams();
   const lastMessage = currentChatInfo.lastMessage;
   const currentUser = useSelector(state => state.app.currentUser);
   const myId = currentUser.id;
@@ -75,8 +77,12 @@ const ChatMessages = ({chatId, currentChatInfo}) => {
     if(e.target.scrollTop === 0) {
       setAddMessagesLoading(true);
       const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${chatOffset}`)).json();
-      setMessages(currentMessages => [...oldMessages, ...currentMessages]);
-      setChatOffset(currentOffset => currentOffset + oldMessages.length);
+      // за то время, пока делали фетч, пользователь мог сменить чат, а chatId замыкается на старый.
+      const currentChatId = window.location.pathname.split('/').pop();
+      if(chatId === currentChatId) {
+        setMessages(currentMessages => [...oldMessages, ...currentMessages]);
+        setChatOffset(currentOffset => currentOffset + oldMessages.length);
+      }
       setAddMessagesLoading(false);
     }
   };

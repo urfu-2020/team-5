@@ -34,7 +34,7 @@ export const Chat = () => {
         isOnline={true}
       />
       <MemoizedChatMessages
-        chatId={+chatId}
+        // chatId={+chatId}
         currentChatInfo={currentChatInfo}
       />
       <SendMessageForm
