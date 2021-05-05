@@ -1,7 +1,7 @@
 // const WebSocket = require('ws');
 const { Server } = require('socket.io');
-const dbapi = require('../db/dbapi');
 const Message = require('../../client/src/models/message');
+const { storeChatMessage } = require('../db/dbapi');
 
 /**
  * Настраиваем сокеты
@@ -26,7 +26,7 @@ function configureSocket(server) {
       chatId, text, hasAttachments, status, time
     }) => {
       const senderId = socket.userId;
-      const messageId = await dbapi.storeChatMessage({
+      const messageId = await storeChatMessage({
         chatId, senderId, text, hasAttachments, status, time
       });
 
