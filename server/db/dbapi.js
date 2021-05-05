@@ -94,7 +94,7 @@ async function getChatMessages(chatId, offset, take) {
 
 /**
  * Положить сообщение в бд
- * TODO найти как из процедуры доставать аут параметр тут и вытаскивать id 1 запросом
+ * TODO найти как из процедуры доставать аут параметр тут и вытаскивать chatId 1 запросом
  * @returns number
  */
 async function storeChatMessage({

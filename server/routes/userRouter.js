@@ -16,7 +16,6 @@ router.get('/:userId/chatsData', async (req, res) => {
   const rawChatsInfo = await getUserChats(userId);
   const chats = {};
   rawChatsInfo.forEach((chat) => chats[chat.chatId] = { ...chat, messages: [], offset: 0 });
-
   res.json({ chats });
 });
 

@@ -17,13 +17,13 @@ export const ChatList = () => {
                        }) => (
               <ChatCard
                 key={chatId}
-                id={chatId}
+                chatId={chatId}
                 title={chatTitle}
                 avatarUrl={chatAvatarUrl}
                 currentChatId={currentChatId}
 
                 isOnline={true}
-                message={{ text: 'TODO'}}
+                lastMessage={{ text: 'TODO'}}
                 countUnreadMessage={1}
               />
             ))

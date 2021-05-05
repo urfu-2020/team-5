@@ -8,6 +8,7 @@ import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
 import {loadChatMessages} from "../../../store/slices/appSlice";
 import {debounce} from "../../../utils/debounce";
+import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в начало
 // TODO `Чат прокручивается до последнего сообщения если:
@@ -38,7 +39,8 @@ const ChatMessages = ({chatId}) => {
 
 
   useEffect(() => {
-    dispatch(loadMessages());
+    if(chatOffset === 0)
+      dispatch(loadMessages());
   }, [chatId]);
 
 
@@ -79,14 +81,14 @@ const ChatMessages = ({chatId}) => {
                   {
                     isNewDay(index) ? (
                       <h4 className="chat-date chat-area__chat-date">
-                        {new Date(time).toLocaleDateString("ru-RU", { day: "numeric", month: "long"})}
+                        {getDayInLocaleString(time)}
                       </h4>
                     ) : null
                   }
                   <ChatMessage
                     lastMessageRef={index === messages.length - 1 ? lastMessageRef : null}
                     text={text}
-                    time={new Date(time).toLocaleTimeString("ru-RU", {hour: "numeric", minute: "numeric"})}
+                    time={getTimeInLocaleString(time)}
                     isMyMessage={isMyMessage(senderId)}
                     status={status}
                     attachments={[]}
