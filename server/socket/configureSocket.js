@@ -5,6 +5,7 @@ const Message = require('../../client/src/models/message');
 
 /**
  * Настраиваем сокеты
+ * TODO переписать на чистые сокеты без socket.io
  * @param server {Server}
  */
 function configureSocket(server) {
@@ -18,21 +19,18 @@ function configureSocket(server) {
     });
 
     socket.on('setChats', (chatIds) => {
-      console.log('set chats', chatIds);
       chatIds.forEach((chatId) => socket.join(chatId));
     });
 
     socket.on('chatMessage', async ({
       chatId, text, hasAttachments, status, time
     }) => {
-      console.log('sender uid', socket.userId);
       const senderId = socket.userId;
       const messageId = await dbapi.storeChatMessage({
         chatId, senderId, text, hasAttachments, status, time
       });
 
       const resultMessage = new Message(messageId, chatId, senderId, text, hasAttachments, status, time);
-      console.log('send message', resultMessage);
       io.in(chatId.toString()).emit('chatMessage', resultMessage);
     });
   });

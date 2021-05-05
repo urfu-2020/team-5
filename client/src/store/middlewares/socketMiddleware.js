@@ -8,9 +8,7 @@ let socket;
 
 const initSocket = (store) => {
   socket = io();
-  console.log('init socket');
   socket.on('chatMessage', message => {
-    console.log('chat message', message);
     store.dispatch({ type: addChatMessage.type, payload: message});
   });
 };

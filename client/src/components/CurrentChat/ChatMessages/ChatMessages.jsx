@@ -1,29 +1,46 @@
 import React, {useEffect, useRef} from 'react';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 
 import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
+import {loadChatMessages} from "../../../store/slices/appSlice";
+import {debounce} from "../../../utils/debounce";
 
+// FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в начало
+// TODO `Чат прокручивается до последнего сообщения если:
+//          1) Мы отправляем сообщение
+//          2) Мы находимся внизу чата и любой участник отправляет сообщение
+//       Чат остается на том же месте при ререндере если:
+//          1) Подгружаем старые сообщения
+//          2) Скроллим чат (находимся не внизу чата), а другой участник отправляет сообщение
+//             (Можно будет допилить и показывать кружок с количеством непрочитанных сообщений)`
 
 const ChatMessages = ({chatId}) => {
+  const dispatch = useDispatch();
   const myId = useSelector(state => state.app.currentUser.id);
   const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
+  const chatOffset = currentChatInfo.offset;
   const messages = currentChatInfo.messages;
-  const isMyMessage = senderId => senderId === myId;
-  const lastMessageRef = useRef(null);
 
-  // TODO
-  // Делать скролл к ласт мессаге если окно прокручено до конца или если currentUser ввел сообщение.
-  // Если currentUser листает этот чат, а собеседник пишет,
-  // то выводить кругляшок с количеством непрочитанных сообщений справа снизу
+  const chatMessagesRef = useRef(null);
+  const lastMessageRef = useRef(null);
+  const prevLastMessageRef = useRef(null);
+
   useEffect(() => {
-    if(lastMessageRef.current) {
+    if(lastMessageRef.current && prevLastMessageRef.current !== lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView();
+      prevLastMessageRef.current = lastMessageRef.current;
     }
-  });
+  }, [chatMessagesRef.current, lastMessageRef.current]);
+
+
+  useEffect(() => {
+    dispatch(loadMessages());
+  }, [chatId]);
+
 
   const isNewDay = index => {
     if(index === 0) return true;
@@ -34,10 +51,26 @@ const ChatMessages = ({chatId}) => {
             newMessageTime.getDate() !== prevMessageTime.getDate();
   };
 
+  const isMyMessage = senderId => senderId === myId;
+
+  const loadMessages = () => async dispatch => {
+    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${chatOffset}`)).json();
+    dispatch(loadChatMessages({chatId, messages: oldMessages}));
+  };
+
+  const addMessagesOnScroll = e => {
+    if(e.target.scrollTop === 0) {
+      dispatch(loadMessages());
+    }
+  };
+
   return (
     <>
       <ChatHeader title={currentChatInfo.chatTitle} isOnline={true} />
-      <div className="chat-area chat-container__chat-area">
+      <div className="chat-area chat-container__chat-area"
+           ref={chatMessagesRef}
+           onScroll={debounce(addMessagesOnScroll, 300)}
+      >
         {
           messages.length >  0 ? (
             messages.map(({id, text, senderId, time, status}, index) => {

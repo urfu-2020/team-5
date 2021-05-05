@@ -1,11 +1,9 @@
 const mssql = require('mssql');
 
-const User = require('../../client/src/models/user');
-
 const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
 /**
- * @returns {Array<User> | boolean}
+ * @returns {Array<UserModel> | boolean}
  */
 async function getUsers() {
   try {
@@ -18,7 +16,7 @@ async function getUsers() {
 
 /**
  * @param username {String}
- * @returns {User | boolean}
+ * @returns {UserModel | boolean}
  */
 async function getUserByName(username) {
   try {
@@ -38,11 +36,9 @@ async function getUserByName(username) {
  */
 async function createUser(username, avatarUrl, githubUrl) {
   try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    await sql.request().query`EXEC InsertUser
-      @username=${username},
-      @avatarUrl=${avatarUrl},
-      @githubUrl=${githubUrl}`;
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    await request
+      .query`INSERT INTO [User](username, avatarUrl, githubUrl) VALUES (${username}, ${avatarUrl}, ${githubUrl})`;
   } catch (e) {
     console.error(e);
   }
@@ -53,21 +49,23 @@ async function createUser(username, avatarUrl, githubUrl) {
  */
 async function addDialogsWithNewUser(username) {
   try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    await sql.request().query`EXEC AddDialogsWithNewUser @newUserUsername=${username}`;
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    await request.query`EXEC AddDialogsWithNewUser @newUserUsername=${username}`;
   } catch (e) {
     console.error(e);
   }
 }
 
 /**
+ * Получить информацию о чатах пользователя, (если это диалог или чат с собой,
+ * то название чата и ава соответсвуют собеседнику
  * @param userId {Number}
- * @returns Array<Chat>
+ * @returns Array<ChatModel>
  */
 async function getUserChats(userId) {
   try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    return (await sql.request().query`SELECT * FROM GetUserChats(${userId})`).recordset
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    return (await request.query`SELECT * FROM GetUserChats(${userId})`).recordset
       .map((rawChat) => ({
         ...rawChat,
         chatTitle: rawChat.chatType === 'Group' ? rawChat.chatTitle : rawChat.sobesednikUsername,
@@ -79,19 +77,24 @@ async function getUserChats(userId) {
 }
 
 /**
- * @param userId {Number}
- * @returns Array<Message>
+ * Получить следующие ${take} сообщений чата, начиная с ${offset}
+ * @param chatId {number}
+ * @param offset {number}
+ * @param take {number}
+ * @returns Array<MessageModel>
  */
-async function getUserChatsMessages(userId) {
+async function getChatMessages(chatId, offset, take) {
   try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    return (await sql.request().query`SELECT * FROM GetUserChatsMessages(${userId})`).recordset;
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    return (await request.query`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`).recordset;
   } catch (e) {
     console.error(e);
   }
 }
 
 /**
+ * Положить сообщение в бд
+ * TODO найти как из процедуры доставать аут параметр тут и вытаскивать id 1 запросом
  * @returns number
  */
 async function storeChatMessage({
@@ -99,7 +102,6 @@ async function storeChatMessage({
 }) {
   try {
     const request = (await mssql.connect(CONNECTION_URL)).request();
-    // найти как из процедуры доставать аут параметр тут и вытаскивать id 1 запросом
     await request.query`EXEC StoreChatMessage
      @chatId=${chatId},
      @senderId=${senderId},
@@ -121,6 +123,6 @@ module.exports = {
   createUser,
   addDialogsWithNewUser,
   getUserChats,
-  getUserChatsMessages,
-  storeChatMessage
+  storeChatMessage,
+  getChatMessages
 };

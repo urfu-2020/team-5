@@ -3,7 +3,7 @@ import {Switch, Route, Redirect} from 'react-router-dom';
 
 import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
-import {Spinner} from "./Spinner/Spinner";
+import {Spinner} from "./Controls/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
 import {setChatsData, setCurrentUser} from "../store/slices/appSlice";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";

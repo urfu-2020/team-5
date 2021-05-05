@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './Spinner.css';
 
-// туду: сделать по-человечески
+// TODO сделать нормальную крутилку
 export const Spinner = ({className, ...otherProps}) => (
   <p className={`spinner ${className ? className : ''}`} {...otherProps}> Loading... </p>
 );
