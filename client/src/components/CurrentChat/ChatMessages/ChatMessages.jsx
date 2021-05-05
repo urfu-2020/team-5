@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
-import {debounce} from "../../../utils/debounce";
+import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
 import {useParams} from "react-router";
@@ -96,7 +96,7 @@ const ChatMessages = ({ currentChatInfo}) => {
     (
     <div className="chat-area chat-container__chat-area"
          ref={chatMessagesRef}
-         onScroll={debounce(addMessagesOnScroll, 300)}
+         onScroll={throttle(addMessagesOnScroll, 300)}
     >
       {
         isAddMessagesLoading ? <Spinner className="spinner_chat-load-messages" /> :
