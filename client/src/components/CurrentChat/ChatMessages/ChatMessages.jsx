@@ -1,16 +1,17 @@
-import React, {useEffect, useRef} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useRef, useState} from 'react';
+import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 
 import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
 import { ChatHeader } from '../ChatHeader/ChatHeader';
-import {loadChatMessages} from "../../../store/slices/appSlice";
 import {debounce} from "../../../utils/debounce";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
+import {Spinner} from "../../Controls/Spinner/Spinner";
 
-// FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в начало
+// FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
+//
 // TODO `Чат прокручивается до последнего сообщения если:
 //          1) Мы отправляем сообщение
 //          2) Мы находимся внизу чата и любой участник отправляет сообщение
@@ -19,12 +20,13 @@ import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 //          2) Скроллим чат (находимся не внизу чата), а другой участник отправляет сообщение
 //             (Можно будет допилить и показывать кружок с количеством непрочитанных сообщений)`
 
-const ChatMessages = ({chatId}) => {
-  const dispatch = useDispatch();
+const ChatMessages = ({chatId, lastMessageId}) => {
   const myId = useSelector(state => state.app.currentUser.id);
-  const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
-  const chatOffset = currentChatInfo.offset;
-  const messages = currentChatInfo.messages;
+
+  const [chatOffset, setChatOffset] = useState(0);
+  const [messages, setMessages] = useState([]);
+  const [isStartLoading, setStartLoading] = useState(true);
+  const [isAddMessagesLoading, setAddMessagesLoading] = useState(false);
 
   const chatMessagesRef = useRef(null);
   const lastMessageRef = useRef(null);
@@ -35,14 +37,17 @@ const ChatMessages = ({chatId}) => {
       lastMessageRef.current.scrollIntoView();
       prevLastMessageRef.current = lastMessageRef.current;
     }
-  }, [chatMessagesRef.current, lastMessageRef.current]);
-
+  }, [lastMessageRef.current, chatId]);
 
   useEffect(() => {
-    if(chatOffset === 0)
-      dispatch(loadMessages());
+    (async () => {
+      setStartLoading(true);
+      const {oldMessages} = await (await fetch(`/api/chat/${chatId}/0`)).json();
+      setMessages(oldMessages);
+      setChatOffset(oldMessages.length);
+      setStartLoading(false);
+    })();
   }, [chatId]);
-
 
   const isNewDay = index => {
     if(index === 0) return true;
@@ -55,57 +60,58 @@ const ChatMessages = ({chatId}) => {
 
   const isMyMessage = senderId => senderId === myId;
 
-  const loadMessages = () => async dispatch => {
-    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${chatOffset}`)).json();
-    dispatch(loadChatMessages({chatId, messages: oldMessages}));
-  };
-
-  const addMessagesOnScroll = e => {
+  const addMessagesOnScroll = async e => {
     if(e.target.scrollTop === 0) {
-      dispatch(loadMessages());
+      setAddMessagesLoading(true);
+      const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${chatOffset}`)).json();
+      setMessages(currentMessages => [...oldMessages, ...currentMessages]);
+      setChatOffset(currentOffset => currentOffset + oldMessages.length);
+      setAddMessagesLoading(false);
     }
   };
 
-  return (
-    <>
-      <ChatHeader title={currentChatInfo.chatTitle} isOnline={true} />
-      <div className="chat-area chat-container__chat-area"
-           ref={chatMessagesRef}
-           onScroll={debounce(addMessagesOnScroll, 300)}
-      >
-        {
-          messages.length >  0 ? (
-            messages.map(({id, text, senderId, time, status}, index) => {
-              return (
-                <React.Fragment key={id}>
-                  {
-                    isNewDay(index) ? (
-                      <h4 className="chat-date chat-area__chat-date">
-                        {getDayInLocaleString(time)}
-                      </h4>
-                    ) : null
-                  }
-                  <ChatMessage
-                    lastMessageRef={index === messages.length - 1 ? lastMessageRef : null}
-                    text={text}
-                    time={getTimeInLocaleString(time)}
-                    isMyMessage={isMyMessage(senderId)}
-                    status={status}
-                    attachments={[]}
-                  />
-                </React.Fragment>
-              );
-            })
-          ) : <p> Сообщений пока нет. </p>
-        }
-      </div>
-    </>
+  return isStartLoading ? <Spinner className="spinner_chat-main" /> :
+    (
+    <div className="chat-area chat-container__chat-area"
+         ref={chatMessagesRef}
+         onScroll={debounce(addMessagesOnScroll, 300)}
+    >
+      {
+        isAddMessagesLoading ? <Spinner className="spinner_chat-load-messages" /> : null
+      }
+      {
+        messages.length >  0 ? (
+          messages.map(({id, text, senderId, time, status}, index) => {
+            return (
+              <React.Fragment key={id}>
+                {
+                  isNewDay(index) ? (
+                    <h4 className="chat-date chat-area__chat-date">
+                      {getDayInLocaleString(time)}
+                    </h4>
+                  ) : null
+                }
+                <ChatMessage
+                  lastMessageRef={id === lastMessageId ? lastMessageRef : null}
+                  text={text}
+                  time={getTimeInLocaleString(time)}
+                  isMyMessage={isMyMessage(senderId)}
+                  status={status}
+                  attachments={[]}
+                />
+              </React.Fragment>
+            );
+          })
+        ) : <p> Сообщений пока нет. </p>
+      }
+    </div>
   );
 };
 
 export const MemoizedChatMessages = React.memo(ChatMessages);
 
 ChatMessages.propTypes = {
-  chatId: PropTypes.number.isRequired
+  chatId: PropTypes.number.isRequired,
+  lastMessageId: PropTypes.number
 };
 

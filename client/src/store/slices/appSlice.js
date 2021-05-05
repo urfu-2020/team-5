@@ -1,6 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
 
-
 class AppState {
   /**
    *
@@ -47,15 +46,7 @@ export const appSlice = createSlice({
      * @param action {{ type: string, payload: MessageModel }}
      */
     addChatMessage(state, {payload}) {
-      state.chats[payload.chatId].messages.push(payload);
-    },
-    /**
-     * @param state {AppState}
-     * @param action {{ type: string, payload: { chatId: number, messages: Array<MessageModel> }}}
-     */
-    loadChatMessages(state, {payload}) {
-      state.chats[payload.chatId].messages.unshift(...payload.messages);
-      state.chats[payload.chatId].offset = state.chats[payload.chatId].offset + payload.messages.length;
+      state.chats[payload.chatId].lastMessage = payload;
     },
     /**
      * @param state {AppState}

@@ -11,12 +11,11 @@ class ChatModel {
    * @param sobesednikUsername {String}
    * @param sobesednikAvatarUrl {String}
    * @param sobesednikGHUrl {String}
-   * @param messages {Array<MessageModel>}
-   * @param messagesOffset {number}
+   * @param lastMessage {MessageModel}
    */
   constructor(chatId, chatType, chatAvatarUrl,
     chatTitle, sobesednikId, sobesednikUsername,
-    sobesednikAvatarUrl, sobesednikGHUrl, messages, messagesOffset) {
+    sobesednikAvatarUrl, sobesednikGHUrl, lastMessage) {
     this.chatId = chatId;
     this.chatType = chatType;
     this.chatAvatarUrl = chatAvatarUrl;
@@ -25,8 +24,7 @@ class ChatModel {
     this.sobesednikUsername = sobesednikUsername;
     this.sobesednikAvatarUrl = sobesednikAvatarUrl;
     this.sobesednikGHUrl = sobesednikGHUrl;
-    this.messages = messages;
-    this.messagesOffset = messagesOffset;
+    this.lastMessage = lastMessage;
   }
 }
 

@@ -58,7 +58,7 @@ async function addDialogsWithNewUser(username) {
 
 /**
  * Получить информацию о чатах пользователя, (если это диалог или чат с собой,
- * то название чата и ава соответсвуют собеседнику
+ * то название чата и ава соответсвуют собеседнику)
  * @param userId {Number}
  * @returns Array<ChatModel>
  */
@@ -87,6 +87,20 @@ async function getChatMessages(chatId, offset, take) {
   try {
     const request = (await mssql.connect(CONNECTION_URL)).request();
     return (await request.query`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`).recordset;
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+/**
+ * Получить последние сообщения из всех чатов, в которых есть пользователь (когда входим первый раз)
+ * @param userId {number}
+ * @returns Array<MessageModel>
+ */
+async function getUserLastChatMessages(userId) {
+  try {
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    return (await request.query`SELECT * FROM GetUserLastChatMessages(${userId})`).recordset;
   } catch (e) {
     console.error(e);
   }
@@ -124,5 +138,6 @@ module.exports = {
   addDialogsWithNewUser,
   getUserChats,
   storeChatMessage,
-  getChatMessages
+  getChatMessages,
+  getUserLastChatMessages
 };

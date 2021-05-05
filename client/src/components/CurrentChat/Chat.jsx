@@ -6,15 +6,17 @@ import {MemoizedChatMessages} from "./ChatMessages/ChatMessages";
 import {SendMessageForm} from "./SendMessageForm/SendMessageForm";
 import {InputFileModal} from "./SendMessageForm/InputFileModal/InputFIleModal";
 import {useParams} from "react-router";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setCurrentChatId} from "../../store/slices/appSlice";
+import {ChatHeader} from "./ChatHeader/ChatHeader";
 
 
 export const Chat = () => {
   const {chatId} = useParams();
+  const dispatch = useDispatch();
+  const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
   const [isModalOpen, setModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
-  const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(setCurrentChatId(+chatId));
@@ -26,7 +28,14 @@ export const Chat = () => {
 
   return (
     <main className="chat-container">
-      <MemoizedChatMessages chatId={+chatId} />
+      <ChatHeader
+        title={currentChatInfo.chatTitle}
+        isOnline={true}
+      />
+      <MemoizedChatMessages
+        chatId={+chatId}
+        lastMessageId={currentChatInfo.lastMessage.id}
+      />
       <SendMessageForm
         inputMessage={inputMessage}
         setInputMessage={setInputMessage}

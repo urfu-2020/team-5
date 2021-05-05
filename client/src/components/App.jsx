@@ -34,7 +34,7 @@ const App = () => {
   }, []);
 
 
-  return  isLoading ? <Spinner className="main-spinner" /> :
+  return  isLoading ? <Spinner className="spinner_main" /> :
           currentUser ? (
             <div id="app">
               <nav className="navigation">

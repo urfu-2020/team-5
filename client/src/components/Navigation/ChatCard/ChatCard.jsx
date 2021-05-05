@@ -12,8 +12,7 @@ import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
 export const ChatCard = ({ chatId, currentChatId, title, isOnline, countUnreadMessage, avatarUrl }) => {
   const history = useHistory();
   const userId = useSelector(state => state.app.currentUser.id);
-  const messages = useSelector(state => state.app.chats)[chatId].messages;
-  const lastMessage = messages.length === 0 ? null : messages[messages.length - 1];
+  const lastMessage = useSelector(state => state.app.chats)[chatId].lastMessage;
 
   const openChatOnHandler = () => {
     history.push(`/chat/${chatId}`);
@@ -56,7 +55,7 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, countUnreadMe
 
 ChatCard.propTypes = {
   chatId: PropTypes.number.isRequired,
-  currentChatId: PropTypes.number.isRequired,
+  currentChatId: PropTypes.number,
   title: PropTypes.string.isRequired,
   isOnline: PropTypes.bool.isRequired,
   countUnreadMessage: PropTypes.number,
