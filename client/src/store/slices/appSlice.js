@@ -64,8 +64,7 @@ export const {
   setCurrentUser,
   setChatsData,
   addChatMessage,
-  setCurrentChatId,
-  loadChatMessages
+  setCurrentChatId
 } = actions;
 
 export default reducer;

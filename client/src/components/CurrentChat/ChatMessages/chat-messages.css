@@ -74,15 +74,10 @@
   margin: 5px 5px 5px auto;
 }
 
-.chat-avatar-border {
-  fill: none;
-  stroke: rgba(0, 0, 0, 0.1);
-  stroke-width: 3;
-}
-
 .message__chat-avatar {
   align-self: flex-end;
   height: 35px;
+  border-radius: 100%;
 }
 
 .message__cloud {

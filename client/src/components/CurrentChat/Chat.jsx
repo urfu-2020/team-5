@@ -9,6 +9,7 @@ import {useParams} from "react-router";
 import {useDispatch, useSelector} from "react-redux";
 import {setCurrentChatId} from "../../store/slices/appSlice";
 import {ChatHeader} from "./ChatHeader/ChatHeader";
+import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
 
 
 export const Chat = () => {
@@ -26,7 +27,7 @@ export const Chat = () => {
     };
   }, [chatId]);
 
-  return (
+  return currentChatInfo ? (
     <main className="chat-container">
       <ChatHeader
         title={currentChatInfo.chatTitle}
@@ -34,7 +35,7 @@ export const Chat = () => {
       />
       <MemoizedChatMessages
         chatId={+chatId}
-        lastMessageId={currentChatInfo.lastMessage.id}
+        currentChatInfo={currentChatInfo}
       />
       <SendMessageForm
         inputMessage={inputMessage}
@@ -51,5 +52,5 @@ export const Chat = () => {
         />)
       }
     </main>
-  );
+  ) : <NotFoundPage />;
 };

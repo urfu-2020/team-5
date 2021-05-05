@@ -42,7 +42,6 @@ const App = () => {
               </nav>
               <Switch>
                 <Route path="/" exact component={HomePage} />
-                {/* Несуществующие айдишники чатов отображает как пустой чат, потом починить */}
                 <Route path={`/chat/:chatId`} exact component={Chat} />
                 <Route path="*" component={NotFoundPage} />
               </Switch>

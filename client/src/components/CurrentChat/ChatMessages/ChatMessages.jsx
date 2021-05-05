@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import './chat-messages.css';
 
 import { ChatMessage } from './ChatMessage/ChatMessage';
-import { ChatHeader } from '../ChatHeader/ChatHeader';
 import {debounce} from "../../../utils/debounce";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
@@ -20,14 +19,22 @@ import {Spinner} from "../../Controls/Spinner/Spinner";
 //          2) Скроллим чат (находимся не внизу чата), а другой участник отправляет сообщение
 //             (Можно будет допилить и показывать кружок с количеством непрочитанных сообщений)`
 
-const ChatMessages = ({chatId, lastMessageId}) => {
-  const myId = useSelector(state => state.app.currentUser.id);
+const ChatMessages = ({chatId, currentChatInfo}) => {
+  const lastMessage = currentChatInfo.lastMessage;
+  const currentUser = useSelector(state => state.app.currentUser);
+  const myId = currentUser.id;
+  const myAvatarUrl = currentUser.avatarUrl;
+  // sobesednikAvatarUrl будет работать только для Dialog и Own,
+  // потом подумать как организовать для групп аватарки и ники пишущих
+  // (мб из бд отдавать Message с этими данными)
+  const sobesednikAvatarUrl = currentChatInfo.sobesednikAvatarUrl;
 
   const [chatOffset, setChatOffset] = useState(0);
   const [messages, setMessages] = useState([]);
   const [isStartLoading, setStartLoading] = useState(true);
   const [isAddMessagesLoading, setAddMessagesLoading] = useState(false);
 
+  // FIXME скролл сделан криво, переделать потом
   const chatMessagesRef = useRef(null);
   const lastMessageRef = useRef(null);
   const prevLastMessageRef = useRef(null);
@@ -37,7 +44,7 @@ const ChatMessages = ({chatId, lastMessageId}) => {
       lastMessageRef.current.scrollIntoView();
       prevLastMessageRef.current = lastMessageRef.current;
     }
-  }, [lastMessageRef.current, chatId]);
+  });
 
   useEffect(() => {
     (async () => {
@@ -48,6 +55,10 @@ const ChatMessages = ({chatId, lastMessageId}) => {
       setStartLoading(false);
     })();
   }, [chatId]);
+
+  useEffect(() => {
+    setMessages(prevMessages => [...prevMessages, lastMessage]);
+  }, [lastMessage]);
 
   const isNewDay = index => {
     if(index === 0) return true;
@@ -92,10 +103,11 @@ const ChatMessages = ({chatId, lastMessageId}) => {
                   ) : null
                 }
                 <ChatMessage
-                  lastMessageRef={id === lastMessageId ? lastMessageRef : null}
+                  lastMessageRef={id === lastMessage.id ? lastMessageRef : null}
                   text={text}
                   time={getTimeInLocaleString(time)}
                   isMyMessage={isMyMessage(senderId)}
+                  avatarUrl={isMyMessage(senderId) ? myAvatarUrl : sobesednikAvatarUrl}
                   status={status}
                   attachments={[]}
                 />
@@ -112,6 +124,24 @@ export const MemoizedChatMessages = React.memo(ChatMessages);
 
 ChatMessages.propTypes = {
   chatId: PropTypes.number.isRequired,
-  lastMessageId: PropTypes.number
+  currentChatInfo: PropTypes.shape({
+    chatId: PropTypes.number.isRequired,
+    chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
+    chatAvatarUrl: PropTypes.string.isRequired,
+    chatTitle: PropTypes.string.isRequired,
+    sobesednikId: 3,
+    sobesednikUsername: PropTypes.string.isRequired,
+    sobesednikAvatarUrl: PropTypes.string.isRequired,
+    sobesednikGHUrl: PropTypes.string.isRequired,
+    lastMessage: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      chatId: PropTypes.number.isRequired,
+      senderId: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+      hasAttachments: false,
+      status: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired
+    })
+  })
 };
 

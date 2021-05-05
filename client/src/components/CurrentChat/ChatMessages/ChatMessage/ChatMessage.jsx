@@ -1,11 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { config } from '@config/config';
+import {MessageReadIcon} from "../../../Controls/Icons/MessageReadIcon";
+import {MessageUnreadIcon} from "../../../Controls/Icons/MessageUnreadIcon";
 
-const { staticBasePath } = config;
-
-export const ChatMessage = ({ lastMessageRef, text, time, isMyMessage, status }) => {
-
+export const ChatMessage = ({ lastMessageRef, text, time, isMyMessage, avatarUrl, status }) => {
   return (
     <div ref={lastMessageRef}
          className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
@@ -29,50 +27,14 @@ export const ChatMessage = ({ lastMessageRef, text, time, isMyMessage, status })
               fill="#000000"
             >
               {
-                status === "Read" ? (
-                  <>
-                    <path d="M0 0h24v24H0V0z" fill="none" />
-                    <path
-                      d="M18 7l-1.41-1.41-6.34 6.34 1.41
-                  1.41L18 7zm4.24-1.41L11.66 16.17
-                  7.48 12l-1.41 1.41L11.66 19l12-12-1.42-1.41zM.41
-                   13.41L6 19l1.41-1.41L1.83 12 .41 13.41z"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <path d="M0 0h24v24H0V0z" fill="none"/>
-                    <path d="M9 16.2L4.8 12l-1.4 1.4L9 19 21 7l-1.4-1.4L9 16.2z"/>
-                  </>
-                )
+                status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />
               }
             </svg>
           ) : null
         }
 
       </div>
-      <svg
-        className="message__chat-avatar"
-        style={{ height: '40px', width: '40px' }}
-      >
-        <defs>
-          <mask id="circle">
-            <circle cx="20" cy="20" fill="white" r="20" />
-          </mask>
-        </defs>
-        <g mask="url(#circle)">
-          <image
-            x="0"
-            y="0"
-            height="100%"
-            preserveAspectRatio="xMidYMid slice"
-            width="100%"
-            xlinkHref={`${staticBasePath}images/unnamed.jpg`}
-            style={{ height: '40px', width: '40px' }}
-          />
-          <circle className="chat-avatar-border" cx="20" cy="20" r="20" />
-        </g>
-      </svg>
+      <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`} />
     </div>
   );
 };
@@ -83,6 +45,7 @@ ChatMessage.propTypes = {
   time: PropTypes.string.isRequired,
   isMyMessage: PropTypes.bool.isRequired,
   status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']).isRequired,
+  avatarUrl: PropTypes.string.isRequired,
   attachments: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.number.isRequired,
     type: PropTypes.oneOf(['Document', 'Movie', 'Music', 'Picture']).isRequired,
