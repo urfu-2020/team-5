@@ -46,7 +46,14 @@ export const appSlice = createSlice({
      * @param action {{ type: string, payload: MessageModel }}
      */
     addChatMessage(state, {payload}) {
-      state.chats[payload.chatId].lastMessage = payload;
+      state.chats[payload.chatId].messages.push(payload);
+    },
+    /**
+     * @param state {AppState}
+     * @param action {{ type: string, payload: {chatId: number, messages: Array<MessageModel>} }}
+     */
+    loadOldMessages(state, {payload}) {
+      state.chats[payload.chatId].messages.unshift(...payload.messages);
     },
     /**
      * @param state {AppState}
@@ -64,7 +71,8 @@ export const {
   setCurrentUser,
   setChatsData,
   addChatMessage,
-  setCurrentChatId
+  setCurrentChatId,
+  loadOldMessages
 } = actions;
 
 export default reducer;

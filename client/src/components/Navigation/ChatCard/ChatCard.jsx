@@ -9,10 +9,10 @@ import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
 
-export const ChatCard = ({ chatId, currentChatId, title, isOnline, countUnreadMessage, avatarUrl }) => {
+
+export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, countUnreadMessage, avatarUrl }) => {
   const history = useHistory();
   const userId = useSelector(state => state.app.currentUser.id);
-  const lastMessage = useSelector(state => state.app.chats)[chatId].lastMessage;
 
   const openChatOnHandler = () => {
     history.push(`/chat/${chatId}`);
@@ -56,6 +56,15 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, countUnreadMe
 ChatCard.propTypes = {
   chatId: PropTypes.number.isRequired,
   currentChatId: PropTypes.number,
+  lastMessage: PropTypes.shape({
+    id: PropTypes.string,
+    chatId: PropTypes.number,
+    senderId: PropTypes.number,
+    text: PropTypes.string,
+    hasAttachments: PropTypes.bool,
+    status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']),
+    time: PropTypes.string,
+  }),
   title: PropTypes.string.isRequired,
   isOnline: PropTypes.bool.isRequired,
   countUnreadMessage: PropTypes.number,

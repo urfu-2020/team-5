@@ -7,24 +7,17 @@ class ChatModel {
    * @param chatType {('Own'|'Dialog'|'Group')}
    * @param chatAvatarUrl {String}
    * @param chatTitle {String}
-   * @param sobesednikId {Number}
-   * @param sobesednikUsername {String}
-   * @param sobesednikAvatarUrl {String}
-   * @param sobesednikGHUrl {String}
-   * @param lastMessage {MessageModel}
+   * @param sobesedniki {Array<UserModel>}
+   * @param messages {Array<MessageModel>}
    */
   constructor(chatId, chatType, chatAvatarUrl,
-    chatTitle, sobesednikId, sobesednikUsername,
-    sobesednikAvatarUrl, sobesednikGHUrl, lastMessage) {
+              chatTitle, sobesedniki, messages) {
     this.chatId = chatId;
     this.chatType = chatType;
     this.chatAvatarUrl = chatAvatarUrl;
     this.chatTitle = chatTitle;
-    this.sobesednikId = sobesednikId;
-    this.sobesednikUsername = sobesednikUsername;
-    this.sobesednikAvatarUrl = sobesednikAvatarUrl;
-    this.sobesednikGHUrl = sobesednikGHUrl;
-    this.lastMessage = lastMessage;
+    this.sobesedniki = sobesedniki;
+    this.messages = messages;
   }
 }
 
