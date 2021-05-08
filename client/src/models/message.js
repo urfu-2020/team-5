@@ -3,7 +3,7 @@
  */
 class MessageModel {
   /**
-   * @param id {Number}
+   * @param id {String}
    * @param chatId {Number}
    * @param senderId {Number}
    * @param text {String}

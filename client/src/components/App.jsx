@@ -7,7 +7,7 @@ import {Spinner} from "./Controls/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
 import {setChatsData, setCurrentUser} from "../store/slices/appSlice";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
-import {Chat} from "./CurrentChat/Chat";
+import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 
 

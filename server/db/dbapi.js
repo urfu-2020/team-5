@@ -3,15 +3,24 @@ const mssql = require('mssql');
 const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
 /**
- * @returns {Array<UserModel> | boolean}
+ *
+ * @param query {string}
+ * @returns {Promise<void|Promise>}
  */
-async function getUsers() {
+async function dbRequest(query) {
   try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    return (await sql.request().query`SELECT * FROM [User]`).recordset;
+    const request = (await mssql.connect(CONNECTION_URL)).request();
+    return request.query(query);
   } catch (e) {
     return console.error(e);
   }
+}
+
+/**
+ * @returns {Array<UserModel> | boolean}
+ */
+async function getUsers() {
+  return (await dbRequest('SELECT * FROM [User]')).recordset;
 }
 
 /**
@@ -19,14 +28,9 @@ async function getUsers() {
  * @returns {UserModel | boolean}
  */
 async function getUserByName(username) {
-  try {
-    const sql = await mssql.connect(CONNECTION_URL);
-    const queryArr = (await sql.request().query`SELECT * FROM [User] WHERE username=${username}`).recordset;
-    if (queryArr.length === 0) return false;
-    return queryArr[0];
-  } catch (e) {
-    return console.error(e);
-  }
+  const queryArr = (await dbRequest(`SELECT * FROM [User] WHERE username='${username}'`)).recordset;
+  if (queryArr.length === 0) return false;
+  return queryArr[0];
 }
 
 /**
@@ -35,25 +39,15 @@ async function getUserByName(username) {
  * @param githubUrl {String}
  */
 async function createUser(username, avatarUrl, githubUrl) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    await request
-      .query`INSERT INTO [User](username, avatarUrl, githubUrl) VALUES (${username}, ${avatarUrl}, ${githubUrl})`;
-  } catch (e) {
-    console.error(e);
-  }
+  await dbRequest(`INSERT INTO [User](username, avatarUrl, githubUrl)
+                          VALUES ('${username}', '${avatarUrl}', '${githubUrl}')`);
 }
 
 /**
  * @param username {String}
  */
 async function addDialogsWithNewUser(username) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    await request.query`EXEC AddDialogsWithNewUser @newUserUsername=${username}`;
-  } catch (e) {
-    console.error(e);
-  }
+  await dbRequest(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
 }
 
 /**
@@ -63,17 +57,12 @@ async function addDialogsWithNewUser(username) {
  * @returns Array<ChatModel>
  */
 async function getUserChats(userId) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    return (await request.query`SELECT * FROM GetUserChats(${userId})`).recordset
-      .map((rawChat) => ({
-        ...rawChat,
-        chatTitle: rawChat.chatType === 'Group' ? rawChat.chatTitle : rawChat.sobesednikUsername,
-        chatAvatarUrl: rawChat.chatType === 'Group' ? rawChat.chatAvatarUrl : rawChat.sobesednikAvatarUrl,
-      }));
-  } catch (e) {
-    console.error(e);
-  }
+  return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset
+    .map((rawChat) => ({
+      ...rawChat,
+      chatTitle: rawChat.chatType === 'Group' ? rawChat.chatTitle : rawChat.sobesednikUsername,
+      chatAvatarUrl: rawChat.chatType === 'Group' ? rawChat.chatAvatarUrl : rawChat.sobesednikAvatarUrl,
+    }));
 }
 
 /**
@@ -84,12 +73,7 @@ async function getUserChats(userId) {
  * @returns Array<MessageModel>
  */
 async function getChatMessages(chatId, offset, take) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    return (await request.query`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`).recordset;
-  } catch (e) {
-    console.error(e);
-  }
+  return (await dbRequest(`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`)).recordset;
 }
 
 /**
@@ -98,37 +82,28 @@ async function getChatMessages(chatId, offset, take) {
  * @returns Array<MessageModel>
  */
 async function getUserLastChatMessages(userId) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    return (await request.query`SELECT * FROM GetUserLastChatMessages(${userId})`).recordset;
-  } catch (e) {
-    console.error(e);
-  }
+  return (await dbRequest(`SELECT * FROM GetUserLastChatMessages(${userId})`)).recordset;
 }
 
 /**
  * Положить сообщение в бд
- * TODO найти как из процедуры доставать аут параметр тут и вытаскивать chatId 1 запросом
  * @returns number
  */
 async function storeChatMessage({
-  chatId, senderId, text, hasAttachments, status, time
+  messageId, chatId, senderId, text, hasAttachments, status, time
 }) {
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    await request.query`EXEC StoreChatMessage
-     @chatId=${chatId},
-     @senderId=${senderId},
-     @text=${text},
-     @hasAttachments=${hasAttachments},
-     @status=${status},
-     @time=${time}
-     `;
+  await dbRequest(`
+    EXEC StoreChatMessage
+      @messageId='${messageId}',
+      @chatId=${chatId},
+      @senderId=${senderId},
+      @text='${text}',
+      @hasAttachments=${hasAttachments},
+      @status='${status}',
+      @time='${time}'
+    `);
 
-    return (await request.query`SELECT @@Identity`).recordset[0][''];
-  } catch (e) {
-    console.error(e);
-  }
+  return true;
 }
 
 module.exports = {

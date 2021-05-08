@@ -13,21 +13,15 @@ function configureSocket(server) {
   const io = new Server(server);
 
   io.on('connection', (socket) => {
-    socket.on('setUserId', (userId) => {
-      // eslint-disable-next-line no-param-reassign
-      socket.userId = userId;
-    });
-
     socket.on('setChats', (chatIds) => {
       chatIds.forEach((chatId) => socket.join(chatId));
     });
 
     socket.on('chatMessage', async ({
-      chatId, text, hasAttachments, status, time
+      messageId, chatId, senderId, text, hasAttachments, status, time
     }) => {
-      const senderId = socket.userId;
-      const messageId = await storeChatMessage({
-        chatId, senderId, text, hasAttachments, status, time
+      await storeChatMessage({
+        messageId, chatId, senderId, text, hasAttachments, status, time
       });
 
       const resultMessage = new Message(messageId, chatId, senderId, text, hasAttachments, status, time);
