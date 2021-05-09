@@ -8,7 +8,7 @@ import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
-import {loadingStateEnum, loadOldMessages} from "../../../store/slices/appSlice";
+import {loadOldMessages} from "../../../store/slices/chatsSlice";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //
@@ -37,8 +37,9 @@ const isNewDay = (messages, index) => {
 
 
 const ChatMessages = ({currentChatInfo}) => {
-  const currentUser = useSelector(state => state.app.currentUser);
-  const loadingState = useSelector(state => state.app.loadingState);
+  const currentUser = useSelector(state => state.user);
+  const isChatLoading = useSelector(state => state.chats.isChatLoading);
+  const isOldMessagesLoading = useSelector(state => state.chats.isOldMessagesLoading);
 
   const {messages, chatId, sobesedniki} = currentChatInfo;
   const myId = currentUser.id;
@@ -63,7 +64,7 @@ const ChatMessages = ({currentChatInfo}) => {
   }, [chatId]);
 
   const addMessagesOnScroll = async e => {
-    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && loadingState !== loadingStateEnum.MESSAGES_LOADING) {
+    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isOldMessagesLoading) {
       dispatch(loadOldMessages({
         chatId,
         offset: messages.length,
@@ -73,14 +74,14 @@ const ChatMessages = ({currentChatInfo}) => {
   };
 
 
-  return loadingState === loadingStateEnum.CHAT_LOADING ? <Spinner className="spinner_chat-main"/> :
+  return isChatLoading? <Spinner className="spinner_chat-main"/> :
     (
       <div className="chat-area chat-container__chat-area"
            ref={chatMessagesRef}
            onScroll={throttle(addMessagesOnScroll, 300)}
       >
         {
-          loadingState === loadingStateEnum.MESSAGES_LOADING ? <Spinner className="spinner_chat-load-messages"/> :
+          isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
             isAllMessagesLoaded ? <p> Начало диалога. </p> : null
         }
         {

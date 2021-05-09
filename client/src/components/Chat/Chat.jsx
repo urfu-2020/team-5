@@ -7,16 +7,16 @@ import {MemoizedChatMessages} from "./ChatMessages/ChatMessages";
 import {SendMessageForm} from "./SendMessageForm/SendMessageForm";
 import {InputFileModal} from "./SendMessageForm/InputFileModal/InputFIleModal";
 import {useParams} from "react-router";
-import {setCurrentChatId} from "../../store/slices/appSlice";
 import {ChatHeader} from "./ChatHeader/ChatHeader";
 import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
+import {setCurrentChatId} from "../../store/slices/chatsSlice";
 
 
 export const Chat = () => {
   const {chatId} = useParams();
   const dispatch = useDispatch();
 
-  const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
+  const currentChatInfo = (useSelector(state => state.chats.userChats))[chatId];
   const [isModalOpen, setModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
 

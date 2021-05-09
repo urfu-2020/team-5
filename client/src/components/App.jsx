@@ -8,24 +8,25 @@ import {useDispatch, useSelector} from "react-redux";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
-import {loadingStateEnum, setChatsData, setCurrentUser} from "../store/slices/appSlice";
+import {setCurrentUser} from "../store/slices/userSlice";
+import {setChatsData} from "../store/slices/chatsSlice";
 
 
 const App = () => {
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.app.currentUser);
-  const loadingState = useSelector(state => state.app.loadingState);
+  const currentUser = useSelector(state => state.user);
+  const isChatsDataLoading = useSelector(state => state.chats.isChatsDataLoading);
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser.id) {
       dispatch(setCurrentUser());
     } else {
       dispatch(setChatsData(currentUser.id));
     }
-  }, [currentUser]);
+  }, [currentUser.id]);
 
 
-  return loadingState === loadingStateEnum.APP_LOADING ? <Spinner className="spinner_main"/> :
+  return (currentUser.isUserLoading || isChatsDataLoading) ? <Spinner className="spinner_main"/> :
     currentUser ? (
       <div id="app">
         <nav className="navigation">

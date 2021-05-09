@@ -12,7 +12,7 @@ import {sendMessage} from "../../../store/middlewares/socketMiddleware";
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
   const {chatId} = useParams();
-  const userId = useSelector(state => state.app.currentUser.id);
+  const userId = useSelector(state => state.user.id);
   const dispatch = useDispatch();
 
   const sendMessageHandler = e => {

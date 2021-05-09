@@ -12,7 +12,7 @@ import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
 
 export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, countUnreadMessage, avatarUrl }) => {
   const history = useHistory();
-  const userId = useSelector(state => state.app.currentUser.id);
+  const userId = useSelector(state => state.user.id);
 
   const openChatHandler = () => {
     history.push(`/chat/${chatId}`);

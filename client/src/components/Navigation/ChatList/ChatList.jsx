@@ -4,8 +4,8 @@ import { ChatCard } from '../ChatCard/ChatCard';
 import {useSelector} from "react-redux";
 
 export const ChatList = () => {
-  const currentChatId = useSelector(state => state.app.currentChatId);
-  const chatsInfo = useSelector(state => state.app.chats);
+  const currentChatId = useSelector(state => state.chats.currentChatId);
+  const chatsInfo = useSelector(state => state.chats.userChats);
 
   return (
     <>
