@@ -21,7 +21,7 @@ CREATE TABLE ChatUser (
 
 GO
 CREATE TABLE Message (
-	id INT PRIMARY KEY IDENTITY,
+	id NVARCHAR(36) PRIMARY KEY,
 	chatId INT FOREIGN KEY REFERENCES Chat(id) NOT NULL,
 	senderId INT FOREIGN KEY REFERENCES [User](id) NOT NULL,
 	text NVARCHAR(MAX),
@@ -39,13 +39,13 @@ BEGIN
 	DECLARE @newUserId INT = (SELECT TOP(1) id FROM [User] WHERE username = @newUserUsername);
 	DECLARE @nextUserId INT;
 
-	DECLARE usersId_cursor CURSOR FOR 
+	DECLARE usersId_cursor CURSOR FOR
 	SELECT id FROM [User]
 
-	OPEN usersId_cursor  
+	OPEN usersId_cursor
 	FETCH NEXT FROM usersId_cursor INTO @nextUserId;
 
-	WHILE @@FETCH_STATUS = 0  
+	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		IF (@nextUserId <> @newUserId)
 		BEGIN
@@ -60,10 +60,10 @@ BEGIN
 		END
 
 		FETCH NEXT FROM usersId_cursor INTO @nextUserId;
-	END 
+	END
 
-	CLOSE usersId_cursor;  
-	DEALLOCATE usersId_cursor; 
+	CLOSE usersId_cursor;
+	DEALLOCATE usersId_cursor;
 END
 
 
@@ -72,8 +72,8 @@ GO
 CREATE FUNCTION GetUserChats(@userId INT)
 RETURNS TABLE
 AS RETURN
-	SELECT	Chat.id as chatId, 
-					Chat.type as chatType, 
+	SELECT	Chat.id as chatId,
+					Chat.type as chatType,
 					Chat.avatarURL as chatAvatarUrl,
 					Chat.groupTitle as chatTitle,
 					ChatUser.userId as sobesednikId,
@@ -86,7 +86,7 @@ AS RETURN
 	JOIN [User]
 	ON ChatUser.userId = [User].id
 	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
-				AND	NOT (Chat.type != 'Own' AND ChatUser.userId = @userId) 
+				AND	NOT (Chat.type != 'Own' AND ChatUser.userId = @userId)
 
 
 /* Получить сообщения из чата, начиная с новых (самое новое - первое) */
@@ -105,7 +105,7 @@ AS RETURN
 GO
 CREATE FUNCTION GetUserLastChatMessages(@userId INT)
 RETURNS @resMessages TABLE (
-	id INT,
+	id NVARCHAR(36),
 	chatId INT NOT NULL,
 	senderId INT NOT NULL,
 	text NVARCHAR(MAX),
@@ -113,36 +113,36 @@ RETURNS @resMessages TABLE (
 	status NVARCHAR(20) NOT NULL,
 	time DATETIME NOT NULL
 )
-AS 
+AS
 BEGIN
 	DECLARE @userChatIds TABLE(chatId INT);
-	INSERT INTO @userChatIds 
-	SELECT Chats.chatId 
+	INSERT INTO @userChatIds
+	SELECT Chats.chatId
 	FROM GetUserChats(@userId) as Chats;
 
-	DECLARE chatId_cursor CURSOR FOR 
+	DECLARE chatId_cursor CURSOR FOR
 	SELECT chatId FROM @userChatIds;
 	OPEN chatId_cursor;
 	DECLARE @nextChatId INT;
 
 	FETCH NEXT FROM chatId_cursor INTO @nextChatId;
-	WHILE @@FETCH_STATUS = 0  
+	WHILE @@FETCH_STATUS = 0
 	BEGIN
 		INSERT INTO @resMessages SELECT TOP(1) * FROM GetChatMessages(@nextChatId, 0, 20);
 		FETCH NEXT FROM chatId_cursor INTO @nextChatId;
-	END 
+	END
 
-	CLOSE chatId_cursor;  
-	DEALLOCATE chatId_cursor; 
+	CLOSE chatId_cursor;
+	DEALLOCATE chatId_cursor;
 
 	RETURN;
 END
 
 
-
-/* Положить сообщение в бд (нужно доделать чтобы был аут параметр @@IDENTITY и ловить его как-то в ноде) */
+/* Положить сообщение в бд */
 GO
-CREATE PROC StoreChatMessage(	
+CREATE PROC StoreChatMessage(
+	@messageId NVARCHAR(36),
 	@chatId INT,
 	@senderId INT,
 	@text NVARCHAR(MAX),
@@ -153,7 +153,5 @@ CREATE PROC StoreChatMessage(
 AS
 BEGIN
 	INSERT INTO Message
-	VALUES (@chatId, @senderId, @text, @hasAttachments, @status, CAST(@time as DATETIME));
-
-	/*SELECT @Result = SCOPE_IDENTITY(); */
+	VALUES (@messageId, @chatId, @senderId, @text, @hasAttachments, @status, CAST(@time as DATETIME));
 END

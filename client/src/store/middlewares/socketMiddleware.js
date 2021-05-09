@@ -17,9 +17,11 @@ export const socketMiddleware = store => next => action => {
   switch (action.type) {
     case setCurrentUser.fulfilled.type: {
       // socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
-      initSocket(store);
-      const {id} = action.payload;
-      socket.emit('setUserId', id);
+      if(action.payload) {
+        initSocket(store);
+        const {id} = action.payload;
+        socket.emit('setUserId', id);
+      }
       return next(action);
     }
 
