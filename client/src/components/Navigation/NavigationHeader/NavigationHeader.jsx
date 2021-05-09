@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Button } from '@components/Controls/Button/Button';
+import {Button} from "../../Controls/Button/Button";
+
 
 export const NavigationHeader = () => (
   <header className="navigationHeaderWrapper">

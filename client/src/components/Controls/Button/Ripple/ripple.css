@@ -1,4 +1,4 @@
-@import url("@css/_variables");
+@import url("./../../../../css/_variables.css");
 
 .ripple-container {
   position: absolute;

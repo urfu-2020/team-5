@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
-import { Button } from '@components/Controls/Button/Button';
+import {Button} from "../../../Controls/Button/Button";
 
 // так, тут файлы еще не загружены на сервер
 // const files = [

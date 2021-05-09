@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './modal-attachment.css';
-import { Button } from '@components/Controls/Button/Button';
+import {Button} from "../../../../Controls/Button/Button";
 
 export const ModalAttachment = ({ title }) => (
   <section

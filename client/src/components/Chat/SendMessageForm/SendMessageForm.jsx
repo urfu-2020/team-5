@@ -6,8 +6,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 import './send-message-form.css';
 
-import { Button } from '@components/Controls/Button/Button';
 import {sendMessage} from "../../../store/middlewares/socketMiddleware";
+import {Button} from "../../Controls/Button/Button";
 
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
