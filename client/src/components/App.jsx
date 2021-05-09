@@ -15,7 +15,6 @@ import {setChatsData} from "../store/slices/chatsSlice";
 const App = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user);
-  const isChatsDataLoading = useSelector(state => state.chats.isChatsDataLoading);
 
   useEffect(() => {
     if (!currentUser.id) {
@@ -26,8 +25,8 @@ const App = () => {
   }, [currentUser.id]);
 
 
-  return (currentUser.isUserLoading || isChatsDataLoading) ? <Spinner className="spinner_main"/> :
-    currentUser ? (
+  return currentUser.isUserLoading ? <Spinner className="spinner_main"/> :
+    currentUser.id ? (
       <div id="app">
         <nav className="navigation">
           <Navigation/>

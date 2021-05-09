@@ -5,6 +5,28 @@ export const setCurrentUser = createAsyncThunk('user/setCurrentUser', async () =
   return user;
 });
 
+class UserState {
+  /**
+   *
+   * @param id {number}
+   * @param username {string}
+   * @param avatarUrl {string}
+   * @param githubUrl {string}
+   * @param isUserLoading {boolean}
+   */
+  constructor(id,
+              username,
+              avatarUrl,
+              githubUrl,
+              isUserLoading) {
+    this.id = id;
+    this.username = username;
+    this.avatarUrl = avatarUrl;
+    this.githubUrl = githubUrl;
+    this.isUserLoading = isUserLoading;
+  }
+}
+
 
 const initialUserState = {
   id: null,
@@ -23,14 +45,16 @@ export const userSlice = createSlice({
       state.isUserLoading = true;
     },
     /**
-     * @param state {AppState}
+     * @param state {UserState}
      * @param action {{ type: string, payload: UserModel }}
      */
     [setCurrentUser.fulfilled]: (state, {payload}) => {
-      state.id = payload.id;
-      state.username = payload.username;
-      state.avatarUrl = payload.avatarUrl;
-      state.githubUrl = payload.githubUrl;
+      if(payload) {
+        state.id = payload.id;
+        state.username = payload.username;
+        state.avatarUrl = payload.avatarUrl;
+        state.githubUrl = payload.githubUrl;
+      }
 
       state.isUserLoading = false;
     }
@@ -38,12 +62,6 @@ export const userSlice = createSlice({
 });
 
 
-
-const { reducer } = userSlice;
-
-// export const {
-//   addChatMessage,
-//   setCurrentChatId,
-// } = actions;
+const {reducer} = userSlice;
 
 export default reducer;
