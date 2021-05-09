@@ -1,7 +1,7 @@
 import { io } from "socket.io-client";
-
-import {setCurrentUser} from "../slices/userSlice";
-import {addChatMessage, setChatsData} from "../slices/chatsSlice";
+import {addChatMessage} from "../slices/chatsSlice/chatsSlice";
+import {setCurrentUser} from "../slices/userSlice/userThunks";
+import {setChatsData} from "../slices/chatsSlice/chatsThunks";
 
 
 const SEND_MESSAGE = 'socket/sendMessage';

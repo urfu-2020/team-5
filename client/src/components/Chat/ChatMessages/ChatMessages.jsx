@@ -8,7 +8,7 @@ import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
-import {loadOldMessages} from "../../../store/slices/chatsSlice";
+import {loadOldMessages} from "../../../store/slices/chatsSlice/chatsThunks";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //

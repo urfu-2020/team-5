@@ -8,8 +8,8 @@ import {useDispatch, useSelector} from "react-redux";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
-import {setCurrentUser} from "../store/slices/userSlice";
-import {setChatsData} from "../store/slices/chatsSlice";
+import {setCurrentUser} from "../store/slices/userSlice/userThunks";
+import {setChatsData} from "../store/slices/chatsSlice/chatsThunks";
 
 
 const App = () => {

@@ -9,7 +9,7 @@ import {InputFileModal} from "./SendMessageForm/InputFileModal/InputFIleModal";
 import {useParams} from "react-router";
 import {ChatHeader} from "./ChatHeader/ChatHeader";
 import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
-import {setCurrentChatId} from "../../store/slices/chatsSlice";
+import {setCurrentChatId} from "../../store/slices/chatsSlice/chatsSlice";
 
 
 export const Chat = () => {

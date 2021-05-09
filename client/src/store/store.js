@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import {socketMiddleware} from "./middlewares/socketMiddleware";
-import userSlice from "./slices/userSlice";
-import chatsSlice from "./slices/chatsSlice";
+import userSlice from "./slices/userSlice/userSlice";
+import chatsSlice from "./slices/chatsSlice/chatsSlice";
 
 export const store = configureStore({
   reducer: {

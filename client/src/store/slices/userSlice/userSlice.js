@@ -1,9 +1,5 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
-
-export const setCurrentUser = createAsyncThunk('user/setCurrentUser', async () => {
-  const {user} = await (await fetch('/user/self')).json();
-  return user;
-});
+import {createSlice} from '@reduxjs/toolkit';
+import {setCurrentUser} from "./userThunks";
 
 class UserState {
   /**
