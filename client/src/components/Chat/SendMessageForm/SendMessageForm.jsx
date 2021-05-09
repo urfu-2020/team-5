@@ -9,6 +9,7 @@ import './send-message-form.css';
 import { Button } from '@components/Controls/Button/Button';
 import {sendMessage} from "../../../store/middlewares/socketMiddleware";
 
+
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
   const {chatId} = useParams();
   const userId = useSelector(state => state.app.currentUser.id);

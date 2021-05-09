@@ -8,8 +8,7 @@ import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
-import {useParams} from "react-router";
-import {loadOldMessages} from "../../../store/slices/appSlice";
+import {loadOldMessagesThunk} from "../../../thunks/chatThunks";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //
@@ -36,9 +35,9 @@ const isNewDay = (messages, index) => {
     newMessageTime.getDate() !== prevMessageTime.getDate();
 };
 
+
 const ChatMessages = ({currentChatInfo}) => {
   const {messages, chatId, sobesedniki} = currentChatInfo;
-  const lastMessage = messages[messages.length - 1];
   const currentUser = useSelector(state => state.app.currentUser);
   const myId = currentUser.id;
   const myAvatarUrl = currentUser.avatarUrl;
@@ -49,42 +48,39 @@ const ChatMessages = ({currentChatInfo}) => {
   const [isAddMessagesLoading, setAddMessagesLoading] = useState(false);
   const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
 
-  // FIXME скролл сделан криво, переделать потом
+  // TODO сделать скролл к низу чата
   const chatMessagesRef = useRef(null);
-  const lastMessageRef = useRef(null);
-  const prevLastMessageRef = useRef(null);
-
-  useEffect(() => {
-    if (lastMessageRef.current && prevLastMessageRef.current !== lastMessageRef.current) {
-      lastMessageRef.current.scrollIntoView();
-      prevLastMessageRef.current = lastMessageRef.current;
-    }
-  });
 
   // первый раз открыли чат
   useEffect(() => {
-    (async () => {
-      if(messages.length === 1) {
-        setStartLoading(true);
-        const {oldMessages} = await (await fetch(`/api/chat/${chatId}/1`)).json();
-        dispatch(loadOldMessages({chatId, messages: oldMessages}));
-        setStartLoading(false);
-      }
-    })();
+    if (messages.length === 1) {
+      setStartLoading(true);
+      dispatch(loadOldMessagesThunk({
+        chatId,
+        offset: 1,
+        cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
+      }));
+      setStartLoading(false);
+    }
+
+    return () => {
+      setAddMessagesLoading(false);
+      setIsAllMessagesLoaded(false);
+    };
   }, [chatId]);
 
   const addMessagesOnScroll = async e => {
     if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isAddMessagesLoading) {
       setAddMessagesLoading(true);
-      const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${messages.length}`)).json();
-      if (oldMessages.length === 0) {
-        setIsAllMessagesLoaded(true);
-      } else {
-        dispatch(loadOldMessages({chatId, messages: oldMessages}));
-      }
+      dispatch(loadOldMessagesThunk({
+        chatId,
+        offset: messages.length,
+        cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
+      }));
       setAddMessagesLoading(false);
     }
   };
+
 
   return isStartLoading ? <Spinner className="spinner_chat-main"/> :
     (
@@ -97,7 +93,7 @@ const ChatMessages = ({currentChatInfo}) => {
             isAllMessagesLoaded ? <p> Начало диалога. </p> : null
         }
         {
-          messages.length > 0 ? (
+          messages.length > 0 && (
             messages.map(({id, text, senderId, time, status}, index) => {
               return (
                 <React.Fragment key={id}>
@@ -109,7 +105,6 @@ const ChatMessages = ({currentChatInfo}) => {
                     ) : null
                   }
                   <ChatMessage
-                    lastMessageRef={lastMessage && id === lastMessage.id ? lastMessageRef : null}
                     text={text}
                     time={getTimeInLocaleString(time)}
                     isMyMessage={isMyMessage(myId, senderId)}
@@ -121,7 +116,7 @@ const ChatMessages = ({currentChatInfo}) => {
                 </React.Fragment>
               );
             })
-          ) : <p> Сообщений пока нет. </p>
+          )
         }
       </div>
     );

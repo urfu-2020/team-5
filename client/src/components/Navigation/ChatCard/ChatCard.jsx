@@ -14,18 +14,18 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, 
   const history = useHistory();
   const userId = useSelector(state => state.app.currentUser.id);
 
-  const openChatOnHandler = () => {
+  const openChatHandler = () => {
     history.push(`/chat/${chatId}`);
   };
 
   const openChatOnEnter = (e) => {
     if(e.key === 'Enter')
-      openChatOnHandler();
+      openChatHandler();
   };
 
   return (
     <div className={`card ${currentChatId === chatId ? 'card_current' : ''}`}
-         role={"button"} tabIndex={0} onClick={openChatOnHandler} onKeyDown={openChatOnEnter}>
+         role={"button"} tabIndex={0} onClick={openChatHandler} onKeyDown={openChatOnEnter}>
       <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
       <div className="card__content">
         <h3 className="dialogHeader">{title}</h3>

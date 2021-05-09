@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import {MessageReadIcon} from "../../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../../Controls/Icons/MessageUnreadIcon";
 
-export const ChatMessage = ({ lastMessageRef, text, time, isMyMessage, avatarUrl, status }) => {
+export const ChatMessage = ({ text, time, isMyMessage, avatarUrl, status }) => {
   return (
-    <div ref={lastMessageRef}
-         className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
+    <div className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
       <div
         className={`cloud message__cloud
         ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}
@@ -40,7 +39,6 @@ export const ChatMessage = ({ lastMessageRef, text, time, isMyMessage, avatarUrl
 };
 
 ChatMessage.propTypes = {
-  lastMessageRef: PropTypes.object,
   text: PropTypes.string,
   time: PropTypes.string.isRequired,
   isMyMessage: PropTypes.bool.isRequired,

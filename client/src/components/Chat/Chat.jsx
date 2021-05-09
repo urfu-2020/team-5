@@ -15,6 +15,7 @@ import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
 export const Chat = () => {
   const {chatId} = useParams();
   const dispatch = useDispatch();
+
   const currentChatInfo = (useSelector(state => state.app.chats))[chatId];
   const [isModalOpen, setModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
@@ -34,7 +35,6 @@ export const Chat = () => {
         isOnline={true}
       />
       <MemoizedChatMessages
-        // chatId={+chatId}
         currentChatInfo={currentChatInfo}
       />
       <SendMessageForm
