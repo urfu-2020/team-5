@@ -9,6 +9,8 @@ import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
 import {loadOldMessages} from "../../../store/slices/chatsSlice/chatsThunks";
+import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
+import {selectIsChatLoading, selectIsOldMessagesLoading} from "../../../store/slices/chatsSlice/chatsSelectors";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //
@@ -37,9 +39,9 @@ const isNewDay = (messages, index) => {
 
 
 const ChatMessages = ({currentChatInfo}) => {
-  const currentUser = useSelector(state => state.user);
-  const isChatLoading = useSelector(state => state.chats.isChatLoading);
-  const isOldMessagesLoading = useSelector(state => state.chats.isOldMessagesLoading);
+  const currentUser = useSelector(selectCurrentUser);
+  const isChatLoading = useSelector(selectIsChatLoading);
+  const isOldMessagesLoading = useSelector(selectIsOldMessagesLoading);
 
   const {messages, chatId, sobesedniki} = currentChatInfo;
   const myId = currentUser.id;

@@ -2,15 +2,16 @@ import React from 'react';
 
 import {ChatCard} from '../ChatCard/ChatCard';
 import {useSelector} from "react-redux";
+import {selectCurrentChatId, selectUserChats} from "../../../store/slices/chatsSlice/chatsSelectors";
 
 export const ChatList = () => {
-  const currentChatId = useSelector(state => state.chats.currentChatId);
-  const chatsInfo = useSelector(state => state.chats.userChats);
+  const currentChatId = useSelector(selectCurrentChatId);
+  const userChats = useSelector(selectUserChats);
 
   return (
     <ul>
       {
-        Object.values(chatsInfo)
+        Object.values(userChats)
           // .sort((firstChat, secondChat) => {
           // const lastFirstChatMessage = firstChat.messages[firstChat.messages.length - 1];
           // const lastSecondChatMessage = secondChat.messages[secondChat.messages.length - 1];

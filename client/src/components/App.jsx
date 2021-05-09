@@ -10,23 +10,25 @@ import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {setChatsData} from "../store/slices/chatsSlice/chatsThunks";
+import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
 
 
 const App = () => {
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.user);
+  const currentUserId = useSelector(selectUserId);
+  const isUserLoading = useSelector(selectIsUserLoading);
 
   useEffect(() => {
-    if (!currentUser.id) {
+    if (!currentUserId) {
       dispatch(setCurrentUser());
     } else {
-      dispatch(setChatsData(currentUser.id));
+      dispatch(setChatsData(currentUserId));
     }
-  }, [currentUser.id]);
+  }, [currentUserId]);
 
 
-  return currentUser.isUserLoading ? <Spinner className="spinner_main"/> :
-    currentUser.id ? (
+  return isUserLoading ? <Spinner className="spinner_main"/> :
+    currentUserId ? (
       <div id="app">
         <nav className="navigation">
           <Navigation/>

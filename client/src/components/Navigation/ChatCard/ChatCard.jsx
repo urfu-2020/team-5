@@ -3,18 +3,20 @@ import PropTypes from 'prop-types';
 import {useHistory} from "react-router-dom";
 
 import './chat-card.css';
+
 import {useSelector} from "react-redux";
 import {getTimeInLocaleString} from "../../../utils/time";
 import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
 import {SavedMessagesIcon} from "../../Controls/Icons/SavedMessageIcon/SavedMessagesIcon";
+import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
 
 
 export const ChatCard = ({ chatId, currentChatId, chatType,
                            title, isOnline, lastMessage, countUnreadMessage, avatarUrl }) => {
   const history = useHistory();
-  const userId = useSelector(state => state.user.id);
+  const userId = useSelector(selectUserId);
 
   const openChatHandler = () => {
     history.push(`/chat/${chatId}`);

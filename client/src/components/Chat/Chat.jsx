@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 
 import './chat.css';
@@ -10,13 +10,16 @@ import {useParams} from "react-router";
 import {ChatHeader} from "./ChatHeader/ChatHeader";
 import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
 import {setCurrentChatId} from "../../store/slices/chatsSlice/chatsSlice";
+import {makeSelectCurrentChat} from "../../store/slices/chatsSlice/chatsSelectors";
 
 
 export const Chat = () => {
   const {chatId} = useParams();
   const dispatch = useDispatch();
 
-  const currentChatInfo = (useSelector(state => state.chats.userChats))[chatId];
+  const selectCurrentChat = useMemo(makeSelectCurrentChat, []);
+  const currentChat = useSelector(state => selectCurrentChat(state, chatId));
+
   const [isModalOpen, setModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
 
@@ -28,14 +31,14 @@ export const Chat = () => {
     };
   }, [chatId]);
 
-  return currentChatInfo ? (
+  return currentChat ? (
     <main className="chat-container">
       <ChatHeader
-        title={currentChatInfo.chatTitle}
+        title={currentChat.chatTitle}
         isOnline={true}
       />
       <MemoizedChatMessages
-        currentChatInfo={currentChatInfo}
+        currentChatInfo={currentChat}
       />
       <SendMessageForm
         inputMessage={inputMessage}

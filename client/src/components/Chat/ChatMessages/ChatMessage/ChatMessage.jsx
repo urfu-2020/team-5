@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {MessageReadIcon} from "../../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../../Controls/Icons/MessageUnreadIcon";
 
-export const ChatMessage = ({ text, time, isMyMessage, avatarUrl, status }) => {
+export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
   return (
     <div className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
       <div
@@ -26,14 +26,13 @@ export const ChatMessage = ({ text, time, isMyMessage, avatarUrl, status }) => {
               fill="#000000"
             >
               {
-                status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />
+                status === "Read" ? <MessageReadIcon/> : <MessageUnreadIcon/>
               }
             </svg>
           ) : null
         }
-
       </div>
-      <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`} />
+      <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`}/>
     </div>
   );
 };
