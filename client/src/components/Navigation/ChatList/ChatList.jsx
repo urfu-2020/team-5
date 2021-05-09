@@ -10,25 +10,24 @@ export const ChatList = () => {
   return (
     <>
       <ul>
-        <li>
           {
             Object.values(chatsInfo).map(({
                              chatId, chatType, chatAvatarUrl, chatTitle, messages
                        }) => (
-              <ChatCard
-                key={chatId}
-                chatId={chatId}
-                title={chatTitle}
-                avatarUrl={chatAvatarUrl}
-                currentChatId={currentChatId}
-                lastMessage={messages[messages.length - 1]}
+                <ChatCard
+                  key={chatId}
+                  chatId={chatId}
+                  chatType={chatType}
+                  title={chatTitle}
+                  avatarUrl={chatAvatarUrl}
+                  currentChatId={currentChatId}
+                  lastMessage={messages[messages.length - 1]}
 
-                isOnline={true}
-                countUnreadMessage={1}
-              />
+                  isOnline={true}
+                  countUnreadMessage={1}
+                />
             ))
           }
-        </li>
       </ul>
     </>
   );

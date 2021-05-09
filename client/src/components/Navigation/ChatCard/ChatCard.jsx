@@ -8,9 +8,11 @@ import {getTimeInLocaleString} from "../../../utils/time";
 import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
+import {SavedMessagesIcon} from "../../Controls/Icons/SavedMessageIcon/SavedMessagesIcon";
 
 
-export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, countUnreadMessage, avatarUrl }) => {
+export const ChatCard = ({ chatId, currentChatId, chatType,
+                           title, isOnline, lastMessage, countUnreadMessage, avatarUrl }) => {
   const history = useHistory();
   const userId = useSelector(state => state.user.id);
 
@@ -24,11 +26,25 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, 
   };
 
   return (
-    <div className={`card ${currentChatId === chatId ? 'card_current' : ''}`}
-         role={"button"} tabIndex={0} onClick={openChatHandler} onKeyDown={openChatOnEnter}>
-      <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
+    <li className=
+           {`card
+            ${currentChatId === chatId ? 'card_current' : ''}
+            ${chatType === 'Own' ? 'card_own' : ''}
+          `}
+         role={"button"}
+         tabIndex={0}
+         onClick={openChatHandler}
+         onKeyDown={openChatOnEnter}
+    >
+      {
+        chatType === 'Own' ? <SavedMessagesIcon /> : <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
+      }
       <div className="card__content">
-        <h3 className="dialogHeader">{title}</h3>
+        <h3 className="dialogHeader">
+          {
+            chatType === 'Own' ? 'Saved Messages' : title
+          }
+        </h3>
         {
           lastMessage ?
           lastMessage.senderId === userId ? (
@@ -36,7 +52,11 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, 
               <p className="messagePreview"><span className="messageSender">Вы: </span> {lastMessage.text}</p>
               <p className="messageTime">{getTimeInLocaleString(lastMessage.time)}</p>
               {
-                lastMessage.status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />
+                lastMessage.status === "Read" ? <MessageReadIcon /> : (
+                    <div className="card__avatar">
+                      <MessageUnreadIcon />
+                    </div>
+                )
               }
             </>
           ) : (
@@ -48,14 +68,16 @@ export const ChatCard = ({ chatId, currentChatId, title, isOnline, lastMessage, 
           ) : null
         }
       </div>
-    </div>
+    </li>
     );
 };
+
 
 
 ChatCard.propTypes = {
   chatId: PropTypes.number.isRequired,
   currentChatId: PropTypes.number,
+  chatType: PropTypes.oneOf(['Own', 'Dialog', 'Group']),
   lastMessage: PropTypes.shape({
     id: PropTypes.string,
     chatId: PropTypes.number,

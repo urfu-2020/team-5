@@ -15,6 +15,10 @@
   background-color: var(--teal-50);
 }
 
+.card_own {
+  order: -1;
+}
+
 .card__avatar {
   position: relative;
   display: flex;
