@@ -15,7 +15,7 @@ const initSocket = (store) => {
 
 export const socketMiddleware = store => next => action => {
   switch (action.type) {
-    case setCurrentUser.type: {
+    case setCurrentUser.fulfilled.type: {
       // socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
       initSocket(store);
       const {id} = action.payload;
@@ -23,7 +23,7 @@ export const socketMiddleware = store => next => action => {
       return next(action);
     }
 
-    case setChatsData.type: {
+    case setChatsData.fulfilled.type: {
       const chatIds = Object.keys(action.payload);
       socket.emit('setChats', chatIds);
       return next(action);

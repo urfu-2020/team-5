@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
 
 import {LoginPage} from "./LoginPage/LoginPage";
@@ -8,23 +8,24 @@ import {useDispatch, useSelector} from "react-redux";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
-import {fetchStartChatsDataThunk} from "../thunks/chatThunks";
+import {loadingStateEnum, setChatsData, setCurrentUser} from "../store/slices/appSlice";
+
 
 const App = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.app.currentUser);
-  const [isLoading, setLoading] = useState(true);
+  const loadingState = useSelector(state => state.app.loadingState);
 
   useEffect(() => {
     if (!currentUser) {
-      setLoading(true);
-      dispatch(fetchStartChatsDataThunk());
-      setLoading(false);
+      dispatch(setCurrentUser());
+    } else {
+      dispatch(setChatsData(currentUser.id));
     }
-  }, []);
+  }, [currentUser]);
 
 
-  return isLoading ? <Spinner className="spinner_main"/> :
+  return loadingState === loadingStateEnum.APP_LOADING ? <Spinner className="spinner_main"/> :
     currentUser ? (
       <div id="app">
         <nav className="navigation">

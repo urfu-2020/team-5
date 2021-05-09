@@ -8,7 +8,7 @@ import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
-import {loadOldMessagesThunk} from "../../../thunks/chatThunks";
+import {loadingStateEnum, loadOldMessages} from "../../../store/slices/appSlice";
 
 // FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
 //
@@ -37,15 +37,15 @@ const isNewDay = (messages, index) => {
 
 
 const ChatMessages = ({currentChatInfo}) => {
-  const {messages, chatId, sobesedniki} = currentChatInfo;
   const currentUser = useSelector(state => state.app.currentUser);
+  const loadingState = useSelector(state => state.app.loadingState);
+
+  const {messages, chatId, sobesedniki} = currentChatInfo;
   const myId = currentUser.id;
   const myAvatarUrl = currentUser.avatarUrl;
 
   const dispatch = useDispatch();
 
-  const [isStartLoading, setStartLoading] = useState(true);
-  const [isAddMessagesLoading, setAddMessagesLoading] = useState(false);
   const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
 
   // TODO сделать скролл к низу чата
@@ -54,42 +54,33 @@ const ChatMessages = ({currentChatInfo}) => {
   // первый раз открыли чат
   useEffect(() => {
     if (messages.length === 1) {
-      setStartLoading(true);
-      dispatch(loadOldMessagesThunk({
+      dispatch(loadOldMessages({
         chatId,
         offset: 1,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
       }));
-      setStartLoading(false);
     }
-
-    return () => {
-      setAddMessagesLoading(false);
-      setIsAllMessagesLoaded(false);
-    };
   }, [chatId]);
 
   const addMessagesOnScroll = async e => {
-    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isAddMessagesLoading) {
-      setAddMessagesLoading(true);
-      dispatch(loadOldMessagesThunk({
+    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && loadingState !== loadingStateEnum.MESSAGES_LOADING) {
+      dispatch(loadOldMessages({
         chatId,
         offset: messages.length,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
       }));
-      setAddMessagesLoading(false);
     }
   };
 
 
-  return isStartLoading ? <Spinner className="spinner_chat-main"/> :
+  return loadingState === loadingStateEnum.CHAT_LOADING ? <Spinner className="spinner_chat-main"/> :
     (
       <div className="chat-area chat-container__chat-area"
            ref={chatMessagesRef}
            onScroll={throttle(addMessagesOnScroll, 300)}
       >
         {
-          isAddMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
+          loadingState === loadingStateEnum.MESSAGES_LOADING ? <Spinner className="spinner_chat-load-messages"/> :
             isAllMessagesLoaded ? <p> Начало диалога. </p> : null
         }
         {
