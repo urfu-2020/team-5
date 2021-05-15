@@ -75,13 +75,15 @@ function configureSocket(server) {
     });
 
     socket.on('close', () => {
-      socket.chatIds.forEach((chatId) => {
-        const { userId } = socket;
-        rooms[chatId] = rooms[chatId].filter((client) => client.userId !== userId);
-        if (rooms[chatId].length === 0) delete rooms[chatId];
-        // потом + наверное стоит отправлять не в каждый чат по отдельности, а как-нибудь сразу
-        // sendToRoomMembers(chatId, { type: 'setUserOffline', payload: { chatId, userId } });
-      });
+      if (socket.chatIds) {
+        socket.chatIds.forEach((chatId) => {
+          const { userId } = socket;
+          rooms[chatId] = rooms[chatId].filter((client) => client.userId !== userId);
+          if (rooms[chatId].length === 0) delete rooms[chatId];
+          // потом + наверное стоит отправлять не в каждый чат по отдельности, а как-нибудь сразу
+          // sendToRoomMembers(chatId, { type: 'setUserOffline', payload: { chatId, userId } });
+        });
+      }
     });
   });
 }

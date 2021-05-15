@@ -8,12 +8,8 @@ export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
 
 let socket;
 
-const initSocket = (store, userId) => {
+const initSocket = (store) => {
   socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
-
-  socket.onopen = function () {
-    socket.send(JSON.stringify({ type: 'setUserId', payload: userId }));
-  };
 
   socket.onmessage = function(event) {
     const message = JSON.parse(event.data);
@@ -26,19 +22,30 @@ const initSocket = (store, userId) => {
   };
 };
 
+const sendWhenSocketOpen = (socket, message) => {
+  if(socket.readyState === 0)
+    socket.addEventListener('open', () => {
+      socket.send(message);
+    });
+  else {
+    socket.send(message);
+  }
+};
+
 export const socketMiddleware = store => next => action => {
   switch (action.type) {
     case setCurrentUser.fulfilled.type: {
       if(action.payload) {
         const {id} = action.payload;
-        initSocket(store, id);
+        initSocket(store);
+        sendWhenSocketOpen(socket, JSON.stringify({ type: 'setUserId', payload: id }));
       }
       return next(action);
     }
 
     case setChatsData.fulfilled.type: {
       const chatIds = Object.keys(action.payload);
-      socket.send(JSON.stringify({ type: 'setChats', payload: chatIds}));
+      sendWhenSocketOpen(socket, JSON.stringify({type: 'setChats', payload: chatIds}));
       return next(action);
     }
 
