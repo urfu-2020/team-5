@@ -51,26 +51,46 @@ const ChatMessages = ({currentChatInfo}) => {
 
   const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
 
-  // TODO сделать скролл к низу чата
-  const chatMessagesRef = useRef(null);
+  const fetchControllerRef = useRef(null);
+  const endMessagesRef = useRef(null);
+  const prevLastMessageRef = useRef(null);
 
-  // первый раз открыли чат
+
   useEffect(() => {
+    fetchControllerRef.current = new AbortController();
     if (messages.length === 1) {
       dispatch(loadOldMessages({
         chatId,
         offset: 1,
-        cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
+        cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
+        controller: fetchControllerRef.current
       }));
     }
+
+    return () => {
+      fetchControllerRef.current.abort();
+      setIsAllMessagesLoaded(false);
+    };
   }, [chatId]);
+
+  useEffect(() => {
+    if(messages.length > 1) {
+      const lastMessage = messages[messages.length - 1];
+
+      if(lastMessage !== prevLastMessageRef.current) {
+        endMessagesRef.current.scrollIntoView();
+        prevLastMessageRef.current = lastMessage;
+      }
+    }
+  }, [messages]);
 
   const addMessagesOnScroll = async e => {
     if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isOldMessagesLoading) {
       dispatch(loadOldMessages({
         chatId,
         offset: messages.length,
-        cbOnAllLoaded: () => setIsAllMessagesLoaded(true)
+        cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
+        controller: fetchControllerRef.current
       }));
     }
   };
@@ -79,7 +99,6 @@ const ChatMessages = ({currentChatInfo}) => {
   return isChatLoading? <Spinner className="spinner_chat-main"/> :
     (
       <div className="chat-area chat-container__chat-area"
-           ref={chatMessagesRef}
            onScroll={throttle(addMessagesOnScroll, 300)}
       >
         {
@@ -112,6 +131,7 @@ const ChatMessages = ({currentChatInfo}) => {
             })
           )
         }
+        <div ref={endMessagesRef}/>
       </div>
     );
 };

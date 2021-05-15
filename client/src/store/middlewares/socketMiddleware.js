@@ -22,8 +22,6 @@ export const socketMiddleware = store => next => action => {
       // socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
       if(action.payload) {
         initSocket(store);
-        const {id} = action.payload;
-        socket.emit('setUserId', id);
       }
       return next(action);
     }

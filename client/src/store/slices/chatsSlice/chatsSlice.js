@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {loadOldMessages, loadStartChatMessages, setChatsData} from "./chatsThunks";
+import {loadOldMessages, setChatsData} from "./chatsThunks";
 
 
 class ChatsState {
@@ -62,17 +62,6 @@ export const chatsSlice = createSlice({
       state.userChats = payload;
       state.isChatsDataLoading = false;
     },
-    [loadStartChatMessages.pending]: (state) => {
-      state.isChatLoading = true;
-    },
-    /**
-     * @param state {ChatsState}
-     * @param action {{ type: string, payload: {chatId: number, messages: Array<MessageModel>} }}
-     */
-    [loadStartChatMessages.fulfilled]: (state, {payload}) => {
-      state.userChats[payload.chatId].messages.unshift(...payload.messages);
-      state.isChatLoading = false;
-    },
     [loadOldMessages.pending]: (state) => {
       state.isOldMessagesLoading = true;
     },
@@ -93,7 +82,7 @@ const { actions, reducer } = chatsSlice;
 
 export const {
   addChatMessage,
-  setCurrentChatId,
+  setCurrentChatId
 } = actions;
 
 export default reducer;

@@ -14,7 +14,9 @@ function configureSocket(server) {
 
   io.on('connection', (socket) => {
     socket.on('setChats', (chatIds) => {
-      chatIds.forEach((chatId) => socket.join(chatId));
+      chatIds.forEach((chatId) => {
+        socket.join(chatId);
+      });
     });
 
     socket.on('chatMessage', async ({
