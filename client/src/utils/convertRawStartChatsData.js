@@ -16,7 +16,6 @@ export function convertRawStartChatsData(rawChatsInfo, lastMessages) {
         chatAvatarUrl,
         chatTitle,
         sobesedniki: [],
-        messages: []
       };
     }
     chats[userChat.chatId].sobesedniki.push(
@@ -30,7 +29,7 @@ export function convertRawStartChatsData(rawChatsInfo, lastMessages) {
   });
 
   lastMessages.forEach((message) => {
-    chats[message.chatId].messages.push(message);
+    chats[message.chatId].lastMessage = message;
   });
   return chats;
 }

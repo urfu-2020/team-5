@@ -35,6 +35,8 @@ export const ChatHeader = ({ title, isOnline }) => (
   </>
 );
 
+export const MemoizedChatHeader = React.memo(ChatHeader);
+
 ChatHeader.propTypes = {
   title: PropTypes.string.isRequired,
   isOnline: PropTypes.bool.isRequired

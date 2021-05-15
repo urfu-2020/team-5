@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useDispatch, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 
 import './chat-messages.css';
@@ -8,25 +8,17 @@ import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
-import {loadOldMessages} from "../../../store/slices/chatsSlice/chatsThunks";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
-import {selectIsChatLoading, selectIsOldMessagesLoading} from "../../../store/slices/chatsSlice/chatsSelectors";
+import {config} from "../../../config";
 
-// FIXME При подгрузке сообщений оставаться на том же месте, а не прыгать в конец или начало
-//
-// TODO `Чат прокручивается до последнего сообщения если:
-//          1) Мы отправляем сообщение
-//          2) Мы находимся внизу чата и любой участник отправляет сообщение
-//       Чат остается на том же месте при ререндере если:
-//          1) Подгружаем старые сообщения
-//          2) Скроллим чат (находимся не внизу чата), а другой участник отправляет сообщение
-//             (Можно будет допилить и показывать кружок с количеством непрочитанных сообщений)`
 
 const getSobesednikAvatarUrl = (sobesedniki, senderId) => {
   return sobesedniki.find(user => user.id === senderId).avatarUrl;
 };
 
-const isMyMessage = (myId, senderId) => myId === senderId;
+const isMyMessage = (myId, senderId) => {
+  return myId === senderId;
+};
 
 const isNewDay = (messages, index) => {
   if (index === 0) return true;
@@ -37,103 +29,130 @@ const isNewDay = (messages, index) => {
     newMessageTime.getDate() !== prevMessageTime.getDate();
 };
 
+const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {
+  const {LOAD_MESSAGES_THRESHOLD} = config;
+  try {
+    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${offset}/${LOAD_MESSAGES_THRESHOLD}`, {
+      signal: controller.signal
+    })).json();
+
+    if (oldMessages.length < LOAD_MESSAGES_THRESHOLD) {
+      cbOnAllLoaded();
+    }
+    return {oldMessages};
+  } catch (e) {
+    console.error(e);
+  }
+};
+
 
 const ChatMessages = ({currentChatInfo}) => {
   const currentUser = useSelector(selectCurrentUser);
-  const isChatLoading = useSelector(selectIsChatLoading);
-  const isOldMessagesLoading = useSelector(selectIsOldMessagesLoading);
 
-  const {messages, chatId, sobesedniki} = currentChatInfo;
-  const myId = currentUser.id;
-  const myAvatarUrl = currentUser.avatarUrl;
+  const {chatId, sobesedniki, lastMessage} = currentChatInfo;
 
-  const dispatch = useDispatch();
-
+  const [messages, setMessages] = useState([]);
+  const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
   const [isAllMessagesLoaded, setIsAllMessagesLoaded] = useState(false);
+  const [prevChatId, setPrevChatId] = useState(null);
 
   const fetchControllerRef = useRef(null);
   const endMessagesRef = useRef(null);
   const prevLastMessageRef = useRef(null);
 
-
   useEffect(() => {
     fetchControllerRef.current = new AbortController();
-    if (messages.length === 1) {
-      dispatch(loadOldMessages({
+    (async () => {
+      const response = await loadOldMessages({
         chatId,
-        offset: 1,
+        offset: 0,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
-      }));
-    }
+      });
+      if(response) {
+        setMessages(response.oldMessages);
+        setPrevChatId(chatId);
+      }
+    })();
 
     return () => {
       fetchControllerRef.current.abort();
+      prevLastMessageRef.current = null;
       setIsAllMessagesLoaded(false);
     };
   }, [chatId]);
 
   useEffect(() => {
-    if(messages.length > 1) {
-      const lastMessage = messages[messages.length - 1];
+    setMessages(prevMessages => [...prevMessages, lastMessage]);
+  }, [lastMessage]);
 
-      if(lastMessage !== prevLastMessageRef.current) {
-        endMessagesRef.current.scrollIntoView();
+  useEffect(() => {
+      if (endMessagesRef.current &&
+         (!prevLastMessageRef.current ||
+           lastMessage !== prevLastMessageRef.current)) {
+        endMessagesRef.current.scrollIntoView({ behavior: "smooth"});
         prevLastMessageRef.current = lastMessage;
       }
-    }
   }, [messages]);
 
   const addMessagesOnScroll = async e => {
     if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isOldMessagesLoading) {
-      dispatch(loadOldMessages({
+      setOldMessagesLoading(true);
+      const response = await loadOldMessages({
         chatId,
         offset: messages.length,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
-      }));
+      });
+
+      if(response) {
+        setMessages(laterMessages => [...response.oldMessages, ...laterMessages]);
+        setOldMessagesLoading(false);
+      }
     }
   };
 
 
-  return isChatLoading? <Spinner className="spinner_chat-main"/> :
-    (
-      <div className="chat-area chat-container__chat-area"
-           onScroll={throttle(addMessagesOnScroll, 300)}
-      >
-        {
-          isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
-            isAllMessagesLoaded ? <p> Начало диалога. </p> : null
-        }
-        {
-          messages.length > 0 && (
-            messages.map(({id, text, senderId, time, status}, index) => {
-              return (
-                <React.Fragment key={id}>
-                  {
-                    isNewDay(messages, index) ? (
-                      <h4 className="chat-date chat-area__chat-date">
-                        {getDayInLocaleString(time)}
-                      </h4>
-                    ) : null
-                  }
-                  <ChatMessage
-                    text={text}
-                    time={getTimeInLocaleString(time)}
-                    isMyMessage={isMyMessage(myId, senderId)}
-                    avatarUrl={isMyMessage(myId, senderId) ? myAvatarUrl :
-                      getSobesednikAvatarUrl(sobesedniki, senderId)}
-                    status={status}
-                    attachments={[]}
-                  />
-                </React.Fragment>
-              );
-            })
-          )
-        }
-        <div ref={endMessagesRef}/>
-      </div>
-    );
+  return (
+    <div className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
+      {
+        // если чат сменился и еще не загрузился
+        prevChatId !== chatId ? <Spinner className="spinner_chat-main"/> : (
+          <>
+            {
+              isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
+                isAllMessagesLoaded ? <p> Начало диалога. </p> : null
+            }
+            {
+              messages.map(({id, text, senderId, time, status}, index) => {
+                return (
+                  <React.Fragment key={id}>
+                    {
+                      isNewDay(messages, index) ? (
+                        <h4 className="chat-date chat-area__chat-date">
+                          {getDayInLocaleString(time)}
+                        </h4>
+                      ) : null
+                    }
+                    <ChatMessage
+                      text={text}
+                      time={getTimeInLocaleString(time)}
+                      isMyMessage={isMyMessage(currentUser.id, senderId)}
+                      avatarUrl={isMyMessage(currentUser.id, senderId) ? currentUser.avatarUrl :
+                        getSobesednikAvatarUrl(sobesedniki, senderId)}
+                      status={status}
+                      attachments={[]}
+                    />
+                  </React.Fragment>
+                );
+              })
+            }
+          </>
+        )
+      }
+      <div ref={endMessagesRef}/>
+    </div>
+  );
 };
 
 export const MemoizedChatMessages = React.memo(ChatMessages);
@@ -150,7 +169,7 @@ ChatMessages.propTypes = {
       avatarUrl: PropTypes.string,
       githubUrl: PropTypes.string
     })),
-    messages: PropTypes.arrayOf(PropTypes.shape({
+    lastMessage: PropTypes.shape({
       id: PropTypes.string.isRequired,
       chatId: PropTypes.number.isRequired,
       senderId: PropTypes.number.isRequired,
@@ -158,7 +177,7 @@ ChatMessages.propTypes = {
       hasAttachments: PropTypes.bool,
       status: PropTypes.string.isRequired,
       time: PropTypes.string.isRequired
-    }))
+    })
   })
 };
 

@@ -6,13 +6,6 @@ import './input-file-modal.css';
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
 import {Button} from "../../../Controls/Button/Button";
 
-// так, тут файлы еще не загружены на сервер
-// const files = [
-//   { chatId: 123, originalTitle: 'file1.txt', type: 'Document', url: '/docs/1234.txt' },
-//   { chatId: 13, originalTitle: 'file2.txt', type: 'Document', url: '/docs/3123.txt' },
-//   { chatId: 32, originalTitle: 'file3.txt', type: 'Document', url: '/docs/23423.txt' }
-// ];
-
 const files = [
   { id: 123, title: 'file1.txt' },
   { id: 13, title: 'file2.txt' },

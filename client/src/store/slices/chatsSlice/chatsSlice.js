@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {loadOldMessages, setChatsData} from "./chatsThunks";
+import {setChatsData} from "./chatsThunks";
 
 
 class ChatsState {
@@ -8,15 +8,11 @@ class ChatsState {
    * @param currentChatId {number}
    * @param userChats {{ number: ChatModel }}
    * @param isChatsDataLoading {boolean}
-   * @param isChatLoading {boolean}
-   * @param isOldMessagesLoading {boolean}
    */
-  constructor(currentChatId, userChats, isChatsDataLoading, isChatLoading, isOldMessagesLoading) {
+  constructor(currentChatId, userChats, isChatsDataLoading) {
     this.currentChatId = currentChatId;
     this.userChats = userChats;
     this.isChatsDataLoading = isChatsDataLoading;
-    this.isChatLoading = isChatLoading;
-    this.isOldMessagesLoading = isOldMessagesLoading;
   }
 }
 
@@ -26,9 +22,7 @@ class ChatsState {
 const initialChatsState = {
   currentChatId: null,
   userChats: {},
-  isChatsDataLoading: true,
-  isChatLoading: false,
-  isOldMessagesLoading: false
+  isChatsDataLoading: true
 };
 
 export const chatsSlice = createSlice({
@@ -40,7 +34,7 @@ export const chatsSlice = createSlice({
      * @param action {{ type: string, payload: MessageModel }}
      */
     addChatMessage(state, {payload}) {
-      state.userChats[payload.chatId].messages.push(payload);
+      state.userChats[payload.chatId].lastMessage = payload;
     },
     /**
      * @param state {ChatsState}
@@ -61,17 +55,6 @@ export const chatsSlice = createSlice({
     [setChatsData.fulfilled]: (state, {payload}) => {
       state.userChats = payload;
       state.isChatsDataLoading = false;
-    },
-    [loadOldMessages.pending]: (state) => {
-      state.isOldMessagesLoading = true;
-    },
-    /**
-     * @param state {ChatsState}
-     * @param action {{ type: string, payload: {chatId: number, messages: Array<MessageModel>} }}
-     */
-    [loadOldMessages.fulfilled]: (state, {payload}) => {
-      state.userChats[payload.chatId].messages.unshift(...payload.messages);
-      state.isOldMessagesLoading = false;
     }
   }
 });

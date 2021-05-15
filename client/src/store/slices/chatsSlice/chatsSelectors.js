@@ -12,16 +12,6 @@ export const selectCurrentChatId = createSelector(
   chats => chats.currentChatId
 );
 
-export const selectIsChatLoading = createSelector(
-  selectChats,
-  chats => chats.isChatLoading
-);
-
-export const selectIsOldMessagesLoading = createSelector(
-  selectChats,
-  chats => chats.isOldMessagesLoading
-);
-
 export const makeSelectCurrentChat = () => createSelector(
   selectUserChats,
   (_, chatId) => chatId,
