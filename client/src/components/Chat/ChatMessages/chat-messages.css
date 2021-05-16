@@ -1,0 +1,161 @@
+.chat-header {
+  background-color: var(--bg-color);
+  border-left: var(--separator) solid 1px;
+}
+
+.chat-container__chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-header__chat-data {
+  margin-left: 10px;
+}
+
+.chat-name {
+  color: var(--primary-text);
+}
+
+.chat-status {
+  color: var(--secondary-text);
+}
+
+.chat-data__chat-name,
+.chat-data__chat-status {
+  margin: 5px;
+}
+
+.options-container__icon {
+  margin-right: 10px;
+}
+
+.icon {
+  fill: var(--secondary-text);
+}
+
+.chat-container__chat-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-area > :first-child {
+  margin-top: auto;
+}
+
+.chat-area {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chat-date {
+  font-weight: normal;
+  color: white;
+  background-color: gray;
+  border-radius: 35px;
+}
+
+.chat-area__chat-date {
+  position: sticky;
+  top: 10px;
+  padding: 5px 10px;
+  margin: 0 auto;
+}
+
+.chat-area__message {
+  display: flex;
+}
+
+.chat-area__message_income {
+  margin: 5px;
+}
+
+.chat-area__message_my {
+  margin: 5px 5px 5px auto;
+}
+
+.message__chat-avatar {
+  align-self: flex-end;
+  height: 35px;
+  border-radius: 100%;
+}
+
+.message__cloud {
+  display: flex;
+  min-height: 20px;
+}
+
+.message__cloud_my {
+  position: relative;
+  margin-right: 10px;
+}
+
+.cloud_my {
+  background-color: var(--teal-50);
+  border-radius: 7px 7px 0 7px;
+  box-shadow: 1px -1px 1px var(--separator);
+}
+
+.message__cloud_my::after {
+  position: absolute;
+  right: -10px;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  content: "";
+  border-top: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid var(--teal-50);
+  border-left: 5px solid var(--teal-50);
+}
+
+.message__cloud_income {
+  position: relative;
+  margin-left: 10px;
+}
+
+.cloud_income {
+  order: 1;
+  background-color: var(--bg-color);
+  border-radius: 7px 7px 7px 0;
+  box-shadow: 1px -1px 1px var(--separator);
+}
+
+.message__cloud_income::before {
+  position: absolute;
+  bottom: 0;
+  left: -10px;
+  width: 0;
+  height: 0;
+  content: "";
+  border-top: 5px solid transparent;
+  border-right: 5px solid var(--bg-color);
+  border-bottom: 5px solid var(--bg-color);
+  border-left: 5px solid transparent;
+}
+
+.cloud__message-text {
+  display: inline-flex;
+  align-items: center;
+  max-width: 300px;
+  padding: 10px;
+  overflow-wrap: anywhere;
+}
+
+.message-time {
+  color: var(--secondary-text);
+}
+
+.cloud__message-time,
+.cloud__ticks {
+  align-self: flex-end;
+  margin: 5px;
+}
+
+.material-icons.ticks {
+  font-size: 20px;
+}
+
+.ticks {
+  fill: var(--teal-500);
+}
