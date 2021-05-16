@@ -13,6 +13,7 @@ passport.use(new GitHubStrategy({
     const user = await dbapi.getUserByName(jsonUser.login);
     if (!user) {
       await dbapi.createUser(jsonUser.login, jsonUser.avatar_url, jsonUser.html_url);
+      await dbapi.addDialogsWithNewUser(jsonUser.login);
     }
     return cb(null, profile);
   } catch (e) {

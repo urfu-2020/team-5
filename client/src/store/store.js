@@ -1,14 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 
-import currentDialogSlice from "./slices/currentDialogSlice";
-import appSlice from "./slices/appSlice";
+import {socketMiddleware} from "./middlewares/socketMiddleware";
+import userSlice from "./slices/userSlice/userSlice";
+import chatsSlice from "./slices/chatsSlice/chatsSlice";
 
 export const store = configureStore({
   reducer: {
-    app: appSlice,
-    currentDialog: currentDialogSlice
+    chats: chatsSlice,
+    user: userSlice
   },
-  devTools: process.env.NODE_ENV === 'development'
+  devTools: process.env.NODE_ENV === 'development',
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleware)
 });
 
 export default store;

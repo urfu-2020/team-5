@@ -15,7 +15,7 @@
   },
   "ignorePatterns": ["node_modules/**/*.js", "node_modules/**/*.jsx", "build/**/*.js"],
   "rules": {
-    "linebreak-style":"off",
+    "linebreak-style": "off",
     "import/no-dynamic-require": "off",
     "no-console": "warn",
     "semi": ["warn", "always"],
@@ -25,6 +25,9 @@
     "global-require": "off",
     "import/no-extraneous-dependencies": "off",
     "import/prefer-default-export": "off",
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "consistent-return": "off",
+    "no-return-assign": "off",
+    "no-param-reassign": "off"
   }
 }

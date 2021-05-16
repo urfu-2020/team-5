@@ -1,48 +1,52 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
+import {Switch, Route, Redirect} from 'react-router-dom';
 
 import {LoginPage} from "./LoginPage/LoginPage";
-import {HomePage} from "./HomePage";
-import {Spinner} from "./Spinner/Spinner";
+import {HomePage} from "./HomePage/HomePage";
+import {Spinner} from "./Controls/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
-import {setContacts, setCurrentUser, setLoading} from "../store/slices/appSlice";
+import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
+import {Chat} from "./Chat/Chat";
+import {Navigation} from "./Navigation/Navigation";
+import {setCurrentUser} from "../store/slices/userSlice/userThunks";
+import {setChatsData} from "../store/slices/chatsSlice/chatsThunks";
+import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
+
 
 const App = () => {
   const dispatch = useDispatch();
-  const currentUser = useSelector(state => state.app.currentUser);
-  const isLoading = useSelector(state => state.app.isLoading);
+  const currentUserId = useSelector(selectUserId);
+  const isUserLoading = useSelector(selectIsUserLoading);
 
-  const fetchAppData = () => async dispatch => {
-    dispatch(setLoading(true));
-    const {user} = await (await fetch('/user/own')).json();
-    if (user) {
-      dispatch(setCurrentUser(user));
-      const {contacts} = await (await fetch('/user/contacts')).json();
-      dispatch(setContacts(contacts));
+  useEffect(() => {
+    if (!currentUserId) {
+      dispatch(setCurrentUser());
+    } else {
+      dispatch(setChatsData(currentUserId));
     }
-    dispatch(setLoading(false));
-  };
+  }, [currentUserId]);
 
-  useEffect( () => {
-    if(!currentUser)
-      dispatch(fetchAppData());
-  }, []);
 
-  return isLoading ? <Spinner className="main-spinner" /> : currentUser ? <HomePage /> : <LoginPage />;
-
-  // Потом разберусь с роутером и сделаю нормально
-  // return (
-  //   <Router>
-  //       { userId ? (
-  //         <Switch>
-  //           <Route path="/" exact component={HomePage}/>
-  //         </Switch>
-  //       ) : (
-  //         <Switch>
-  //           <Route path="/login" exact component={LoginPage} />
-  //         </Switch>
-  //       )}
-  //   </Router>
-  //   );
+  return isUserLoading ? <Spinner className="spinner_main"/> :
+    currentUserId ? (
+      <div id="app">
+        <nav className="navigation">
+          <Navigation/>
+        </nav>
+        <Switch>
+          <Route path="/" exact component={HomePage}/>
+          <Route path={`/chat/:chatId`} exact component={Chat}/>
+          <Route path="*" component={NotFoundPage}/>
+        </Switch>
+      </div>
+    ) : (
+      <>
+        <Redirect to={"/login"}/>
+        <Switch>
+          <Route path="/login" exact component={LoginPage}/>
+        </Switch>
+      </>
+    );
 };
 
 export default App;
