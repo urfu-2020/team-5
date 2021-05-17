@@ -10,6 +10,8 @@ import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
+import {initSocket} from "../store/middlewares/socketMiddleware";
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -19,6 +21,10 @@ const App = () => {
   useEffect(() => {
     if (!currentUserId)
       dispatch(setCurrentUser());
+    else {
+      // dispatch(setChatsData(currentUserId));
+      dispatch(initSocket());
+    }
   }, [currentUserId]);
 
 

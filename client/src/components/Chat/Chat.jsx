@@ -14,7 +14,7 @@ import {makeSelectCurrentChat} from "../../store/slices/chatsSlice/chatsSelector
 
 
 export const Chat = () => {
-  const {chatId} = useParams();
+  const chatId = +useParams().chatId;
   const dispatch = useDispatch();
 
   const selectCurrentChat = useMemo(makeSelectCurrentChat, []);
@@ -24,7 +24,7 @@ export const Chat = () => {
   const [inputMessage, setInputMessage] = useState('');
 
   useEffect(() => {
-    dispatch(setCurrentChatId(+chatId));
+    dispatch(setCurrentChatId(chatId));
     return () => {
       setModalOpen(() => false);
       setInputMessage(() => '');

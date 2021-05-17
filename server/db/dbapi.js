@@ -9,6 +9,7 @@ const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
  */
 async function dbRequest(query) {
   try {
+    console.log(query);
     const request = (await mssql.connect(CONNECTION_URL)).request();
     return request.query(query);
   } catch (e) {
@@ -24,11 +25,14 @@ async function getUsers() {
 }
 
 /**
- * @param username {String}
+ * @param column {String}
+ * @param value {String | number}
  * @returns {UserModel | boolean}
  */
-async function getUserByName(username) {
-  const queryArr = (await dbRequest(`SELECT * FROM [User] WHERE username='${username}'`)).recordset;
+async function getUser(column, value) {
+  const resValue = typeof value === 'number' ? value : `'${value}'`;
+  const query = `SELECT * FROM [User] WHERE ${column}=${resValue}`;
+  const queryArr = (await dbRequest(query)).recordset;
   if (queryArr.length === 0) return false;
   return queryArr[0];
 }
@@ -51,18 +55,16 @@ async function addDialogsWithNewUser(username) {
 }
 
 /**
- * Получить информацию о чатах пользователя, (если это диалог или чат с собой,
- * то название чата и ава соответсвуют собеседнику)
+ * Получить информацию о чатах пользователя
  * @param userId {Number}
  * @returns Array<ChatModel>
  */
 async function getUserChats(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset
-    .map((rawChat) => ({
-      ...rawChat,
-      chatTitle: rawChat.chatType === 'Group' ? rawChat.chatTitle : rawChat.sobesednikUsername,
-      chatAvatarUrl: rawChat.chatType === 'Group' ? rawChat.chatAvatarUrl : rawChat.sobesednikAvatarUrl,
-    }));
+  return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset;
+}
+
+async function getUserChatsIds(userId) {
+  return (await dbRequest(`SELECT * FROM GetUserChatsIds(${userId})`)).recordset.map((obj) => obj.chatId);
 }
 
 /**
@@ -90,11 +92,11 @@ async function getUserLastChatMessages(userId) {
  * @returns number
  */
 async function storeChatMessage({
-  messageId, chatId, senderId, text, hasAttachments, status, time
+  id, chatId, senderId, text, hasAttachments, status, time
 }) {
   await dbRequest(`
     EXEC StoreChatMessage
-      @messageId='${messageId}',
+      @messageId='${id}',
       @chatId=${chatId},
       @senderId=${senderId},
       @text='${text}',
@@ -108,10 +110,11 @@ async function storeChatMessage({
 
 module.exports = {
   getUsers,
-  getUserByName,
+  getUser,
   createUser,
   addDialogsWithNewUser,
   getUserChats,
+  getUserChatsIds,
   storeChatMessage,
   getChatMessages,
   getUserLastChatMessages

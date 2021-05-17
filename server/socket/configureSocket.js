@@ -1,10 +1,9 @@
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 const session = require('../session');
-const { getUserLastChatMessages } = require('../db/dbapi');
-const { getUserChats } = require('../db/dbapi');
-const { getUserByName } = require('../db/dbapi');
-const { storeChatMessage } = require('../db/dbapi');
+const {
+  getUserLastChatMessages, getUserChats, addDialogsWithNewUser, storeChatMessage
+} = require('../db/dbapi');
 
 /**
  * chatId -> members
@@ -16,12 +15,12 @@ const rooms = {};
 
 const sendToRoomMembers = (chatId, message) => {
   rooms[chatId].forEach((client) => {
+    console.log('send to ', client.sessionUser.username);
     client.send(message);
   });
 };
 
-const setUserChats = (socket, chats) => {
-  socket.chatIds = [];
+const connectUserToRooms = (socket, chats) => {
   chats.forEach((chat) => {
     const { chatId } = chat;
     if (rooms[chatId]) {
@@ -29,14 +28,8 @@ const setUserChats = (socket, chats) => {
     } else {
       rooms[chatId] = [socket];
     }
-    socket.chatIds.push(chatId);
   });
 };
-
-// це не нравится, очень долго
-// пока что буду хранить в сокете айди чатов, в которых он есть (это тоже не нравится тк дублирование данных)
-// const getUserChatsId = (userId) => Object.values(rooms)
-//   .filter((chat) => chat.find((socket) => socket.userId === userId));
 
 /**
  * Настраиваем сокеты
@@ -45,44 +38,66 @@ const setUserChats = (socket, chats) => {
 function configureSocket(server) {
   const io = new WebSocket.Server({ noServer: true });
 
-  server.on('upgrade', async (request, socket, head) => {
-    session(request, {}, () => {
-      io.handleUpgrade(request, socket, head, (ws) => {
-        ws.username = request.session.passport.user.username;
+  server.on('upgrade', (req, socket, head) => {
+    io.handleUpgrade(req, socket, head, async (ws) => {
+      session(req, {}, () => {
+        ws.sessionUser = req.session.passport.user;
         io.emit('connection', ws);
       });
     });
   });
 
   io.on('connection', async (socket) => {
-    const userInDb = await getUserByName(socket.username);
-    if (userInDb) {
-      const userId = userInDb.id;
-      socket.userId = userId;
-      const rawChatsInfo = await getUserChats(userId);
-      const lastMessages = await getUserLastChatMessages(userId);
-      setUserChats(socket, rawChatsInfo);
-      socket.send(JSON.stringify({ type: 'setChatsData', payload: { rawChatsInfo, lastMessages } }));
-    }
+    const { sessionUser } = socket;
+    let userChats = await getUserChats(sessionUser.id);
 
-    socket.on('message', (rawMessage) => {
+    // Если у пользователя еще нет чатов (даже с собой), значит это новый пользователь
+    if (userChats.length === 0) {
+      await addDialogsWithNewUser(sessionUser.username);
+      userChats = await getUserChats(sessionUser.id);
+      connectUserToRooms(socket, userChats);
+
+      io.clients.forEach((client) => {
+        if (client !== socket) {
+          const newUserChat = userChats.find((chat) => chat.sobesednikId === client.sessionUser.id);
+          client.send(JSON.stringify({
+            type: 'addNewDialog',
+            // схема чата из бд
+            payload: {
+              ...newUserChat,
+              sobesednikId: sessionUser.id,
+              sobesednikUsername: sessionUser.username,
+              sobesednikAvatarUrl: sessionUser.avatarUrl,
+              sobesednikGHUrl: sessionUser.githubUrl
+            }
+          }));
+          rooms[newUserChat.chatId].push(client);
+        }
+      });
+    } else connectUserToRooms(socket, userChats);
+
+    const lastMessages = await getUserLastChatMessages(sessionUser.id);
+    socket.send(JSON.stringify({
+      type: 'setChatsData',
+      payload: { userChats, lastMessages }
+    }));
+
+    socket.on('message', async (rawMessage) => {
       const message = JSON.parse(rawMessage);
+      console.log(message);
       switch (message.type) {
         case 'chatMessage': {
           const {
             chatId, text, hasAttachments, status, time
           } = message.payload;
 
-          const senderId = socket.userId;
-          if (socket.chatIds.find((id) => id === chatId)) {
-            const messageId = uuidv4();
-            storeChatMessage({
-              messageId, chatId, senderId, text, hasAttachments, status, time
-            });
-
+          const senderId = sessionUser.id;
+          if (rooms[chatId] && rooms[chatId].includes(socket)) {
+            const id = uuidv4();
             const resultMessage = {
-              id: messageId, chatId, senderId, text, hasAttachments, status, time
+              id, chatId, senderId, text, hasAttachments, status, time
             };
+            storeChatMessage(resultMessage);
             sendToRoomMembers(chatId, JSON.stringify({
               type: 'chatMessage', payload: resultMessage
             }));
@@ -97,15 +112,13 @@ function configureSocket(server) {
     });
 
     socket.on('close', () => {
-      if (socket.chatIds) {
-        socket.chatIds.forEach((chatId) => {
-          const { userId } = socket;
-          rooms[chatId] = rooms[chatId].filter((client) => client.userId !== userId);
-          if (rooms[chatId].length === 0) delete rooms[chatId];
-          // потом + наверное стоит отправлять не в каждый чат по отдельности, а как-нибудь сразу
-          // sendToRoomMembers(chatId, { type: 'setUserOffline', payload: { chatId, userId } });
-        });
-      }
+      console.log('close');
+      Object.entries(rooms).forEach(([roomId, sockets]) => {
+        if (sockets.includes(socket)) {
+          rooms[roomId] = sockets.filter((client) => client !== socket);
+          if (rooms[roomId].length === 0) delete rooms[roomId];
+        }
+      });
     });
   });
 }

@@ -66,7 +66,6 @@ BEGIN
 	DEALLOCATE usersId_cursor;
 END
 
-
 /* Получить все записи чат-собеседник чатов, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChats(@userId INT)
@@ -87,6 +86,17 @@ AS RETURN
 	ON ChatUser.userId = [User].id
 	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
 				AND	NOT (Chat.type != 'Own' AND ChatUser.userId = @userId)
+
+
+
+/* Получить id чатов, в которых состоит пользователь */
+GO
+CREATE FUNCTION GetUserChatsIds(@userId INT)
+RETURNS TABLE
+AS RETURN
+	SELECT DISTINCT chatId
+	FROM ChatUser
+	WHERE userId = @userId
 
 
 /* Получить сообщения из чата, начиная с новых (самое новое - первое) */

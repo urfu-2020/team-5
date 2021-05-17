@@ -96,7 +96,11 @@ const ChatMessages = ({currentChatInfo}) => {
   }, [messages]);
 
   const addMessagesOnScroll = async e => {
-    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isOldMessagesLoading) {
+    if (  e.target.scrollTop === 0 &&
+          !isAllMessagesLoaded &&
+          !isOldMessagesLoading &&
+          messages.length >= config.LOAD_MESSAGES_THRESHOLD
+    ) {
       setOldMessagesLoading(true);
       const response = await loadOldMessages({
         chatId,

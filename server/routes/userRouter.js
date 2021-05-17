@@ -1,7 +1,7 @@
 const express = require('express');
 
 const {
-  getUserByName, getUserChats, getUserLastChatMessages, getUsers
+  getUserChats, getUserLastChatMessages, getUsers
 } = require('../db/dbapi');
 
 const router = express.Router();
@@ -13,18 +13,22 @@ router.get('/contacts', async (req, res) => {
 });
 
 router.get('/:userId/chatsData', async (req, res) => {
-  const { userId } = req.params;
-  const rawChatsInfo = await getUserChats(userId);
-  const lastMessages = await getUserLastChatMessages(userId);
-  res.json({ rawChatsInfo, lastMessages });
+  if (req.user && +req.params.userId === req.user.id) {
+    const userId = +req.params.userId;
+    const rawChatsInfo = await getUserChats(userId);
+    const lastMessages = await getUserLastChatMessages(userId);
+    res.json({ rawChatsInfo, lastMessages });
+  } else {
+    res.status(403).json({ error: 'Вы не можете получить эти данные' });
+  }
 });
 
 router.get('/self', async (req, res) => {
-  let user = null;
+  let user;
   if (req.user) {
-    user = await getUserByName(req.user.username);
+    const { isNewUser, ...sessionUser } = req.user;
+    user = sessionUser;
   }
-
   res.json({
     user
   });

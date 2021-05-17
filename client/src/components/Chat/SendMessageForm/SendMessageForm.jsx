@@ -1,5 +1,5 @@
 import React from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router";
 
@@ -10,7 +10,7 @@ import {Button} from "../../Controls/Button/Button";
 
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
-  const {chatId} = useParams();
+  const chatId = +useParams().chatId;
   const dispatch = useDispatch();
 
   const sendMessageHandler = e => {
@@ -18,7 +18,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
     if(inputMessage === '') return;
     dispatch(
       sendMessage({
-        chatId: +chatId,
+        chatId: chatId,
         text: inputMessage,
         hasAttachments: false,
         status: 'Unread',
