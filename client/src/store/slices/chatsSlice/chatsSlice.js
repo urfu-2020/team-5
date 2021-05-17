@@ -1,5 +1,4 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {setChatsData} from "./chatsThunks";
 
 
 class ChatsState {
@@ -12,7 +11,6 @@ class ChatsState {
   constructor(currentChatId, userChats, isChatsDataLoading) {
     this.currentChatId = currentChatId;
     this.userChats = userChats;
-    this.isChatsDataLoading = isChatsDataLoading;
   }
 }
 
@@ -42,17 +40,8 @@ export const chatsSlice = createSlice({
      */
     setCurrentChatId(state, {payload}) {
       state.currentChatId = payload;
-    }
-  },
-  extraReducers: {
-    [setChatsData.pending]: (state) => {
-      state.isChatsDataLoading = true;
     },
-    /**
-     * @param state {ChatsState}
-     * @param action {{ type: string, payload: { number: ChatModel } }}
-     */
-    [setChatsData.fulfilled]: (state, {payload}) => {
+    setChatsData(state, {payload}) {
       state.userChats = payload;
       state.isChatsDataLoading = false;
     }
@@ -65,7 +54,8 @@ const { actions, reducer } = chatsSlice;
 
 export const {
   addChatMessage,
-  setCurrentChatId
+  setCurrentChatId,
+  setChatsData
 } = actions;
 
 export default reducer;

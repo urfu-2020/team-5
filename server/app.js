@@ -1,29 +1,29 @@
 // чужие импорты
+
 const path = require('path');
 const http = require('http');
 const express = require('express');
 const cookieParser = require('cookie-parser');
 require('dotenv').config();
 const morgan = require('morgan');
-const expressSession = require('express-session');
+
 // наши импорты
 const config = require('./config');
 const passport = require('./passport/passportWithGithubStrategy');
 const githubAuthRouter = require('./routes/githubAuthRouter');
 const userRouter = require('./routes/userRouter');
 const chatRouter = require('./routes/chatRouter');
-const { configureSocket } = require('./socket/configureSocket');
+const session = require('./session');
+const configureSocket = require('./socket/configureSocket');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(expressSession({
-  secret: process.env.EXPRESS_SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false,
-}));
+
+app.use(session);
+
 app.use(passport.initialize());
 app.use(passport.session());
 

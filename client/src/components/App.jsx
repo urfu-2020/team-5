@@ -9,9 +9,7 @@ import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
-import {setChatsData} from "../store/slices/chatsSlice/chatsThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
-
 
 const App = () => {
   const dispatch = useDispatch();
@@ -19,11 +17,8 @@ const App = () => {
   const isUserLoading = useSelector(selectIsUserLoading);
 
   useEffect(() => {
-    if (!currentUserId) {
+    if (!currentUserId)
       dispatch(setCurrentUser());
-    } else {
-      dispatch(setChatsData(currentUserId));
-    }
   }, [currentUserId]);
 
 

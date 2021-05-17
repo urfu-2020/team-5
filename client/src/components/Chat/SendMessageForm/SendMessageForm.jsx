@@ -2,7 +2,6 @@ import React from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router";
-import { v4 as uuidv4 } from 'uuid';
 
 import './send-message-form.css';
 
@@ -12,7 +11,6 @@ import {Button} from "../../Controls/Button/Button";
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
   const {chatId} = useParams();
-  const userId = useSelector(state => state.user.id);
   const dispatch = useDispatch();
 
   const sendMessageHandler = e => {
@@ -20,9 +18,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
     if(inputMessage === '') return;
     dispatch(
       sendMessage({
-        messageId: uuidv4(),
         chatId: +chatId,
-        senderId: userId,
         text: inputMessage,
         hasAttachments: false,
         status: 'Unread',
