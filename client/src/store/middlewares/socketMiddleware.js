@@ -1,5 +1,4 @@
 import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
-import {convertRawNewDialog} from "../../utils/chatConverters";
 
 const INIT_SOCKET = 'socket/init';
 export const initSocket = () => ({type: INIT_SOCKET});
@@ -18,6 +17,10 @@ export const socketMiddleware = store => next => action => {
       socket.onmessage = function (event) {
         const message = JSON.parse(event.data);
         switch (message.type) {
+          case 'ping': {
+            socket.send(JSON.stringify({type: 'pong'}));
+            break;
+          }
           case 'setChatsData': {
             store.dispatch({type: setChatsData.type, payload: message.payload});
             break;
@@ -34,11 +37,6 @@ export const socketMiddleware = store => next => action => {
       };
       break;
     }
-
-    // case ADD_DIALOGS_WITH_NEW_USER: {
-    //   socket.send(JSON.stringify({type: 'addDialogsWithNewUser'}));
-    //   break;
-    // }
 
     case SEND_MESSAGE: {
       socket.send(JSON.stringify({type: 'chatMessage', payload: action.payload}));

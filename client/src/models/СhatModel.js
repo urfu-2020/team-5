@@ -1,8 +1,6 @@
-/**
- * Блок диалога в списке чатов
- */
 class ChatModel {
   /**
+   * модель чата на фронте
    * @param chatId {Number}
    * @param chatType {('Own'|'Dialog'|'Group')}
    * @param chatAvatarUrl {String}

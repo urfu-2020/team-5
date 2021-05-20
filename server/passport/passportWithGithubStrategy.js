@@ -13,11 +13,8 @@ passport.use(new GitHubStrategy({
     let user = await getUser('username', username);
     if (!user) {
       await createUser(username, avatarUrl, profileUrl);
-      // await addDialogsWithNewUser(username);
-      // Добавлять в коннект сокета, если нет диалогов - то пользователь новый
       user = await getUser('username', username);
     }
-    console.log(user);
     return cb(null, user);
   } catch (e) {
     return cb(e, null);
@@ -25,12 +22,10 @@ passport.use(new GitHubStrategy({
 }));
 
 passport.serializeUser((profile, done) => {
-  console.log('serialize');
   done(null, profile);
 });
 
 passport.deserializeUser((profile, done) => {
-  console.log('deserialize');
   done(null, profile);
 });
 

@@ -6,7 +6,7 @@ import './chat-messages.css';
 
 import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
-import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
+import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../utils/time";
 import {Spinner} from "../../Controls/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
@@ -18,15 +18,6 @@ const getSobesednikAvatarUrl = (sobesedniki, senderId) => {
 
 const isMyMessage = (myId, senderId) => {
   return myId === senderId;
-};
-
-const isNewDay = (messages, index) => {
-  if (index === 0) return true;
-  const prevMessageTime = new Date(messages[index - 1].time);
-  const newMessageTime = new Date(messages[index].time);
-  return newMessageTime.getFullYear() !== prevMessageTime.getFullYear() ||
-    newMessageTime.getMonth() !== prevMessageTime.getMonth() ||
-    newMessageTime.getDate() !== prevMessageTime.getDate();
 };
 
 const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {

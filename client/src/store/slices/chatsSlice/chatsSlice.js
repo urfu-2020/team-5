@@ -6,7 +6,7 @@ class ChatsState {
   /**
    *
    * @param currentChatId {number}
-   * @param userChats {{ number: ChatModel }}
+   * @param userChats {Object.<number, ChatModel>}
    * @param isChatsDataLoading {boolean}
    */
   constructor(currentChatId, userChats, isChatsDataLoading) {
@@ -29,6 +29,11 @@ export const chatsSlice = createSlice({
   name: 'chats',
   initialState: initialChatsState,
   reducers: {
+    /**
+     * Установить инфу о чатах после логина + в каждом по последнему сообщению
+     * @param state {ChatsState}
+     * @param action {{ type: string, payload: { userChats: Array<UserChatModel>, lastMessages: Array<MessageModel>} }}
+     */
     setChatsData(state, {payload}) {
       const {userChats, lastMessages} = payload;
       state.userChats = convertRawStartChatsData(userChats, lastMessages);

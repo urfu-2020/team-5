@@ -4,32 +4,9 @@ const session = require('../session');
 const {
   getUserLastChatMessages, getUserChats, addDialogsWithNewUser, storeChatMessage
 } = require('../db/dbapi');
-
-/**
- * chatId -> members
- * @type {{
- *   number: Array<WebSocket>
- * }}
- */
-const rooms = {};
-
-const sendToRoomMembers = (chatId, message) => {
-  rooms[chatId].forEach((client) => {
-    console.log('send to ', client.sessionUser.username);
-    client.send(message);
-  });
-};
-
-const connectUserToRooms = (socket, chats) => {
-  chats.forEach((chat) => {
-    const { chatId } = chat;
-    if (rooms[chatId]) {
-      rooms[chatId].push(socket);
-    } else {
-      rooms[chatId] = [socket];
-    }
-  });
-};
+const {
+  rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
+} = require('./socketRooms');
 
 /**
  * Настраиваем сокеты
@@ -37,6 +14,7 @@ const connectUserToRooms = (socket, chats) => {
  */
 function configureSocket(server) {
   const io = new WebSocket.Server({ noServer: true });
+  const heartbeatInterval = configureRoomsHeartbeat(60 * 1000);
 
   server.on('upgrade', (req, socket, head) => {
     io.handleUpgrade(req, socket, head, async (ws) => {
@@ -48,6 +26,7 @@ function configureSocket(server) {
   });
 
   io.on('connection', async (socket) => {
+    socket.isAlive = true;
     const { sessionUser } = socket;
     let userChats = await getUserChats(sessionUser.id);
 
@@ -56,7 +35,7 @@ function configureSocket(server) {
       await addDialogsWithNewUser(sessionUser.username);
       userChats = await getUserChats(sessionUser.id);
       connectUserToRooms(socket, userChats);
-
+      // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
       io.clients.forEach((client) => {
         if (client !== socket) {
           const newUserChat = userChats.find((chat) => chat.sobesednikId === client.sessionUser.id);
@@ -76,6 +55,7 @@ function configureSocket(server) {
       });
     } else connectUserToRooms(socket, userChats);
 
+    // при подключении пользователя отсылаем ему начальные данные о его чатах
     const lastMessages = await getUserLastChatMessages(sessionUser.id);
     socket.send(JSON.stringify({
       type: 'setChatsData',
@@ -84,13 +64,16 @@ function configureSocket(server) {
 
     socket.on('message', async (rawMessage) => {
       const message = JSON.parse(rawMessage);
-      console.log(message);
       switch (message.type) {
+        case 'pong': {
+          socket.isAlive = true;
+          break;
+        }
+
         case 'chatMessage': {
           const {
             chatId, text, hasAttachments, status, time
           } = message.payload;
-
           const senderId = sessionUser.id;
           if (rooms[chatId] && rooms[chatId].includes(socket)) {
             const id = uuidv4();
@@ -112,14 +95,16 @@ function configureSocket(server) {
     });
 
     socket.on('close', () => {
-      console.log('close');
-      Object.entries(rooms).forEach(([roomId, sockets]) => {
-        if (sockets.includes(socket)) {
-          rooms[roomId] = sockets.filter((client) => client !== socket);
-          if (rooms[roomId].length === 0) delete rooms[roomId];
-        }
-      });
+      leaveAllRooms(socket);
     });
+
+    socket.on('error', (e) => {
+      console.log('error', e);
+    });
+  });
+
+  io.on('close', () => {
+    clearInterval(heartbeatInterval);
   });
 }
 

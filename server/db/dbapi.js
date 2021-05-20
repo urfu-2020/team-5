@@ -9,7 +9,6 @@ const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
  */
 async function dbRequest(query) {
   try {
-    console.log(query);
     const request = (await mssql.connect(CONNECTION_URL)).request();
     return request.query(query);
   } catch (e) {
