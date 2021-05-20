@@ -1,6 +1,6 @@
 class UserModel {
   /**
-   * @param id {Number}
+   * @param id {number}
    * @param username {String}
    * @param avatarUrl {String}
    * @param githubUrl {String}

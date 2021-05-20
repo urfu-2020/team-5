@@ -1,3 +1,8 @@
+/**
+ * Получить чат (в представлении фронта) без собеседников
+ * @param userChat {UserChatModel}
+ * @returns {ChatModel}
+ */
 function getNewChat(userChat) {
   const {
     chatId, chatType, sobesednikAvatarUrl, sobesednikUsername
@@ -17,6 +22,12 @@ function getNewChat(userChat) {
   };
 }
 
+/**
+ * При подключении нового юзера создается чат с ним.
+ * Здесь парсятся данные с бэка для фронта
+ * @param userChat {UserChatModel}
+ * @returns {ChatModel}
+ */
 export function convertRawNewDialog(userChat) {
   const newChat = getNewChat(userChat);
   newChat.sobesedniki.push(
@@ -30,6 +41,12 @@ export function convertRawNewDialog(userChat) {
   return newChat;
 }
 
+/**
+ * Преобразование стартовых данных, пришедших с бэка (из бд), в нужные для фронта
+ * @param rawChatsInfo {Array<UserChatModel>} записи чат-собеседник
+ * @param lastMessages {Array<MessageModel>} последние сообщения в каждом из чатов
+ * @returns {ChatModel}
+ */
 export function convertRawStartChatsData(rawChatsInfo, lastMessages) {
   const chats = {};
   rawChatsInfo.forEach((userChat) => {
@@ -48,5 +65,6 @@ export function convertRawStartChatsData(rawChatsInfo, lastMessages) {
   lastMessages.forEach((message) => {
     chats[message.chatId].lastMessage = message;
   });
+
   return chats;
 }

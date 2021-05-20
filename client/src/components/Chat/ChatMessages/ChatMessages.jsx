@@ -10,31 +10,7 @@ import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../ut
 import {Spinner} from "../../Controls/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
-
-
-const getSobesednikAvatarUrl = (sobesedniki, senderId) => {
-  return sobesedniki.find(user => user.id === senderId).avatarUrl;
-};
-
-const isMyMessage = (myId, senderId) => {
-  return myId === senderId;
-};
-
-const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {
-  const {LOAD_MESSAGES_THRESHOLD} = config;
-  try {
-    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${offset}/${LOAD_MESSAGES_THRESHOLD}`, {
-      signal: controller.signal
-    })).json();
-
-    if (oldMessages.length < LOAD_MESSAGES_THRESHOLD) {
-      cbOnAllLoaded();
-    }
-    return {oldMessages};
-  } catch (e) {
-    console.error(e);
-  }
-};
+import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
 
 
 const ChatMessages = ({currentChatInfo}) => {
@@ -86,11 +62,11 @@ const ChatMessages = ({currentChatInfo}) => {
       }
   }, [messages]);
 
-  const addMessagesOnScroll = async e => {
+  async function addMessagesOnScroll(e) {
     if (  e.target.scrollTop === 0 &&
-          !isAllMessagesLoaded &&
-          !isOldMessagesLoading &&
-          messages.length >= config.LOAD_MESSAGES_THRESHOLD
+      !isAllMessagesLoaded &&
+      !isOldMessagesLoading &&
+      messages.length >= config.LOAD_MESSAGES_THRESHOLD
     ) {
       setOldMessagesLoading(true);
       const response = await loadOldMessages({
@@ -105,8 +81,7 @@ const ChatMessages = ({currentChatInfo}) => {
         setOldMessagesLoading(false);
       }
     }
-  };
-
+  }
 
   return (
     <div className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>

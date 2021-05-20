@@ -3,6 +3,9 @@ const { getUserChatsIds, getChatMessages } = require('../db/dbapi');
 
 const router = express.Router();
 
+/**
+ * Получить ${count} сообщений со смещением ${offset} из чата с id === ${chatId}
+ */
 router.get('/:chatId/:offset/:count', async (req, res) => {
   const chatId = +req.params.chatId;
   const offset = +req.params.offset;

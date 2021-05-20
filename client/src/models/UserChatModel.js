@@ -1,6 +1,8 @@
-
+/**
+ * Запись из бд вида чат-собеседник
+ */
 class UserChatModel {
-  /** Запись из бд вида чат-собеседник
+  /**
    * @param chatId {number}
    * @param chatType {('Own'|'Dialog'|'Group')}
    * @param chatAvatarUrl {String}

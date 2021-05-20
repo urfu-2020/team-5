@@ -1,4 +1,4 @@
-import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {addChatMessage, addDialogWithNewUser, setChatsData} from "../slices/chatsSlice/chatsSlice";
 
 const INIT_SOCKET = 'socket/init';
 export const initSocket = () => ({type: INIT_SOCKET});
@@ -26,7 +26,7 @@ export const socketMiddleware = store => next => action => {
             break;
           }
           case 'addNewDialog': {
-            store.dispatch({type: addNewChat.type, payload: message.payload});
+            store.dispatch({type: addDialogWithNewUser.type, payload: message.payload});
             break;
           }
           case 'chatMessage': {

@@ -1,21 +1,23 @@
+/**
+ * Модель чата на фронте
+ */
 class ChatModel {
   /**
-   * модель чата на фронте
    * @param chatId {Number}
    * @param chatType {('Own'|'Dialog'|'Group')}
    * @param chatAvatarUrl {String}
    * @param chatTitle {String}
    * @param sobesedniki {Array<UserModel>}
-   * @param messages {Array<MessageModel>}
+   * @param lastMessage {MessageModel}
    */
   constructor(chatId, chatType, chatAvatarUrl,
-              chatTitle, sobesedniki, messages) {
+              chatTitle, sobesedniki, lastMessage) {
     this.chatId = chatId;
     this.chatType = chatType;
     this.chatAvatarUrl = chatAvatarUrl;
     this.chatTitle = chatTitle;
     this.sobesedniki = sobesedniki;
-    this.messages = messages;
+    this.lastMessage = lastMessage;
   }
 }
 

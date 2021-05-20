@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {Switch, Route, Redirect} from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
 
 import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
 import {Spinner} from "./Controls/Spinner/Spinner";
-import {useDispatch, useSelector} from "react-redux";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
@@ -21,10 +21,8 @@ const App = () => {
   useEffect(() => {
     if (!currentUserId)
       dispatch(setCurrentUser());
-    else {
-      // dispatch(setChatsData(currentUserId));
+    else
       dispatch(initSocket());
-    }
   }, [currentUserId]);
 
 

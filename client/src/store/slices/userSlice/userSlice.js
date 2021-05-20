@@ -41,6 +41,7 @@ export const userSlice = createSlice({
       state.isUserLoading = true;
     },
     /**
+     * Установить текущего пользователя
      * @param state {UserState}
      * @param action {{ type: string, payload: UserModel }}
      */

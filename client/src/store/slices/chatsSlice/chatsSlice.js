@@ -4,7 +4,6 @@ import {convertRawNewDialog, convertRawStartChatsData} from "../../../utils/chat
 
 class ChatsState {
   /**
-   *
    * @param currentChatId {number}
    * @param userChats {Object.<number, ChatModel>}
    * @param isChatsDataLoading {boolean}
@@ -16,9 +15,7 @@ class ChatsState {
   }
 }
 
-/**
- * @type ChatsState
- */
+
 const initialChatsState = {
   currentChatId: null,
   userChats: {},
@@ -40,6 +37,7 @@ export const chatsSlice = createSlice({
       state.isChatsDataLoading = false;
     },
     /**
+     * Обновить последнее сообщение в чате с id === ${action.payload.chatId}
      * @param state {ChatsState}
      * @param action {{ type: string, payload: MessageModel }}
      */
@@ -47,13 +45,19 @@ export const chatsSlice = createSlice({
       state.userChats[payload.chatId].lastMessage = payload;
     },
     /**
+     * Обновить текущий чат
      * @param state {ChatsState}
-     * @param action {{ type: string, payload: number }}}
+     * @param action {{ type: string, payload: number }}
      */
     setCurrentChatId(state, {payload}) {
       state.currentChatId = payload;
     },
-    addNewChat(state, {payload}) {
+    /**
+     * Добавить диалог с новым пользователем
+     * @param state {ChatsState}
+     * @param action {UserChatModel}
+     */
+    addDialogWithNewUser(state, {payload}) {
       const newChat = convertRawNewDialog(payload);
       state.userChats[newChat.chatId] = newChat;
     }
@@ -66,7 +70,7 @@ const { actions, reducer } = chatsSlice;
 
 export const {
   setChatsData,
-  addNewChat,
+  addDialogWithNewUser,
   addChatMessage,
   setCurrentChatId
 } = actions;

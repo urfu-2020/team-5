@@ -3,8 +3,8 @@ const mssql = require('mssql');
 const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
 
 /**
- *
- * @param query {string}
+ * Запрос в бд
+ * @param query {string} строка запроса
  * @returns {Promise<void|Promise>}
  */
 async function dbRequest(query) {
@@ -17,15 +17,17 @@ async function dbRequest(query) {
 }
 
 /**
- * @returns {Array<UserModel> | boolean}
+ * Получить всех пользователей
+ * @returns {Array<UserModel>}
  */
 async function getUsers() {
   return (await dbRequest('SELECT * FROM [User]')).recordset;
 }
 
 /**
- * @param column {String}
- * @param value {String | number}
+ * Получить пользователя по условию
+ * @param column {String} название атрибута в бд
+ * @param value {String | number} значение атрибута
  * @returns {UserModel | boolean}
  */
 async function getUser(column, value) {
@@ -37,6 +39,7 @@ async function getUser(column, value) {
 }
 
 /**
+ * Создать пользователя в бд
  * @param username {String}
  * @param avatarUrl {String}
  * @param githubUrl {String}
@@ -47,6 +50,7 @@ async function createUser(username, avatarUrl, githubUrl) {
 }
 
 /**
+ * Добавить диалоги с пользователем, который в первый раз зашел
  * @param username {String}
  */
 async function addDialogsWithNewUser(username) {
@@ -54,20 +58,25 @@ async function addDialogsWithNewUser(username) {
 }
 
 /**
- * Получить информацию о чатах пользователя
+ * Получить записи вида чат-собеседник о чатах, в которых есть пользователь с userId
  * @param userId {Number}
- * @returns Array<ChatModel>
+ * @returns Array<UserChatModel>
  */
 async function getUserChats(userId) {
   return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset;
 }
 
+/**
+ * Получить id чатов, в которых есть пользователь
+ * @param userId
+ * @returns {Promise<*>}
+ */
 async function getUserChatsIds(userId) {
   return (await dbRequest(`SELECT * FROM GetUserChatsIds(${userId})`)).recordset.map((obj) => obj.chatId);
 }
 
 /**
- * Получить следующие ${take} сообщений чата, начиная с ${offset}
+ * Получить из ${chatId} следующие ${take} сообщений чата, начиная с ${offset}
  * @param chatId {number}
  * @param offset {number}
  * @param take {number}
@@ -78,7 +87,7 @@ async function getChatMessages(chatId, offset, take) {
 }
 
 /**
- * Получить последние сообщения из всех чатов, в которых есть пользователь (когда входим первый раз)
+ * Получить последние сообщения из всех чатов, в которых есть пользователь (для начальных данных о чатах)
  * @param userId {number}
  * @returns Array<MessageModel>
  */
@@ -88,7 +97,8 @@ async function getUserLastChatMessages(userId) {
 
 /**
  * Положить сообщение в бд
- * @returns number
+ * @param {MessageModel}
+ * @returns {Promise<boolean>}
  */
 async function storeChatMessage({
   id, chatId, senderId, text, hasAttachments, status, time

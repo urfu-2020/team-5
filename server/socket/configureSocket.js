@@ -16,6 +16,7 @@ function configureSocket(server) {
   const io = new WebSocket.Server({ noServer: true });
   const heartbeatInterval = configureRoomsHeartbeat(60 * 1000);
 
+  // При апгрейде на сокеты прокидываем объект сессии
   server.on('upgrade', (req, socket, head) => {
     io.handleUpgrade(req, socket, head, async (ws) => {
       session(req, {}, () => {
@@ -75,6 +76,7 @@ function configureSocket(server) {
             chatId, text, hasAttachments, status, time
           } = message.payload;
           const senderId = sessionUser.id;
+          // Если пользователь есть в чате, то сохраняем сообщение в бд и отсылаем его в этот чат
           if (rooms[chatId] && rooms[chatId].includes(socket)) {
             const id = uuidv4();
             const resultMessage = {

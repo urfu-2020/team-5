@@ -1,4 +1,5 @@
 /**
+ * Объект чатов вида
  * chatId -> [{Websocket + sessionUser}]
  * @type {{
  *   number: Array<WebSocket>
@@ -6,12 +7,23 @@
  */
 const rooms = {};
 
+/**
+ * Отправить сообщения всем в комнате
+ * @param chatId {number}
+ * @param message {string}
+ */
 const sendToRoomMembers = (chatId, message) => {
   rooms[chatId].forEach((client) => {
     client.send(message);
   });
 };
 
+/**
+ * Подсоедениться к сокет румам или создать их, если такой еще не было
+ * @param socket {WebSocket} сокет, который присоединяется к комнатам
+ * @param {UserModel} socket.sessionUser объект сессии сокета
+ * @param chats {Array<ChatModel>}
+ */
 const connectUserToRooms = (socket, chats) => {
   chats.forEach((chat) => {
     const { chatId } = chat;
@@ -23,6 +35,11 @@ const connectUserToRooms = (socket, chats) => {
   });
 };
 
+/**
+ * Покинуть все сокет румы (при отключении сокета)
+ * @param socket {WebSocket} сокет, который покидает комнаты
+ * @param {UserModel} socket.sessionUser объект сессии сокета
+ */
 const leaveAllRooms = (socket) => {
   Object.entries(rooms).forEach(([roomId, sockets]) => {
     if (sockets.includes(socket)) {
@@ -32,6 +49,11 @@ const leaveAllRooms = (socket) => {
   });
 };
 
+/**
+ * Пинг-понг веб сокетов чтобы отслеживать, отрубать и выкидывать из комнат отвалившиеся сокеты
+ * @param delay {number} задержка интервала
+ * @returns {number} timerId
+ */
 const configureRoomsHeartbeat = (delay) => setInterval(() => {
   const pingedUsers = new Set();
   Object.values(rooms).forEach((sockets) => {
