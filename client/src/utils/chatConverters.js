@@ -1,67 +1,45 @@
 /**
- * Получить чат (в представлении фронта) без собеседников
- * @param userChat {UserChatModel}
+ * Получить чат (в представлении фронта)
+ * @param chat {ChatInDbModel}
+ * @param chatSobesedniki {Array<UserChatModel>}
  * @returns {ChatModel}
  */
-function getNewChat(userChat) {
-  const {
-    chatId, chatType, sobesednikAvatarUrl, sobesednikUsername
-  } = userChat;
-  let {chatAvatarUrl, chatTitle} = userChat;
-  if (chatType === 'Own' || chatType === 'Dialog') {
-    chatAvatarUrl = sobesednikAvatarUrl;
-    chatTitle = sobesednikUsername;
+export function getNewChat(chat, chatSobesedniki) {
+
+  // находим собеседников, которые есть в этом чате
+  const sobesedniki = chatSobesedniki.filter(cs => cs.chatId === chat.id)
+    .map(cs => ({
+      id: cs.sobesednikId,
+      username: cs.sobesednikUsername,
+      avatarUrl: cs.sobesednikAvatarUrl,
+      githubUrl: cs.sobesednikGHUrl
+    }));
+
+  if (chat.chatType === 'Own' || chat.chatType === 'Dialog') {
+    const sobesednik = sobesedniki[0];
+    chat.chatAvatarUrl = sobesednik.avatarUrl;
+    chat.chatTitle = sobesednik.username;
   }
 
   return {
-    chatId,
-    chatType,
-    chatAvatarUrl,
-    chatTitle,
-    sobesedniki: []
+    ...chat,
+    sobesedniki
   };
 }
 
 /**
- * При подключении нового юзера создается чат с ним.
- * Здесь парсятся данные с бэка для фронта
- * @param userChat {UserChatModel}
- * @returns {ChatModel}
- */
-export function convertRawNewDialog(userChat) {
-  const newChat = getNewChat(userChat);
-  newChat.sobesedniki.push(
-    {
-      id: userChat.sobesednikId,
-      username: userChat.sobesednikUsername,
-      avatarUrl: userChat.sobesednikAvatarUrl,
-      githubUrl: userChat.sobesednikGHUrl
-    }
-  );
-  return newChat;
-}
-
-/**
  * Преобразование стартовых данных, пришедших с бэка (из бд), в нужные для фронта
- * @param rawChatsInfo {Array<UserChatModel>} записи чат-собеседник
+ * @param rawChatsInfo {Array<ChatInDbModel>} чаты, в которых есть пользователь
+ * @param chatSobesedniki {Array<UserChatModel>} chatId-собеседник
  * @param lastMessages {Array<MessageModel>} последние сообщения в каждом из чатов
  * @returns {ChatModel}
  */
-export function convertRawStartChatsData(rawChatsInfo, lastMessages) {
+export function convertRawStartChatsData(rawChatsInfo, chatSobesedniki, lastMessages) {
   const chats = {};
-  rawChatsInfo.forEach((userChat) => {
-    if (!chats[userChat.chatId]) {
-      chats[userChat.chatId] = getNewChat(userChat);
-    }
-    chats[userChat.chatId].sobesedniki.push(
-      {
-        id: userChat.sobesednikId,
-        username: userChat.sobesednikUsername,
-        avatarUrl: userChat.sobesednikAvatarUrl,
-        githubUrl: userChat.sobesednikGHUrl
-      }
-    );
+  rawChatsInfo.forEach(chat => {
+    chats[chat.id] = getNewChat(chat, chatSobesedniki);
   });
+
   lastMessages.forEach((message) => {
     chats[message.chatId].lastMessage = message;
   });

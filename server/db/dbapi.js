@@ -58,18 +58,27 @@ async function addDialogsWithNewUser(username) {
 }
 
 /**
- * Получить записи вида чат-собеседник о чатах, в которых есть пользователь с userId
- * @param userId {Number}
- * @returns Array<UserChatModel>
+ * Получить чаты, в которых есть пользователь
+ * @param userId
+ * @returns {Array<ChatInDbModel>}
  */
 async function getUserChats(userId) {
   return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset;
 }
 
 /**
+ * Получить записи вида чат-собеседник о чатах, в которых есть пользователь с userId
+ * @param userId {Number}
+ * @returns Array<UserChatModel>
+ */
+async function getUserChatSobesedniki(userId) {
+  return (await dbRequest(`SELECT * FROM GetUserChatsSobesedniki(${userId})`)).recordset;
+}
+
+/**
  * Получить id чатов, в которых есть пользователь
  * @param userId
- * @returns {Promise<*>}
+ * @returns {Array<Number>}
  */
 async function getUserChatsIds(userId) {
   return (await dbRequest(`SELECT * FROM GetUserChatsIds(${userId})`)).recordset.map((obj) => obj.chatId);
@@ -122,6 +131,7 @@ module.exports = {
   getUser,
   createUser,
   addDialogsWithNewUser,
+  getUserChatSobesedniki,
   getUserChats,
   getUserChatsIds,
   storeChatMessage,

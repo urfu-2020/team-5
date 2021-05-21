@@ -16,7 +16,7 @@ import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../uti
 const ChatMessages = ({currentChatInfo}) => {
   const currentUser = useSelector(selectCurrentUser);
 
-  const {chatId, sobesedniki, lastMessage} = currentChatInfo;
+  const {id, sobesedniki, lastMessage} = currentChatInfo;
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -31,14 +31,14 @@ const ChatMessages = ({currentChatInfo}) => {
     fetchControllerRef.current = new AbortController();
     (async () => {
       const response = await loadOldMessages({
-        chatId,
+        chatId: id,
         offset: 0,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
       });
       if(response) {
         setMessages(response.oldMessages);
-        setPrevChatId(chatId);
+        setPrevChatId(id);
       }
     })();
 
@@ -47,7 +47,7 @@ const ChatMessages = ({currentChatInfo}) => {
       prevLastMessageRef.current = null;
       setIsAllMessagesLoaded(false);
     };
-  }, [chatId]);
+  }, [id]);
 
   useEffect(() => {
     setMessages(prevMessages => [...prevMessages, lastMessage]);
@@ -70,7 +70,7 @@ const ChatMessages = ({currentChatInfo}) => {
     ) {
       setOldMessagesLoading(true);
       const response = await loadOldMessages({
-        chatId,
+        id,
         offset: messages.length,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
@@ -87,7 +87,7 @@ const ChatMessages = ({currentChatInfo}) => {
     <div className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
       {
         // если чат сменился и еще не загрузился
-        prevChatId !== chatId ? <Spinner className="spinner_chat-main"/> : (
+        prevChatId !== id ? <Spinner className="spinner_chat-main"/> : (
           <>
             {
               isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
@@ -129,7 +129,7 @@ export const MemoizedChatMessages = React.memo(ChatMessages);
 
 ChatMessages.propTypes = {
   currentChatInfo: PropTypes.shape({
-    chatId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
     chatAvatarUrl: PropTypes.string.isRequired,
     chatTitle: PropTypes.string.isRequired,

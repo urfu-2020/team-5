@@ -2,7 +2,8 @@ const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 const session = require('../session');
 const {
-  getUserLastChatMessages, getUserChats, addDialogsWithNewUser, storeChatMessage
+  getUserChats,
+  getUserLastChatMessages, getUserChatSobesedniki, addDialogsWithNewUser, storeChatMessage
 } = require('../db/dbapi');
 const {
   rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
@@ -36,31 +37,43 @@ function configureSocket(server) {
       await addDialogsWithNewUser(sessionUser.username);
       userChats = await getUserChats(sessionUser.id);
       connectUserToRooms(socket, userChats);
+      const chatSobesedniki = await getUserChatSobesedniki(sessionUser.id);
+
       // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
       io.clients.forEach((client) => {
         if (client !== socket) {
-          const newUserChat = userChats.find((chat) => chat.sobesednikId === client.sessionUser.id);
+          const sobesednik = chatSobesedniki.find(
+            (chatSobesednik) => chatSobesednik.sobesednikId === client.sessionUser.id
+          );
+          const chatWithNewUser = userChats.find((chat) => chat.id === sobesednik.chatId);
+
+          // модель чат-собеседник
+          const chatNewUserSobesednik = {
+            chatId: sobesednik.chatId,
+            sobesednikId: sessionUser.id,
+            sobesednikUsername: sessionUser.username,
+            sobesednikAvatarUrl: sessionUser.avatarUrl,
+            sobesednikGHUrl: sessionUser.githubUrl
+          };
+
           client.send(JSON.stringify({
-            type: 'addNewDialog',
-            // схема чата из бд
+            type: 'addNewChat',
             payload: {
-              ...newUserChat,
-              sobesednikId: sessionUser.id,
-              sobesednikUsername: sessionUser.username,
-              sobesednikAvatarUrl: sessionUser.avatarUrl,
-              sobesednikGHUrl: sessionUser.githubUrl
+              chat: chatWithNewUser,
+              chatSobesedniki: [chatNewUserSobesednik]
             }
           }));
-          rooms[newUserChat.chatId].push(client);
+          rooms[chatWithNewUser.id].push(client);
         }
       });
     } else connectUserToRooms(socket, userChats);
 
     // при подключении пользователя отсылаем ему начальные данные о его чатах
+    const chatSobesedniki = await getUserChatSobesedniki(sessionUser.id);
     const lastMessages = await getUserLastChatMessages(sessionUser.id);
     socket.send(JSON.stringify({
       type: 'setChatsData',
-      payload: { userChats, lastMessages }
+      payload: { userChats, chatSobesedniki, lastMessages }
     }));
 
     socket.on('message', async (rawMessage) => {

@@ -1,3 +1,4 @@
+
 GO
 CREATE TABLE [User] (
 	id INT PRIMARY KEY IDENTITY,
@@ -8,10 +9,11 @@ CREATE TABLE [User] (
 
 CREATE TABLE Chat (
 	id INT IDENTITY PRIMARY KEY,
-	type NVARCHAR(20) CHECK(Type IN ('Own', 'Dialog', 'Group')),
-	avatarURL NVARCHAR(1024),
-	groupTitle NVARCHAR(255)
+	chatType NVARCHAR(20) CHECK(chatType IN ('Own', 'Dialog', 'Group')),
+	chatAvatarUrl NVARCHAR(1024),
+	chatTitle NVARCHAR(255)
 );
+
 
 GO
 CREATE TABLE ChatUser (
@@ -49,13 +51,13 @@ BEGIN
 	BEGIN
 		IF (@nextUserId <> @newUserId)
 		BEGIN
-			INSERT INTO Chat(type) VALUES ('Dialog');
+			INSERT INTO Chat(chatType) VALUES ('Dialog');
 			DECLARE @dialogId INT = @@IDENTITY;
 			INSERT INTO ChatUser VALUES (@dialogId, @newUserId), (@dialogId, @nextUserId);
 		END
 		ELSE
 		BEGIN
-			INSERT INTO Chat(type) VALUES ('Own');
+			INSERT INTO Chat(chatType) VALUES ('Own');
 			INSERT INTO ChatUser VALUES (@@IDENTITY, @newUserId);
 		END
 
@@ -66,15 +68,26 @@ BEGIN
 	DEALLOCATE usersId_cursor;
 END
 
-/* Получить все записи чат-собеседник чатов, в которых состоит пользователь */
+
+
+/* Получить все записи чаты, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChats(@userId INT)
 RETURNS TABLE
 AS RETURN
+	SELECT DISTINCT id, chatType, chatAvatarUrl, chatTitle
+	FROM Chat
+	JOIN ChatUser
+	ON Chat.id = ChatUser.chatId
+	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
+
+
+
+GO
+CREATE FUNCTION GetUserChatsSobesedniki(@userId INT)
+RETURNS TABLE
+AS RETURN
 	SELECT	Chat.id as chatId,
-					Chat.type as chatType,
-					Chat.avatarURL as chatAvatarUrl,
-					Chat.groupTitle as chatTitle,
 					ChatUser.userId as sobesednikId,
 					[User].username as sobesednikUsername,
 					[User].avatarUrl as sobesednikAvatarUrl,
@@ -85,7 +98,7 @@ AS RETURN
 	JOIN [User]
 	ON ChatUser.userId = [User].id
 	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
-				AND	NOT (Chat.type != 'Own' AND ChatUser.userId = @userId)
+				AND	NOT (Chat.chatType != 'Own' AND ChatUser.userId = @userId)
 
 
 
@@ -127,8 +140,8 @@ AS
 BEGIN
 	DECLARE @userChatIds TABLE(chatId INT);
 	INSERT INTO @userChatIds
-	SELECT Chats.chatId
-	FROM GetUserChats(@userId) as Chats;
+	SELECT *
+	FROM GetUserChatsIds(@userId) as Chats;
 
 	DECLARE chatId_cursor CURSOR FOR
 	SELECT chatId FROM @userChatIds;

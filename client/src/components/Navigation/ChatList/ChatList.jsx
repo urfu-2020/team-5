@@ -19,11 +19,11 @@ export const ChatList = () => {
           // return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time);
           // })
           .map(({
-                  chatId, chatType, chatAvatarUrl, chatTitle, lastMessage, sobesedniki
+                  id, chatType, chatAvatarUrl, chatTitle, lastMessage, sobesedniki
                 }) => (
             <ChatCard
-              key={chatId}
-              chatId={chatId}
+              key={id}
+              chatId={id}
               chatType={chatType}
               title={chatTitle}
               avatarUrl={chatAvatarUrl}

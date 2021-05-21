@@ -18,8 +18,8 @@ export const SideMenuOption = ({Icon, text, children, as}) => {
 };
 
 SideMenuOption.propTypes = {
-  Icon: PropTypes.node.isRequired,
+  Icon: PropTypes.func.isRequired,
   text: PropTypes.string,
   children: PropTypes.node,
-  as: PropTypes.element
+  as: PropTypes.string
 };

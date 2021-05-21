@@ -18,6 +18,6 @@ Button.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
   type: PropTypes.string,
-  as: PropTypes.element
+  as: PropTypes.string
 };
 

@@ -26,11 +26,11 @@ const sendToRoomMembers = (chatId, message) => {
  */
 const connectUserToRooms = (socket, chats) => {
   chats.forEach((chat) => {
-    const { chatId } = chat;
-    if (rooms[chatId]) {
-      rooms[chatId].push(socket);
+    const { id } = chat;
+    if (rooms[id]) {
+      rooms[id].push(socket);
     } else {
-      rooms[chatId] = [socket];
+      rooms[id] = [socket];
     }
   });
 };
