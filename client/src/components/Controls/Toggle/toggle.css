@@ -1,0 +1,63 @@
+/* The toggle - the box around the slider */
+.toggle {
+  position: relative;
+  display: inline-block;
+  width: 55px;
+  height: 30px;
+  margin-left: auto;
+}
+
+/* Hide default HTML checkbox */
+.toggle__input {
+  width: 0;
+  height: 0;
+  opacity: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  cursor: pointer;
+  background-color: #ccc;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+
+.slider::before {
+  position: absolute;
+  bottom: 2px;
+  left: 2px;
+  width: 26px;
+  height: 26px;
+  content: "";
+  background-color: white;
+  -webkit-transition: 0.2s;
+  transition: 0.2s;
+}
+
+input:checked + .slider {
+  background-color: var(--teal-500);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px var(--teal-500);
+}
+
+input:checked + .slider::before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round::before {
+  border-radius: 50%;
+}

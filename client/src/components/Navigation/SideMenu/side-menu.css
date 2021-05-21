@@ -1,0 +1,46 @@
+@import url("../../../css/_variables.css");
+
+.side-menu {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: 1fr 6fr;
+  width: 34%;
+  background-color: var(--bg-color);
+  transition: left 0.4s;
+}
+
+.side-menu_open {
+  left: 0;
+}
+
+.side-menu_close {
+  left: -34%;
+}
+
+.side-menu__header {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5%;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+}
+
+.side-menu__user-avatar {
+  height: 80px;
+  border-radius: 100%;
+}
+
+.side-menu__main {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+
+.side-menu__user-name {
+  font-size: 1.4rem;
+}

@@ -4,18 +4,20 @@ import PropTypes from 'prop-types';
 import './button.css';
 import { Ripple } from './Ripple/Ripple';
 
-export const Button = ({children, className, type, ...otherProps}) => {
+export const Button = ({children, className, type, as, ...otherProps}) => {
+  const ResAs = as ? as : "button";
   return (
-    <button className={`button ${className ? className : ''}`} type={type ? type : "button"} {...otherProps}>
+    <ResAs className={`button ${className ? className : ''}`} type={type ? type : "button"} {...otherProps}>
       {children}
       <Ripple duration={800} />
-    </button>
+    </ResAs>
   );
 };
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,
   className: PropTypes.string,
-  type: PropTypes.string
+  type: PropTypes.string,
+  as: PropTypes.element
 };
 
