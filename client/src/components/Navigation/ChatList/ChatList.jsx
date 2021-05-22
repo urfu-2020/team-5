@@ -14,12 +14,17 @@ export const ChatList = () => {
     <ul>
       {
         Object.values(userChats)
-          // .sort((firstChat, secondChat) => {
-          // const lastFirstChatMessage = firstChat.messages[firstChat.messages.length - 1];
-          // const lastSecondChatMessage = secondChat.messages[secondChat.messages.length - 1];
-          //
-          // return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time);
-          // })
+          .sort((firstChat, secondChat) => {
+            const lastFirstChatMessage = firstChat.lastMessage;
+            const lastSecondChatMessage = secondChat.lastMessage;
+            if(lastFirstChatMessage && lastSecondChatMessage) {
+              return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time);
+            } else if(!lastFirstChatMessage) {
+              return 1;
+            } else {
+              return -1;
+            }
+          })
           .map(({
                   id, chatType, chatAvatarUrl, chatTitle, lastMessage, members
                 }) => {
