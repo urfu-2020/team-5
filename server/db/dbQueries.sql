@@ -1,3 +1,8 @@
+USE School
+DROP DATABASE Kilogram
+
+CREATE DATABASE Kilogram
+use Kilogram
 
 GO
 CREATE TABLE [User] (
@@ -6,6 +11,7 @@ CREATE TABLE [User] (
 	avatarUrl NVARCHAR(512) NOT NULL,
 	githubUrl NVARCHAR(512)
 );
+
 
 CREATE TABLE Chat (
 	id INT IDENTITY PRIMARY KEY,
@@ -84,23 +90,23 @@ AS RETURN
 
 
 GO
-CREATE FUNCTION GetUserChatsSobesedniki(@userId INT)
+CREATE FUNCTION GetUserChatsChatUserRecords(@userId INT)
 RETURNS TABLE
 AS RETURN
 	SELECT	Chat.id as chatId,
-					ChatUser.userId as sobesednikId,
-					[User].username as sobesednikUsername,
-					[User].avatarUrl as sobesednikAvatarUrl,
-					[User].githubUrl as sobesednikGHUrl
+					ChatUser.userId,
+					[User].username,
+					[User].avatarUrl,
+					[User].githubUrl
 	FROM Chat
 	JOIN ChatUser
 	ON Chat.id = ChatUser.chatId
 	JOIN [User]
 	ON ChatUser.userId = [User].id
 	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
-				AND	NOT (Chat.chatType != 'Own' AND ChatUser.userId = @userId)
 
 
+select * from GetUserChatsChatUserRecords(1)
 
 /* Получить id чатов, в которых состоит пользователь */
 GO
