@@ -9,8 +9,9 @@ import {getTimeInLocaleString} from "../../../utils/time";
 import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../Controls/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
-import {SavedMessagesIcon} from "../../Controls/Icons/SavedMessageIcon/SavedMessagesIcon";
+import {SavedMessagesIcon} from "../../Controls/Icons/SavedMessagesIcon";
 import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
+import {NewChatIcon} from "../../Controls/Icons/NewChatIcon";
 
 
 export const ChatCard = ({ chatId, currentChatId, chatType,
@@ -39,7 +40,9 @@ export const ChatCard = ({ chatId, currentChatId, chatType,
          onKeyDown={openChatOnEnter}
     >
       {
-        chatType === 'Own' ? <SavedMessagesIcon /> : <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
+        chatType === 'Own' ? <SavedMessagesIcon className="chat-card-avatar-icon"/> :
+          chatType === 'Group' ? <NewChatIcon className="chat-card-avatar-icon"/> :
+          <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline} />
       }
       <div className="card__content">
         <h3 className="dialogHeader">

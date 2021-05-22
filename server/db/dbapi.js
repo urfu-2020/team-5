@@ -8,6 +8,7 @@ const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
  * @returns {Promise<void|Promise>}
  */
 async function dbRequest(query) {
+  console.log(query);
   try {
     const request = (await mssql.connect(CONNECTION_URL)).request();
     return request.query(query);
@@ -47,6 +48,41 @@ async function getUser(column, value) {
 async function createUser(username, avatarUrl, githubUrl) {
   await dbRequest(`INSERT INTO [User](username, avatarUrl, githubUrl)
                           VALUES ('${username}', '${avatarUrl}', '${githubUrl}')`);
+}
+
+/**
+ * Создать пустой чат
+ * @param chatTitle {String}
+ */
+async function createNewChatGroup(chatTitle) {
+  await dbRequest(`INSERT INTO Chat(chatType, chatTitle) VALUES ('Group','${chatTitle}')`);
+}
+
+/**
+ * Вставить записи чат-собеседник для нового чата
+ * @param chatId {number}
+ * @param users {Array<UserModel>}
+ */
+async function addUsersInChat(chatId, users) {
+  const insertValues = users.reduce((acc, user, index) => {
+    if (index === users.length - 1) {
+      return `${acc}(${chatId}, ${user.id})`;
+    }
+    return `${acc}(${chatId}, ${user.id}),`;
+  }, '');
+
+  await dbRequest(`INSERT INTO ChatUser VALUES ${insertValues}`);
+}
+
+/**
+ * Получить чат по названию
+ * @param chatTitle {String}
+ * @returns {ChatInDbModel | boolean}
+ */
+async function getChatByTitle(chatTitle) {
+  const querryArr = (await dbRequest(`SELECT * FROM Chat WHERE chatTitle='${chatTitle}'`)).recordset;
+  if (querryArr.length === 0) return false;
+  return querryArr[0];
 }
 
 /**
@@ -127,10 +163,13 @@ async function storeChatMessage({
 }
 
 module.exports = {
+  addUsersInChat,
   getUsers,
   getUser,
   createUser,
+  createNewChatGroup,
   addDialogsWithNewUser,
+  getChatByTitle,
   getUserChatSobesedniki,
   getUserChats,
   getUserChatsIds,

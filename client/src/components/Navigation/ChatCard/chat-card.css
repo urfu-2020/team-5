@@ -98,3 +98,9 @@ h3 {
   background-color: var(--teal-500);
   border-radius: 1em;
 }
+
+.chat-card-avatar-icon {
+  width: 64px;
+  height: 64px;
+  fill: var(--teal-200);
+}

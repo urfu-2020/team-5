@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 export const NewChatIcon = ({className}) => (
   <svg
     className={`${className ? className : ''}`}
-    xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
+    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24px" height="24px" fill="#000000">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path
       d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66

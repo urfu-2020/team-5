@@ -56,12 +56,12 @@ export const chatsSlice = createSlice({
     /**
      * Добавить диалог с новым пользователем
      * @param state {ChatsState}
-     * @param action {{chat: ChatInDbModel, sobesedniki: Array<UserChatModel>}}
+     * @param action {{chat: ChatInDbModel, sobesedniki: Array<UserModel>}}
      */
     addNewChat(state, {payload}) {
-      const {chat, chatSobesedniki} = payload;
-      const newChat = getNewChat(chat, chatSobesedniki);
-      state.userChats[newChat.id] = newChat;
+      const {chat} = payload;
+      console.log(chat);
+      state.userChats[chat.id] = chat;
     }
   }
 });

@@ -5,10 +5,22 @@ import './second-step-create-new-chat-modal.css';
 import {SearchIcon} from "../../../Controls/Icons/SearchIcon";
 import {Button} from "../../../Controls/Button/Button";
 import {Spinner} from "../../../Controls/Spinner/Spinner";
+import {useDispatch, useSelector} from "react-redux";
+import {createNewChat} from "../../../../store/middlewares/socketMiddleware";
+import {selectCurrentUser} from "../../../../store/slices/userSlice/userSelectors";
 
-export const SecondStepCreateNewChatModal = ({setStep, chatTitle}) => {
+
+export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModalOpen}) => {
+  const dispatch = useDispatch();
+  const currentUserId = useSelector(selectCurrentUser).id;
   const [users, setUsers] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
+
+  const submitHandler = e => {
+    e.preventDefault();
+    dispatch(createNewChat(chatTitle, selectedUsers));
+    setNewChatModalOpen(false);
+  };
 
   useEffect(() => {
     (async () => {
@@ -18,7 +30,7 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle}) => {
   }, []);
 
   return !users ? <Spinner /> : (
-    <div className="second-step-create-new-chat-modal">
+    <form className="second-step-create-new-chat-modal" onSubmit={submitHandler}>
       <div className="second-step-create-new-chat-modal__head">
         <h3> Add Members </h3>
         <div className="second-step-create-new-chat-modal__search-panel">
@@ -30,21 +42,23 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle}) => {
       <div className="second-step-create-new-chat-modal__users-list new-chat-user-list" >
         {
           users.map(user => {
-            const selected = selectedUsers.find(selectedUser => selectedUser === user);
-            return (
-              <Button
-                onClick={() => setSelectedUsers(prev => (
-                  !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
-                ))}
-                className={
-                  `button-with-pre-icon new-chat-user ${selected ? 'new-chat-user_selected' : ''}`
-                }
-                key={user.id}
-                Icon={<img className="new-chat-user__avatar" src={user.avatarUrl} alt="user avatar" />}
-              >
-                <p className="new-chat-user__username">{user.username}</p>
-              </Button>
-            );
+            if(user.id !== currentUserId) {
+              const selected = selectedUsers.find(selectedUser => selectedUser === user);
+              return (
+                <Button
+                  onClick={() => setSelectedUsers(prev => (
+                    !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
+                  ))}
+                  className={
+                    `button-with-pre-icon new-chat-user ${selected ? 'new-chat-user_selected' : ''}`
+                  }
+                  key={user.id}
+                  Icon={<img className="new-chat-user__avatar" src={user.avatarUrl} alt="user avatar" />}
+                >
+                  <p className="new-chat-user__username">{user.username}</p>
+                </Button>
+              );
+            }
           })
         }
       </div>
@@ -54,13 +68,18 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle}) => {
           className="text-button"
           onClick={() => setStep(0)}
         > Назад </Button>
-        <Button className="text-button"> Создать </Button>
+
+        <Button
+          className="text-button"
+          type="submit"
+        > Создать </Button>
       </div>
-    </div>
+    </form>
   );
 };
 
 SecondStepCreateNewChatModal.propTypes = {
   setStep: PropTypes.func,
+  setNewChatModalOpen: PropTypes.func,
   chatTitle: PropTypes.string
 };

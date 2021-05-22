@@ -32,7 +32,11 @@ export const CreateNewChatModal = ({setNewChatModalOpen}) => {
             setStep={setStep}
           />
         ) : (
-          <SecondStepCreateNewChatModal setStep={setStep} chatTitle={chatTitle} />
+          <SecondStepCreateNewChatModal
+            setStep={setStep}
+            setNewChatModalOpen={setNewChatModalOpen}
+            chatTitle={chatTitle}
+          />
         )
       }
     </>
