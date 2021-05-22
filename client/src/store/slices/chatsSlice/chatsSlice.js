@@ -33,8 +33,8 @@ export const chatsSlice = createSlice({
      * { userChats: Array<ChatInDbModel>, chatSobesedniki: Array<UserChatModel>, lastMessages: Array<MessageModel>} }}
      */
     setChatsData(state, {payload}) {
-      const {userChats, chatSobesedniki, lastMessages} = payload;
-      state.userChats = convertRawStartChatsData(userChats, chatSobesedniki, lastMessages);
+      const {userChats, chatUserRecords, lastMessages} = payload;
+      state.userChats = convertRawStartChatsData(userChats, chatUserRecords, lastMessages);
       state.isChatsDataLoading = false;
     },
     /**

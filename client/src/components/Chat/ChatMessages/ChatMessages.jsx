@@ -16,7 +16,7 @@ import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../uti
 const ChatMessages = ({currentChatInfo}) => {
   const currentUser = useSelector(selectCurrentUser);
 
-  const {id, sobesedniki, lastMessage} = currentChatInfo;
+  const {id, members, lastMessage} = currentChatInfo;
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -109,7 +109,7 @@ const ChatMessages = ({currentChatInfo}) => {
                       time={getTimeInLocaleString(time)}
                       isMyMessage={isMyMessage(currentUser.id, senderId)}
                       avatarUrl={isMyMessage(currentUser.id, senderId) ? currentUser.avatarUrl :
-                        getSobesednikAvatarUrl(sobesedniki, senderId)}
+                        getSobesednikAvatarUrl(members, senderId)}
                       status={status}
                       attachments={[]}
                     />
@@ -133,7 +133,7 @@ ChatMessages.propTypes = {
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
     chatAvatarUrl: PropTypes.string.isRequired,
     chatTitle: PropTypes.string.isRequired,
-    sobesedniki: PropTypes.arrayOf(PropTypes.shape({
+    members: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
       username: PropTypes.string,
       avatarUrl: PropTypes.string,

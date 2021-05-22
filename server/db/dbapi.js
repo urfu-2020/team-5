@@ -103,12 +103,12 @@ async function getUserChats(userId) {
 }
 
 /**
- * Получить записи вида чат-собеседник о чатах, в которых есть пользователь с userId
+ * Получить записи вида чат-участник о чатах, в которых есть пользователь с userId
  * @param userId {Number}
  * @returns Array<UserChatModel>
  */
-async function getUserChatSobesedniki(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserChatsSobesedniki(${userId})`)).recordset;
+async function getUserChatsChatUserRecords(userId) {
+  return (await dbRequest(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`)).recordset;
 }
 
 /**
@@ -170,7 +170,7 @@ module.exports = {
   createNewChatGroup,
   addDialogsWithNewUser,
   getChatByTitle,
-  getUserChatSobesedniki,
+  getUserChatsChatUserRecords,
   getUserChats,
   getUserChatsIds,
   storeChatMessage,

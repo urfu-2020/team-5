@@ -5,7 +5,8 @@ export const initSocket = () => ({type: INIT_SOCKET});
 const ADD_DIALOGS_WITH_NEW_USER = 'socket/addDialogsWithNewUser';
 export const addDialogsWithNewUser = () => ({ type: ADD_DIALOGS_WITH_NEW_USER });
 const CREATE_NEW_CHAT = 'socket/createNewChat';
-export const createNewChat = (chatTitle, users) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, users}});
+export const createNewChat =
+  (chatTitle, selectedUsers) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, selectedUsers}});
 const SEND_MESSAGE = 'socket/sendMessage';
 export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
 

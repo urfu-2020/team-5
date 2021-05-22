@@ -1,7 +1,7 @@
 import {config} from "../config";
 
-export const getSobesednikAvatarUrl = (sobesedniki, senderId) => {
-  return sobesedniki.find(user => user.id === senderId).avatarUrl;
+export const getSobesednikAvatarUrl = (members, senderId) => {
+  return members.find(user => user.id === senderId).avatarUrl;
 };
 
 export const isMyMessage = (myId, senderId) => {

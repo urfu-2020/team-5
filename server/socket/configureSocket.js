@@ -1,6 +1,7 @@
 const WebSocket = require('ws');
 const { v4: uuidv4 } = require('uuid');
 const session = require('../session');
+const { getUserChatsChatUserRecords } = require('../db/dbapi');
 const { addUsersInChat } = require('../db/dbapi');
 const { getChatByTitle } = require('../db/dbapi');
 const { createNewChatGroup } = require('../db/dbapi');
@@ -40,40 +41,40 @@ function configureSocket(server) {
       await addDialogsWithNewUser(sessionUser.username);
       userChats = await getUserChats(sessionUser.id);
       connectUserToRooms(socket, userChats);
-      const chatSobesedniki = await getUserChatSobesedniki(sessionUser.id);
+      const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
 
       // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
       io.clients.forEach((client) => {
         if (client !== socket) {
           // для client находим его чат с новым пользователем
-          const chatSobesednik = chatSobesedniki.find(
-            (cs) => cs.sobesednikId === client.sessionUser.id
+          const chatUser = chatUserRecords.find(
+            (cu) => cu.userId === client.sessionUser.id
           );
-          const chatWithNewUser = userChats.find((chat) => chat.id === chatSobesednik.chatId);
+          const dialogWithNewUser = userChats.find((chat) => chat.id === chatUser.chatId);
 
           // модель чата для фронта
           const chat = {
-            ...chatWithNewUser,
+            ...dialogWithNewUser,
             chatTitle: sessionUser.username,
             chatAvatarUrl: sessionUser.avatarUrl,
-            sobesedniki: [sessionUser]
+            members: [client.sessionUser, sessionUser]
           };
 
           client.send(JSON.stringify({
             type: 'addNewChat',
             payload: { chat }
           }));
-          rooms[chatWithNewUser.id].push(client);
+          rooms[dialogWithNewUser.id].push(client);
         }
       });
     } else connectUserToRooms(socket, userChats);
 
     // при подключении пользователя отсылаем ему начальные данные о его чатах
-    const chatSobesedniki = await getUserChatSobesedniki(sessionUser.id);
+    const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
     const lastMessages = await getUserLastChatMessages(sessionUser.id);
     socket.send(JSON.stringify({
       type: 'setChatsData',
-      payload: { userChats, chatSobesedniki, lastMessages }
+      payload: { userChats, chatUserRecords, lastMessages }
     }));
 
     socket.on('message', async (rawMessage) => {
@@ -85,7 +86,7 @@ function configureSocket(server) {
         }
 
         case 'createNewChat': {
-          const { chatTitle, users } = message.payload;
+          const { chatTitle, selectedUsers } = message.payload;
           await createNewChatGroup(chatTitle);
           // TODO перелезть на Sequelize ORM
           // тут если будут несколько конф с одинаковым именем, то не будет работать.
@@ -93,18 +94,14 @@ function configureSocket(server) {
           // (+ у сообщений переделать uuid на identity потом как перелезем на Sequelize)
           const newChat = await getChatByTitle(chatTitle);
           const chatId = newChat.id;
+          const allUsers = [sessionUser, ...selectedUsers];
           // тут еще проверять что все юзеры есть в бд
-          const allUsers = [sessionUser, ...users];
           await addUsersInChat(chatId, allUsers);
-
-          console.log('all users', allUsers);
+          const chat = { ...newChat, members: allUsers };
 
           io.clients.forEach((client) => {
             // Если клиент есть в комнате
             if (allUsers.find((user) => user.id === client.sessionUser.id)) {
-              const sobesedniki = allUsers.filter((user) => user.id !== client.sessionUser.id);
-              console.log('sobesedniki', sobesedniki);
-              const chat = { ...newChat, sobesedniki };
               client.send(JSON.stringify({
                 type: 'addNewChat',
                 payload: { chat }

@@ -7,16 +7,16 @@ class ChatModel {
    * @param chatType {('Own'|'Dialog'|'Group')}
    * @param chatAvatarUrl {String}
    * @param chatTitle {String}
-   * @param sobesedniki {Array<UserModel>}
+   * @param members {Array<UserModel>}
    * @param lastMessage {MessageModel}
    */
   constructor(id, chatType, chatAvatarUrl,
-              chatTitle, sobesedniki, lastMessage) {
+              chatTitle, members, lastMessage) {
     this.id = id;
     this.chatType = chatType;
     this.chatAvatarUrl = chatAvatarUrl;
     this.chatTitle = chatTitle;
-    this.sobesedniki = sobesedniki;
+    this.members = members;
     this.lastMessage = lastMessage;
   }
 }

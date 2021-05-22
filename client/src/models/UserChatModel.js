@@ -4,18 +4,19 @@
 class UserChatModel {
   /**
    * @param chatId {number}
-   * @param sobesednikId {number}
-   * @param sobesednikUsername {String}
-   * @param sobesednikAvatarUrl {String}
-   * @param sobesednikGHUrl {String}
+   * @param userId {number}
+   * @param username {String}
+   * @param avatarUrl {String}
+   * @param githubUrl {String}
    */
-  constructor(chatId, sobesednikId, sobesednikUsername, sobesednikAvatarUrl, sobesednikGHUrl) {
+  constructor(chatId, userId, username, avatarUrl, githubUrl) {
     this.chatId = chatId;
-    this.sobesednikId = sobesednikId;
-    this.sobesednikUsername = sobesednikUsername;
-    this.sobesednikAvatarUrl = sobesednikAvatarUrl;
-    this.sobesednikGHUrl = sobesednikGHUrl;
+    this.userId = userId;
+    this.username = username;
+    this.avatarUrl = avatarUrl;
+    this.githubUrl = githubUrl;
   }
 }
+
 
 module.exports = UserChatModel;
