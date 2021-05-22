@@ -1,0 +1,50 @@
+.second-step-create-new-chat-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: 1fr 10fr 1fr;
+  grid-row-gap: 1rem;
+  width: 400px;
+  height: 600px;
+  padding: 20px;
+  background-color: var(--bg-color);
+  border: 1px solid black;
+  transform: translate(-50%, -50%);
+}
+
+.second-step-create-new-chat-modal__search-panel {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+}
+
+.second-step-create-new-chat-modal__search-input {
+  flex-grow: 1;
+}
+
+.second-step-create-new-chat-modal__search-icon {
+  width: 30px;
+  height: 30px;
+}
+
+.new-chat-user-list {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+  overflow-x: auto;
+}
+
+.new-chat-user_selected {
+  background-color: var(--teal-200);
+}
+
+.new-chat-user__avatar {
+  width: 50px;
+  border-radius: 100%;
+}
+
+.new-chat-user__username {
+  color: var(--primary-text);
+}

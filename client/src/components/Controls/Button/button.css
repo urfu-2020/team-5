@@ -56,3 +56,16 @@
   background-color: transparent;
   transform: scale(1.1);
 }
+
+.button-with-pre-icon {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  justify-content: flex-start;
+  height: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 0;
+}

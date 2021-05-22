@@ -1,0 +1,38 @@
+.first-step-create-new-chat-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 100;
+  display: grid;
+  grid-template-rows: 6fr 1fr;
+  width: 600px;
+  height: 300px;
+  padding: 20px;
+  background-color: var(--bg-color);
+  border: 1px solid black;
+  transform: translate(-50%, -50%);
+}
+
+.first-step-create-new-chat-modal__chat-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.first-step-create-new-chat-modal__chat-avatar {
+  width: 5rem;
+  height: 5rem;
+}
+
+.first-step-create-new-chat-modal__chat-title-input-wrapper {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.first-step-create-new-chat-modal__buttons,
+.second-step-create-new-chat-modal__buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5%;
+  justify-content: flex-end;
+}

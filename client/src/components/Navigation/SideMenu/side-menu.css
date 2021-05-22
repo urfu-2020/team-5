@@ -44,3 +44,7 @@
 .side-menu__user-name {
   font-size: 1.4rem;
 }
+
+.side-menu-option__icon {
+  fill: var(--teal-500);
+}

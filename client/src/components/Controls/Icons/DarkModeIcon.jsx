@@ -12,5 +12,5 @@ export const DarkModeIcon = ({className}) => (
 );
 
 DarkModeIcon.propTypes = {
-  className: PropTypes
+  className: PropTypes.string
 };

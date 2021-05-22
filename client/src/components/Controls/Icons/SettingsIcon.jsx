@@ -22,5 +22,5 @@ export const SettingsIcon = ({className}) => (
 );
 
 SettingsIcon.propTypes = {
-  className: PropTypes
+  className: PropTypes.string
 };
