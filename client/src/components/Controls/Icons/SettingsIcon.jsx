@@ -1,8 +1,9 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
-export const SettingsIcon = () => (
+export const SettingsIcon = ({className}) => (
   <svg
-    className="side-menu-option__icon"
+    className={`${className ? className : ''}`}
     xmlns="http://www.w3.org/2000/svg" enableBackground="new 0 0 24 24" height="24px"
        viewBox="0 0 24 24" width="24px" fill="#000000">
     <g>
@@ -19,3 +20,7 @@ export const SettingsIcon = () => (
     </g>
   </svg>
 );
+
+SettingsIcon.propTypes = {
+  className: PropTypes
+};

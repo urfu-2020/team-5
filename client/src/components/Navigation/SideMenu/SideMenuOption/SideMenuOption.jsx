@@ -4,13 +4,14 @@ import {Button} from "../../../Controls/Button/Button";
 
 import './side-menu-option.css';
 
-export const SideMenuOption = ({Icon, text, children, as}) => {
+export const SideMenuOption = ({Icon, text, children, as, className, ...props}) => {
   return (
     <Button
-      className="side-menu-option"
+      className={`side-menu-option ${className}`}
       as={as}
+      {...props}
     >
-      <Icon />
+      {Icon}
       {text}
       {children}
     </Button>
@@ -21,5 +22,6 @@ SideMenuOption.propTypes = {
   Icon: PropTypes.func.isRequired,
   text: PropTypes.string,
   children: PropTypes.node,
-  as: PropTypes.string
+  as: PropTypes.string,
+  className: PropTypes.string
 };

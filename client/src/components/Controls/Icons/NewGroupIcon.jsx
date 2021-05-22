@@ -1,8 +1,9 @@
 import React from "react";
+import PropTypes from 'prop-types';
 
-export const NewGroupIcon = () => (
+export const NewGroupIcon = ({className}) => (
   <svg
-    className="side-menu-option__icon"
+    className={`${className ? className : ''}`}
     xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="#000000">
     <path d="M0 0h24v24H0z" fill="none"/>
     <path
@@ -11,3 +12,7 @@ export const NewGroupIcon = () => (
         0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/>
   </svg>
 );
+
+NewGroupIcon.propTypes = {
+  className: PropTypes
+};
