@@ -1,6 +1,3 @@
-CREATE DATABASE Kilogram
-use Kilogram
-
 GO
 CREATE TABLE Users (
 	id INT PRIMARY KEY IDENTITY,
@@ -26,7 +23,7 @@ CREATE TABLE ChatUsers (
 
 GO
 CREATE TABLE Messages (
-	id NVARCHAR(36) PRIMARY KEY,
+	id INT IDENTITY PRIMARY KEY,
 	chatId INT FOREIGN KEY REFERENCES Chats(id) NOT NULL,
 	senderId INT FOREIGN KEY REFERENCES Users(id) NOT NULL,
 	text NVARCHAR(MAX),
@@ -34,6 +31,8 @@ CREATE TABLE Messages (
 	status NVARCHAR(20) CHECK(Status IN ('Read', 'Unread', 'UnSend')) NOT NULL,
 	time DATETIME NOT NULL
 );
+
+select * from ChatUsers
 
 
 /* При первом логине этот пользователь добавляется в диалоги ко всем другим */
@@ -101,7 +100,6 @@ AS RETURN
 	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
 
 
-select * from GetUserChatsChatUserRecords(1)
 
 /* Получить id чатов, в которых состоит пользователь */
 GO
@@ -113,24 +111,11 @@ AS RETURN
 	WHERE userId = @userId
 
 
-/* Получить сообщения из чата, начиная с новых (самое новое - первое) */
-GO
-CREATE FUNCTION GetChatMessages(@chatId INT, @offset INT, @take INT)
-RETURNS TABLE
-AS RETURN
-	SELECT *
-	FROM Messages
-	WHERE Messages.chatId = @chatId
-	ORDER BY Messages.time DESC
-	OFFSET (@offset) ROWS FETCH NEXT (@take) ROWS ONLY
-
-
-
 /* Получить последние (одно из каждого) сообщения всех чатов, в которых есть пользователь */
 GO
 CREATE FUNCTION GetUserLastChatMessages(@userId INT)
 RETURNS @resMessages TABLE (
-	id NVARCHAR(36),
+	id INT,
 	chatId INT NOT NULL,
 	senderId INT NOT NULL,
 	text NVARCHAR(MAX),
@@ -161,22 +146,4 @@ BEGIN
 	DEALLOCATE chatId_cursor;
 
 	RETURN;
-END
-
-
-/* Положить сообщение в бд */
-GO
-CREATE PROC StoreChatMessage(
-	@messageId NVARCHAR(36),
-	@chatId INT,
-	@senderId INT,
-	@text NVARCHAR(MAX),
-	@hasAttachments BIT,
-	@status NVARCHAR(20),
-	@time NVARCHAR(255)
-	)
-AS
-BEGIN
-	INSERT INTO Messages
-	VALUES (@messageId, @chatId, @senderId, @text, @hasAttachments, @status, CAST(@time as DATETIME));
 END

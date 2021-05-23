@@ -1,42 +1,32 @@
-const mssql = require('mssql');
+const { QueryTypes } = require('sequelize');
 
-const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
-
-/**
- * Запрос в бд
- * @param query {string} строка запроса
- * @returns {Promise<void|Promise>}
- */
-async function dbRequest(query) {
-  console.log(query);
-  try {
-    const request = (await mssql.connect(CONNECTION_URL)).request();
-    return request.query(query);
-  } catch (e) {
-    return console.error(e);
-  }
-}
+const sequelize = require('./sequelizeConfig');
+const User = require('./sequelizeModels/User');
+const Chat = require('./sequelizeModels/Chat');
+const ChatUser = require('./sequelizeModels/ChatUser');
+const Message = require('./sequelizeModels/Message');
 
 /**
  * Получить всех пользователей
  * @returns {Array<UserModel>}
  */
 async function getUsers() {
-  return (await dbRequest('SELECT * FROM [User]')).recordset;
+  return User.findAll({ raw: true });
 }
 
 /**
- * Получить пользователя по условию
+ * Получить пользователя по условию (атрибут = значение)
  * @param column {String} название атрибута в бд
  * @param value {String | number} значение атрибута
  * @returns {UserModel | boolean}
  */
 async function getUser(column, value) {
-  const resValue = typeof value === 'number' ? value : `'${value}'`;
-  const query = `SELECT * FROM [User] WHERE ${column}=${resValue}`;
-  const queryArr = (await dbRequest(query)).recordset;
-  if (queryArr.length === 0) return false;
-  return queryArr[0];
+  return User.findOne({
+    where: {
+      [column]: value
+    },
+    raw: true
+  });
 }
 
 /**
@@ -44,18 +34,30 @@ async function getUser(column, value) {
  * @param username {String}
  * @param avatarUrl {String}
  * @param githubUrl {String}
+ * @returns {UserModel}
  */
-async function createUser(username, avatarUrl, githubUrl) {
-  await dbRequest(`INSERT INTO [User](username, avatarUrl, githubUrl)
-                          VALUES ('${username}', '${avatarUrl}', '${githubUrl}')`);
+async function createAndGetUser(username, avatarUrl, githubUrl) {
+  const user = await User.create({
+    username,
+    avatarUrl,
+    githubUrl
+  });
+
+  return user.dataValues;
 }
 
 /**
  * Создать пустой чат
  * @param chatTitle {String}
+ * @returns {ChatModel}
  */
-async function createNewChatGroup(chatTitle) {
-  await dbRequest(`INSERT INTO Chat(chatType, chatTitle) VALUES ('Group','${chatTitle}')`);
+async function createAndGetNewChatGroup(chatTitle) {
+  const newChatGroup = await Chat.create({
+    chatTitle,
+    chatType: 'Group'
+  }, { fields: ['chatTitle', 'chatType'] });
+
+  return newChatGroup.get({ plain: true });
 }
 
 /**
@@ -71,18 +73,7 @@ async function addUsersInChat(chatId, users) {
     return `${acc}(${chatId}, ${user.id}),`;
   }, '');
 
-  await dbRequest(`INSERT INTO ChatUser VALUES ${insertValues}`);
-}
-
-/**
- * Получить чат по названию
- * @param chatTitle {String}
- * @returns {ChatInDbModel | boolean}
- */
-async function getChatByTitle(chatTitle) {
-  const querryArr = (await dbRequest(`SELECT * FROM Chat WHERE chatTitle='${chatTitle}'`)).recordset;
-  if (querryArr.length === 0) return false;
-  return querryArr[0];
+  await sequelize.query(`INSERT INTO ChatUsers VALUES ${insertValues}`, { type: QueryTypes.INSERT });
 }
 
 /**
@@ -90,7 +81,7 @@ async function getChatByTitle(chatTitle) {
  * @param username {String}
  */
 async function addDialogsWithNewUser(username) {
-  await dbRequest(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
+  await sequelize.query(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
 }
 
 /**
@@ -99,7 +90,7 @@ async function addDialogsWithNewUser(username) {
  * @returns {Array<ChatInDbModel>}
  */
 async function getUserChats(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset;
+  return sequelize.query(`SELECT * FROM GetUserChats(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
@@ -108,7 +99,7 @@ async function getUserChats(userId) {
  * @returns Array<UserChatModel>
  */
 async function getUserChatsChatUserRecords(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`)).recordset;
+  return sequelize.query(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
@@ -117,7 +108,12 @@ async function getUserChatsChatUserRecords(userId) {
  * @returns {Array<Number>}
  */
 async function getUserChatsIds(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserChatsIds(${userId})`)).recordset.map((obj) => obj.chatId);
+  return (await ChatUser.findAll({
+    where: {
+      userId
+    },
+    raw: true
+  })).map((obj) => obj.chatId);
 }
 
 /**
@@ -128,7 +124,15 @@ async function getUserChatsIds(userId) {
  * @returns Array<MessageModel>
  */
 async function getChatMessages(chatId, offset, take) {
-  return (await dbRequest(`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`)).recordset;
+  return Message.findAll({
+    where: {
+      chatId
+    },
+    offset,
+    limit: take,
+    order: [['time', 'DESC']],
+    raw: true
+  });
 }
 
 /**
@@ -137,43 +141,40 @@ async function getChatMessages(chatId, offset, take) {
  * @returns Array<MessageModel>
  */
 async function getUserLastChatMessages(userId) {
-  return (await dbRequest(`SELECT * FROM GetUserLastChatMessages(${userId})`)).recordset;
+  return sequelize.query(`SELECT * FROM GetUserLastChatMessages(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
- * Положить сообщение в бд
- * @param {MessageModel}
- * @returns {Promise<boolean>}
+ * Положить сообщение в бд и получить его с айдишником
+ * @param {{chatId: number, senderId: number, text: String, hasAttachments: boolean, status: String, time: Date}}
+ * @returns {MessageModel}
  */
-async function storeChatMessage({
-  id, chatId, senderId, text, hasAttachments, status, time
+async function createAndGetMessage({
+  chatId, senderId, text, hasAttachments, status, time
 }) {
-  await dbRequest(`
-    EXEC StoreChatMessage
-      @messageId='${id}',
-      @chatId=${chatId},
-      @senderId=${senderId},
-      @text='${text}',
-      @hasAttachments=${hasAttachments},
-      @status='${status}',
-      @time='${time}'
-    `);
+  const newMessage = await Message.create({
+    chatId,
+    senderId,
+    text,
+    hasAttachments,
+    status,
+    time: sequelize.cast(time, 'datetime')
+  }, { fields: ['chatId', 'senderId', 'text', 'hasAttachments', 'status', 'time'] });
 
-  return true;
+  return newMessage.get({ plain: true });
 }
 
 module.exports = {
   addUsersInChat,
   getUsers,
   getUser,
-  createUser,
-  createNewChatGroup,
+  createAndGetUser,
+  createAndGetNewChatGroup,
   addDialogsWithNewUser,
-  getChatByTitle,
   getUserChatsChatUserRecords,
   getUserChats,
   getUserChatsIds,
-  storeChatMessage,
+  createAndGetMessage,
   getChatMessages,
   getUserLastChatMessages
 };

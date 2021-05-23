@@ -1,13 +1,12 @@
 const WebSocket = require('ws');
-const { v4: uuidv4 } = require('uuid');
 const session = require('../session');
+const { createAndGetMessage } = require('../db/dbapi');
+const { createAndGetNewChatGroup } = require('../db/dbapi');
 const { getUserChatsChatUserRecords } = require('../db/dbapi');
 const { addUsersInChat } = require('../db/dbapi');
-const { getChatByTitle } = require('../db/dbapi');
-const { createNewChatGroup } = require('../db/dbapi');
 const {
   getUserChats,
-  getUserLastChatMessages, getUserChatSobesedniki, addDialogsWithNewUser, storeChatMessage
+  getUserLastChatMessages, addDialogsWithNewUser
 } = require('../db/dbapi');
 const {
   rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
@@ -34,8 +33,8 @@ function configureSocket(server) {
   io.on('connection', async (socket) => {
     socket.isAlive = true;
     const { sessionUser } = socket;
-    let userChats = await getUserChats(sessionUser.id);
 
+    let userChats = await getUserChats(sessionUser.id);
     // Если у пользователя еще нет чатов (даже с собой), значит это новый пользователь
     if (userChats.length === 0) {
       await addDialogsWithNewUser(sessionUser.username);
@@ -87,12 +86,7 @@ function configureSocket(server) {
 
         case 'createNewChat': {
           const { chatTitle, selectedUsers } = message.payload;
-          await createNewChatGroup(chatTitle);
-          // TODO перелезть на Sequelize ORM
-          // тут если будут несколько конф с одинаковым именем, то не будет работать.
-          // Sequelize ORM при создании возвращает id, поэтому можно по id понимать будет что за чат
-          // (+ у сообщений переделать uuid на identity потом как перелезем на Sequelize)
-          const newChat = await getChatByTitle(chatTitle);
+          const newChat = await createAndGetNewChatGroup(chatTitle);
           const chatId = newChat.id;
           const allUsers = [sessionUser, ...selectedUsers];
           // тут еще проверять что все юзеры есть в бд
@@ -121,11 +115,9 @@ function configureSocket(server) {
           const senderId = sessionUser.id;
           // Если пользователь есть в чате, то сохраняем сообщение в бд и отсылаем его в этот чат
           if (rooms[chatId] && rooms[chatId].includes(socket)) {
-            const id = uuidv4();
-            const resultMessage = {
-              id, chatId, senderId, text, hasAttachments, status, time
-            };
-            storeChatMessage(resultMessage);
+            const resultMessage = await createAndGetMessage({
+              chatId, senderId, text, hasAttachments, status, time
+            });
             sendToRoomMembers(chatId, JSON.stringify({
               type: 'chatMessage', payload: resultMessage
             }));

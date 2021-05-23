@@ -32,12 +32,15 @@ const Message = sequelize.define('Message', {
   status: {
     type: DataTypes.STRING(36),
     allowNull: false,
-    isIn: ['Read', 'Unread', 'UnSend']
+    isIn: [['Read', 'Unread', 'UnSend']]
   },
   time: {
     type: DataTypes.DATE,
     allowNull: false
   }
+}, {
+  tableName: 'Messages',
+  timestamps: false
 });
 
 module.exports = Message;

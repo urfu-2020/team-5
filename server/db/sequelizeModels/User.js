@@ -4,6 +4,7 @@ const sequelize = require('../sequelizeConfig');
 const User = sequelize.define('User', {
   id: {
     type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
   username: {
@@ -17,6 +18,9 @@ const User = sequelize.define('User', {
   githubUrl: {
     type: DataTypes.STRING(512)
   }
+}, {
+  tableName: 'Users',
+  timestamps: false
 });
 
 module.exports = User;

@@ -3,7 +3,7 @@ const sequelize = require('../sequelizeConfig');
 const Chat = require('./Chat');
 const User = require('./User');
 
-const UserChat = sequelize.define('UserChat', {
+const ChatUser = sequelize.define('UserChat', {
   chatId: {
     type: DataTypes.INTEGER,
     references: {
@@ -20,6 +20,10 @@ const UserChat = sequelize.define('UserChat', {
       allowNull: false
     }
   }
+}, {
+  tableName: 'ChatUsers',
+  timestamps: false
 });
+ChatUser.removeAttribute('id');
 
-module.exports = UserChat;
+module.exports = ChatUser;

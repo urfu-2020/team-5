@@ -18,7 +18,7 @@ export const ChatList = () => {
             const lastFirstChatMessage = firstChat.lastMessage;
             const lastSecondChatMessage = secondChat.lastMessage;
             if(lastFirstChatMessage && lastSecondChatMessage) {
-              return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time);
+              return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time) ? 1 : -1;
             } else if(!lastFirstChatMessage) {
               return 1;
             } else {

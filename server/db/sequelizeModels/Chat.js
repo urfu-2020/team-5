@@ -9,7 +9,7 @@ const Chat = sequelize.define('Chat', {
   chatType: {
     type: DataTypes.STRING(20),
     validate: {
-      isIn: ['Own', 'Dialog', 'Group']
+      isIn: [['Own', 'Dialog', 'Group']]
     },
     allowNull: false
   },
@@ -18,6 +18,9 @@ const Chat = sequelize.define('Chat', {
     type: DataTypes.STRING(255),
     allowNull: false
   }
+}, {
+  tableName: 'Chats',
+  timestamps: false
 });
 
 module.exports = Chat;

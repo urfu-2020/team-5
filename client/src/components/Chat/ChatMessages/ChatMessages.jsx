@@ -70,7 +70,7 @@ const ChatMessages = ({currentChatInfo}) => {
     ) {
       setOldMessagesLoading(true);
       const response = await loadOldMessages({
-        id,
+        chatId: id,
         offset: messages.length,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
