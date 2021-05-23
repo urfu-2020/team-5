@@ -11,11 +11,12 @@ export const FirstStepCreateNewChatModal = ({chatTitle, setChatTitle, setNewChat
       <div className="first-step-create-new-chat-modal__chat-info">
         <NewChatIcon className="first-step-create-new-chat-modal__chat-avatar default-chat-avatar"/>
         <div className="first-step-create-new-chat-modal__chat-title-input-wrapper">
-          <label htmlFor="input-chat-title">Название чата:</label>
+          <label className="input-chat-title-label" htmlFor="input-chat-title">Название чата:</label>
           <input
             onChange={e => setChatTitle(e.target.value)}
             value={chatTitle}
             type="text"
+            className="create-new-chat-modal-input"
             id="input-chat-title"
           />
         </div>

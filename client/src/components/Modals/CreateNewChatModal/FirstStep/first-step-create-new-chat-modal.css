@@ -5,28 +5,54 @@
   z-index: 100;
   display: grid;
   grid-template-rows: 6fr 1fr;
-  width: 600px;
-  height: 300px;
+  width: 450px;
+  height: 200px;
   padding: 20px;
   background-color: var(--bg-color);
-  border: 1px solid black;
+  border-radius: 4px;
+  box-shadow: 3px 2px 4px 0 rgba(50, 50, 50, 0.59);
   transform: translate(-50%, -50%);
 }
 
 .first-step-create-new-chat-modal__chat-info {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  justify-content: space-around;
+  justify-content: flex-start;
 }
 
 .first-step-create-new-chat-modal__chat-avatar {
-  width: 5rem;
-  height: 5rem;
+  width: 8rem;
+  height: 8rem;
+  padding: 5px;
+  border: 1px solid #009688;
+  fill: #80cbc4;
+  border-radius: 50%;
 }
 
 .first-step-create-new-chat-modal__chat-title-input-wrapper {
+  height: 100px;
   display: flex;
+  flex-grow: 1;
   flex-flow: column nowrap;
+  justify-content: space-around;
+}
+
+.input-chat-title-label {
+  font-size: 1.1rem;
+}
+
+.create-new-chat-modal-input {
+  border: none;
+  border-bottom: 2px solid var(--teal-200);
+  padding: 0 0 2px 2px;
+  font-size: 1.3rem;
+  transition: border 0.3s;
+}
+
+.create-new-chat-modal-input:focus {
+  outline: none;
+  border-bottom: 2px solid var(--teal-500);
 }
 
 .first-step-create-new-chat-modal__buttons,
