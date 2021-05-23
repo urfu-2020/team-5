@@ -30,7 +30,7 @@ const App = () => {
     currentUserId ? (
       <div id="app">
         <nav className="navigation">
-          <Navigation/>
+          <Navigation />
         </nav>
         <Switch>
           <Route path="/" exact component={HomePage}/>

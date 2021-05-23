@@ -30,7 +30,7 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModa
     })();
   }, []);
 
-  return !users ? <Spinner /> : (
+  return (
     <form className="second-step-create-new-chat-modal" onSubmit={submitHandler}>
       <div className="second-step-create-new-chat-modal__head">
         <p className="second-step-create-new-chat-modal__title"> Добавить участников </p>
@@ -48,6 +48,7 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModa
 
       <div className="second-step-create-new-chat-modal__users-list new-chat-user-list" >
         {
+          users ?
           users.map(user => {
             if(user.id !== currentUserId && user.username.includes(searchInput)) {
               const selected = selectedUsers.find(selectedUser => selectedUser === user);
@@ -66,7 +67,7 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModa
                 </Button>
               );
             }
-          })
+          }) : <Spinner />
         }
       </div>
 

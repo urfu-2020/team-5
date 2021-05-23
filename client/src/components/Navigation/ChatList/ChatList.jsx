@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 import {selectCurrentChatId, selectUserChats} from "../../../store/slices/chatsSlice/chatsSelectors";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 
-export const ChatList = () => {
+const ChatList = () => {
   const currentChatId = useSelector(selectCurrentChatId);
   const userChats = useSelector(selectUserChats);
   const currentUserId = useSelector(selectCurrentUser).id;
@@ -56,3 +56,5 @@ export const ChatList = () => {
     </ul>
   );
 };
+
+export const MemoizedChatList = React.memo(ChatList);

@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import './navigation.css';
 
 import {NavigationHeader} from './NavigationHeader/NavigationHeader';
-import {ChatList} from './ChatList/ChatList';
+import {MemoizedChatList} from './ChatList/ChatList';
 import {SideMenu} from "./SideMenu/SideMenu";
 
 export const Navigation = () => {
@@ -12,7 +12,7 @@ export const Navigation = () => {
   return (
     <>
       <NavigationHeader setOpenSideMenu={setOpenSideMenu} />
-      <ChatList/>
+      <MemoizedChatList />
       <SideMenu
           isSideMenuOpen={isSideMenuOpen}
           setOpenSideMenu={setOpenSideMenu}
