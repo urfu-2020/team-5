@@ -1,11 +1,8 @@
-USE School
-DROP DATABASE Kilogram
-
 CREATE DATABASE Kilogram
 use Kilogram
 
 GO
-CREATE TABLE [User] (
+CREATE TABLE Users (
 	id INT PRIMARY KEY IDENTITY,
 	username NVARCHAR(255) NOT NULL,
 	avatarUrl NVARCHAR(512) NOT NULL,
@@ -13,25 +10,25 @@ CREATE TABLE [User] (
 );
 
 
-CREATE TABLE Chat (
+CREATE TABLE Chats (
 	id INT IDENTITY PRIMARY KEY,
 	chatType NVARCHAR(20) CHECK(chatType IN ('Own', 'Dialog', 'Group')),
-	chatAvatarUrl NVARCHAR(1024),
+	chatAvatarUrl NVARCHAR(512),
 	chatTitle NVARCHAR(255)
 );
 
 
 GO
-CREATE TABLE ChatUser (
-	chatId INT FOREIGN KEY REFERENCES Chat(id),
-	userId INT FOREIGN KEY REFERENCES [User](id)
+CREATE TABLE ChatUsers (
+	chatId INT FOREIGN KEY REFERENCES Chats(id),
+	userId INT FOREIGN KEY REFERENCES Users(id)
 );
 
 GO
-CREATE TABLE Message (
+CREATE TABLE Messages (
 	id NVARCHAR(36) PRIMARY KEY,
-	chatId INT FOREIGN KEY REFERENCES Chat(id) NOT NULL,
-	senderId INT FOREIGN KEY REFERENCES [User](id) NOT NULL,
+	chatId INT FOREIGN KEY REFERENCES Chats(id) NOT NULL,
+	senderId INT FOREIGN KEY REFERENCES Users(id) NOT NULL,
 	text NVARCHAR(MAX),
 	hasAttachments BIT NOT NULL,
 	status NVARCHAR(20) CHECK(Status IN ('Read', 'Unread', 'UnSend')) NOT NULL,
@@ -44,11 +41,11 @@ GO
 CREATE PROC AddDialogsWithNewUser(@newUserUsername NVARCHAR(255))
 AS
 BEGIN
-	DECLARE @newUserId INT = (SELECT TOP(1) id FROM [User] WHERE username = @newUserUsername);
+	DECLARE @newUserId INT = (SELECT TOP(1) id FROM Users WHERE username = @newUserUsername);
 	DECLARE @nextUserId INT;
 
 	DECLARE usersId_cursor CURSOR FOR
-	SELECT id FROM [User]
+	SELECT id FROM Users
 
 	OPEN usersId_cursor
 	FETCH NEXT FROM usersId_cursor INTO @nextUserId;
@@ -57,14 +54,14 @@ BEGIN
 	BEGIN
 		IF (@nextUserId <> @newUserId)
 		BEGIN
-			INSERT INTO Chat(chatType) VALUES ('Dialog');
+			INSERT INTO Chats(chatType) VALUES ('Dialog');
 			DECLARE @dialogId INT = @@IDENTITY;
-			INSERT INTO ChatUser VALUES (@dialogId, @newUserId), (@dialogId, @nextUserId);
+			INSERT INTO ChatUsers VALUES (@dialogId, @newUserId), (@dialogId, @nextUserId);
 		END
 		ELSE
 		BEGIN
-			INSERT INTO Chat(chatType) VALUES ('Own');
-			INSERT INTO ChatUser VALUES (@@IDENTITY, @newUserId);
+			INSERT INTO Chats(chatType) VALUES ('Own');
+			INSERT INTO ChatUsers VALUES (@@IDENTITY, @newUserId);
 		END
 
 		FETCH NEXT FROM usersId_cursor INTO @nextUserId;
@@ -75,35 +72,33 @@ BEGIN
 END
 
 
-
 /* Получить все записи чаты, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChats(@userId INT)
 RETURNS TABLE
 AS RETURN
 	SELECT DISTINCT id, chatType, chatAvatarUrl, chatTitle
-	FROM Chat
-	JOIN ChatUser
-	ON Chat.id = ChatUser.chatId
-	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
-
+	FROM Chats
+	JOIN ChatUsers
+	ON Chats.id = ChatUsers.chatId
+	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
 
 
 GO
 CREATE FUNCTION GetUserChatsChatUserRecords(@userId INT)
 RETURNS TABLE
 AS RETURN
-	SELECT	Chat.id as chatId,
-					ChatUser.userId,
-					[User].username,
-					[User].avatarUrl,
-					[User].githubUrl
-	FROM Chat
-	JOIN ChatUser
-	ON Chat.id = ChatUser.chatId
-	JOIN [User]
-	ON ChatUser.userId = [User].id
-	WHERE Chat.id IN (SELECT ChatId FROM ChatUser WHERE userId = @userId)
+	SELECT	Chats.id as chatId,
+					ChatUsers.userId,
+					Users.username,
+					Users.avatarUrl,
+					Users.githubUrl
+	FROM Chats
+	JOIN ChatUsers
+	ON Chats.id = ChatUsers.chatId
+	JOIN Users
+	ON ChatUsers.userId = Users.id
+	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
 
 
 select * from GetUserChatsChatUserRecords(1)
@@ -114,7 +109,7 @@ CREATE FUNCTION GetUserChatsIds(@userId INT)
 RETURNS TABLE
 AS RETURN
 	SELECT DISTINCT chatId
-	FROM ChatUser
+	FROM ChatUsers
 	WHERE userId = @userId
 
 
@@ -124,10 +119,11 @@ CREATE FUNCTION GetChatMessages(@chatId INT, @offset INT, @take INT)
 RETURNS TABLE
 AS RETURN
 	SELECT *
-	FROM Message
-	WHERE Message.chatId = @chatId
-	ORDER BY Message.time DESC
+	FROM Messages
+	WHERE Messages.chatId = @chatId
+	ORDER BY Messages.time DESC
 	OFFSET (@offset) ROWS FETCH NEXT (@take) ROWS ONLY
+
 
 
 /* Получить последние (одно из каждого) сообщения всех чатов, в которых есть пользователь */
@@ -181,6 +177,6 @@ CREATE PROC StoreChatMessage(
 	)
 AS
 BEGIN
-	INSERT INTO Message
+	INSERT INTO Messages
 	VALUES (@messageId, @chatId, @senderId, @text, @hasAttachments, @status, CAST(@time as DATETIME));
 END
