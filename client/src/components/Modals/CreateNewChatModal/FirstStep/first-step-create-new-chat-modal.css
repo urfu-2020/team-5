@@ -31,11 +31,19 @@
 }
 
 .first-step-create-new-chat-modal__chat-title-input-wrapper {
+  position: relative;
   height: 100px;
   display: flex;
   flex-grow: 1;
   flex-flow: column nowrap;
   justify-content: space-around;
+}
+
+.first-step-create-new-chat-modal__helper-text {
+  position: relative;
+  bottom: 0;
+  font-size: 0.8rem;
+  color: var(--error-red);
 }
 
 .input-chat-title-label {
@@ -53,6 +61,11 @@
 .create-new-chat-modal-input:focus {
   outline: none;
   border-bottom: 2px solid var(--teal-500);
+}
+
+.create-new-chat-modal-input_error,
+.create-new-chat-modal-input_error:focus {
+  border-bottom: 2px solid var(--error-red);
 }
 
 .first-step-create-new-chat-modal__buttons,

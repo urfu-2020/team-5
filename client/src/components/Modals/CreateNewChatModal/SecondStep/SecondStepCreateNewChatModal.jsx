@@ -78,6 +78,7 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModa
         > Назад </Button>
 
         <Button
+          disabled={selectedUsers.length === 0}
           className="text-button"
           type="submit"
         > Создать </Button>

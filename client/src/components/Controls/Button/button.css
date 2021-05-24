@@ -13,6 +13,7 @@
   border: none;
   border-radius: 2em;
   outline: none;
+  transition: color 0.3s;
 }
 
 .button:hover {
@@ -38,6 +39,16 @@
   padding: 5px;
   height: 2.5rem;
 }
+
+.text-button:disabled {
+  color: var(--teal-100);
+}
+
+.text-button:disabled:hover {
+  background: none;
+  cursor: auto;
+}
+
 
 .input-file-modal__close-button {
   position: absolute;
