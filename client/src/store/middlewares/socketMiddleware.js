@@ -1,4 +1,5 @@
 import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {setError} from "../slices/appSlice/appSlice";
 
 const INIT_SOCKET = 'socket/init';
 export const initSocket = () => ({type: INIT_SOCKET});
@@ -33,6 +34,11 @@ export const socketMiddleware = store => next => action => {
           }
           case 'chatMessage': {
             store.dispatch({type: addChatMessage.type, payload: message.payload});
+            break;
+          }
+          case 'errorMessage': {
+            console.log('errorMessage', message.payload);
+            store.dispatch({type: setError.type, payload: message.payload});
             break;
           }
         }

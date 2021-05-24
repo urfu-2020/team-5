@@ -11,12 +11,14 @@ import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
 import {initSocket} from "../store/middlewares/socketMiddleware";
+import {selectAppError} from "../store/slices/appSlice/appSelectors";
 
 
 const App = () => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(selectUserId);
   const isUserLoading = useSelector(selectIsUserLoading);
+  const appError = useSelector(selectAppError);
 
   useEffect(() => {
     if (!currentUserId)
@@ -37,6 +39,9 @@ const App = () => {
           <Route path={`/chat/:chatId`} exact component={Chat}/>
           <Route path="*" component={NotFoundPage}/>
         </Switch>
+        {
+          appError && <p> {appError} </p>
+        }
       </div>
     ) : (
       <>

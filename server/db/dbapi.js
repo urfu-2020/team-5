@@ -1,4 +1,4 @@
-const { QueryTypes } = require('sequelize');
+const { QueryTypes, Op } = require('sequelize');
 
 const sequelize = require('./sequelizeConfig');
 const User = require('./sequelizeModels/User');
@@ -12,6 +12,22 @@ const Message = require('./sequelizeModels/Message');
  */
 async function getUsers() {
   return User.findAll({ raw: true });
+}
+
+/**
+ * Получить всех пользователей с id из массива id'шников
+ * @param ids {Array<number>}
+ * @returns {Array<UserModel>}
+ */
+async function getUsersByIds(ids) {
+  return User.findAll({
+    where: {
+      id: {
+        [Op.in]: ids
+      }
+    },
+    raw: true
+  });
 }
 
 /**
@@ -167,6 +183,7 @@ async function createAndGetMessage({
 module.exports = {
   addUsersInChat,
   getUsers,
+  getUsersByIds,
   getUser,
   createAndGetUser,
   createAndGetNewChatGroup,

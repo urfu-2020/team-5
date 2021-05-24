@@ -22,7 +22,7 @@ const initialChatsState = {
   isChatsDataLoading: true
 };
 
-export const chatsSlice = createSlice({
+const chatsSlice = createSlice({
   name: 'chats',
   initialState: initialChatsState,
   reducers: {
@@ -60,7 +60,6 @@ export const chatsSlice = createSlice({
      */
     addNewChat(state, {payload}) {
       const {chat} = payload;
-      console.log(chat);
       state.userChats[chat.id] = chat;
     }
   }

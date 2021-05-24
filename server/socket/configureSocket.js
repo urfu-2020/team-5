@@ -1,5 +1,6 @@
 const WebSocket = require('ws');
 const session = require('../session');
+const { validateNewChat } = require('./socketUtils');
 const { createAndGetMessage } = require('../db/dbapi');
 const { createAndGetNewChatGroup } = require('../db/dbapi');
 const { getUserChatsChatUserRecords } = require('../db/dbapi');
@@ -86,6 +87,15 @@ function configureSocket(server) {
 
         case 'createNewChat': {
           const { chatTitle, selectedUsers } = message.payload;
+          const validateObj = await validateNewChat(chatTitle, selectedUsers);
+          if (validateObj.error) {
+            const { errorMessage } = validateObj;
+            return socket.send(JSON.stringify({
+              type: 'errorMessage',
+              payload: { errorMessage }
+            }));
+          }
+
           const newChat = await createAndGetNewChatGroup(chatTitle);
           const chatId = newChat.id;
           const allUsers = [sessionUser, ...selectedUsers];
