@@ -1,6 +1,6 @@
 const { QueryTypes, Op } = require('sequelize');
 
-const sequelize = require('./sequelizeConfig');
+const sequelizeConnection = require('./sequelizeConfig');
 const User = require('./sequelizeModels/user');
 const Chat = require('./sequelizeModels/chat');
 const ChatUser = require('./sequelizeModels/chatUser');
@@ -89,7 +89,7 @@ async function addUsersInChat(chatId, users) {
     return `${acc}(${chatId}, ${user.id}),`;
   }, '');
 
-  await sequelize.query(`INSERT INTO ChatUsers VALUES ${insertValues}`, { type: QueryTypes.INSERT });
+  await sequelizeConnection.query(`INSERT INTO ChatUsers VALUES ${insertValues}`, { type: QueryTypes.INSERT });
 }
 
 /**
@@ -97,7 +97,7 @@ async function addUsersInChat(chatId, users) {
  * @param username {String}
  */
 async function addDialogsWithNewUser(username) {
-  await sequelize.query(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
+  await sequelizeConnection.query(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
 }
 
 /**
@@ -106,7 +106,7 @@ async function addDialogsWithNewUser(username) {
  * @returns {Array<ChatInDbModel>}
  */
 async function getUserChats(userId) {
-  return sequelize.query(`SELECT * FROM GetUserChats(${userId})`, { type: QueryTypes.SELECT });
+  return sequelizeConnection.query(`SELECT * FROM GetUserChats(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
@@ -115,7 +115,7 @@ async function getUserChats(userId) {
  * @returns Array<UserChatModel>
  */
 async function getUserChatsChatUserRecords(userId) {
-  return sequelize.query(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`, { type: QueryTypes.SELECT });
+  return sequelizeConnection.query(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
@@ -157,7 +157,7 @@ async function getChatMessages(chatId, offset, take) {
  * @returns Array<MessageModel>
  */
 async function getUserLastChatMessages(userId) {
-  return sequelize.query(`SELECT * FROM GetUserLastChatMessages(${userId})`, { type: QueryTypes.SELECT });
+  return sequelizeConnection.query(`SELECT * FROM GetUserLastChatMessages(${userId})`, { type: QueryTypes.SELECT });
 }
 
 /**
@@ -174,7 +174,7 @@ async function createAndGetMessage({
     text,
     hasAttachments,
     status,
-    time: sequelize.cast(time, 'datetime')
+    time: sequelizeConnection.cast(time, 'datetime')
   }, { fields: ['chatId', 'senderId', 'text', 'hasAttachments', 'status', 'time'] });
 
   return newMessage.get({ plain: true });

@@ -1,9 +1,10 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../sequelizeConfig');
+
+const sequelizeConnection = require('../sequelizeConfig');
 const Chat = require('./chat');
 const User = require('./user');
 
-const ChatUser = sequelize.define('UserChat', {
+const ChatUser = sequelizeConnection.define('UserChat', {
   chatId: {
     type: DataTypes.INTEGER,
     references: {

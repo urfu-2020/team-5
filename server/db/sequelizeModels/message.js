@@ -1,9 +1,10 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../sequelizeConfig');
+
+const sequelizeConnection = require('../sequelizeConfig');
 const Chat = require('./chat');
 const User = require('./user');
 
-const Message = sequelize.define('Message', {
+const Message = sequelizeConnection.define('Message', {
   id: {
     type: DataTypes.STRING(36),
     primaryKey: true
