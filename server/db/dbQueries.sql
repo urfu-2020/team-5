@@ -34,7 +34,6 @@ CREATE TABLE Messages (
 
 select * from ChatUsers
 
-
 /* При первом логине этот пользователь добавляется в диалоги ко всем другим */
 GO
 CREATE PROC AddDialogsWithNewUser(@newUserUsername NVARCHAR(255))
@@ -71,6 +70,7 @@ BEGIN
 END
 
 
+
 /* Получить все записи чаты, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChats(@userId INT)
@@ -81,7 +81,6 @@ AS RETURN
 	JOIN ChatUsers
 	ON Chats.id = ChatUsers.chatId
 	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
-
 
 GO
 CREATE FUNCTION GetUserChatsChatUserRecords(@userId INT)
@@ -110,6 +109,14 @@ AS RETURN
 	FROM ChatUsers
 	WHERE userId = @userId
 
+CREATE FUNCTION GetChatMessages(@chatId INT, @offset INT, @take INT)
+RETURNS TABLE
+AS RETURN
+	SELECT *
+	FROM Messages
+	WHERE Messages.chatId = @chatId
+	ORDER BY Messages.time DESC
+	OFFSET (@offset) ROWS FETCH NEXT (@take) ROWS ONLY
 
 /* Получить последние (одно из каждого) сообщения всех чатов, в которых есть пользователь */
 GO
@@ -147,3 +154,4 @@ BEGIN
 
 	RETURN;
 END
+
