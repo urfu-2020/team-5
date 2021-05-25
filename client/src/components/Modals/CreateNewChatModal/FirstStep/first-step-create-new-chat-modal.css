@@ -26,17 +26,17 @@
   height: 8rem;
   padding: 5px;
   border: 1px solid #009688;
-  fill: #80cbc4;
   border-radius: 50%;
+  fill: #80cbc4;
 }
 
 .first-step-create-new-chat-modal__chat-title-input-wrapper {
   position: relative;
-  height: 100px;
   display: flex;
-  flex-grow: 1;
   flex-flow: column nowrap;
+  flex-grow: 1;
   justify-content: space-around;
+  height: 100px;
 }
 
 .first-step-create-new-chat-modal__helper-text {
@@ -51,16 +51,16 @@
 }
 
 .create-new-chat-modal-input {
-  border: none;
-  border-bottom: 2px solid var(--teal-200);
   padding: 0 0 2px 2px;
   font-size: 1.3rem;
+  border: none;
+  border-bottom: 2px solid var(--teal-200);
   transition: border 0.3s;
 }
 
 .create-new-chat-modal-input:focus {
-  outline: none;
   border-bottom: 2px solid var(--teal-500);
+  outline: none;
 }
 
 .create-new-chat-modal-input_error,

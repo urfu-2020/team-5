@@ -23,8 +23,8 @@
 
 .second-step-create-new-chat-modal__title {
   font-size: 1.2rem;
-  text-align: center;
   font-weight: normal;
+  text-align: center;
 }
 
 .second-step-create-new-chat-modal__search-panel {
@@ -43,10 +43,10 @@
 }
 
 .new-chat-user-list {
-  padding: 1rem;
   display: flex;
   flex-flow: column nowrap;
   gap: 3px;
+  padding: 1rem;
   overflow-x: auto;
 }
 

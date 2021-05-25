@@ -31,3 +31,9 @@ body {
   margin: 0;
   background-color: var(--teal-200);
 }
+
+.app__error-card {
+  position: fixed;
+  bottom: 1rem;
+  left: 10px;
+}

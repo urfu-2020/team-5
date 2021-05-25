@@ -21,7 +21,6 @@ const appSlice = createSlice({
   initialState: initialAppState,
   reducers: {
     setError(state, {payload}) {
-      console.log(payload);
       state.error = payload.errorMessage;
     }
   }

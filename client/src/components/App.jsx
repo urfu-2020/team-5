@@ -12,6 +12,8 @@ import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
 import {initSocket} from "../store/middlewares/socketMiddleware";
 import {selectAppError} from "../store/slices/appSlice/appSelectors";
+import {ErrorCard} from "./Controls/ErrorCard/ErrorCard";
+import {setError} from "../store/slices/appSlice/appSlice";
 
 
 const App = () => {
@@ -27,7 +29,6 @@ const App = () => {
       dispatch(initSocket());
   }, [currentUserId]);
 
-
   return isUserLoading ? <Spinner className="spinner_main"/> :
     currentUserId ? (
       <div id="app">
@@ -40,7 +41,11 @@ const App = () => {
           <Route path="*" component={NotFoundPage}/>
         </Switch>
         {
-          appError && <p> {appError} </p>
+          appError && <ErrorCard
+            className="app__error-card"
+            errorMessage={appError}
+            onClose={() => dispatch(setError({errorMessage: null}))}
+          />
         }
       </div>
     ) : (

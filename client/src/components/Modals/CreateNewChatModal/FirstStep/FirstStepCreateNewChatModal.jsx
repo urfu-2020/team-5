@@ -53,7 +53,7 @@ export const FirstStepCreateNewChatModal = ({chatTitle, setChatTitle, setNewChat
       <div className="first-step-create-new-chat-modal__buttons">
         <Button className="text-button" onClick={() => setNewChatModalOpen(false)}> Отмена </Button>
         <Button
-          // disabled={chatTitle === ''}
+          disabled={chatTitle === ''}
           className="text-button"
           onClick={() => setStep(1)}
         > Далее </Button>

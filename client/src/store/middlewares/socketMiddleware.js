@@ -37,7 +37,6 @@ export const socketMiddleware = store => next => action => {
             break;
           }
           case 'errorMessage': {
-            console.log('errorMessage', message.payload);
             store.dispatch({type: setError.type, payload: message.payload});
             break;
           }

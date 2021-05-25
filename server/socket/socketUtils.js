@@ -11,12 +11,10 @@ async function validateNewChat(chatTitle, selectedUsers) {
   if (selectedUsers.length === 0) return { error: true, errorMessage: 'Название чата не может быть пустым.' };
 
   const ids = selectedUsers.map((user) => user.id);
-  console.log('userIds', ids);
 
   const usersFromDb = await getUsersByIds(ids);
-  console.log('usersFromDb', usersFromDb);
 
-  if (usersFromDb.length < ids) {
+  if (usersFromDb.length < ids.length) {
     return {
       error: true,
       errorMessage: 'Одного или нескольких выбранных пользователей не существует'

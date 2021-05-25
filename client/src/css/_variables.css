@@ -11,4 +11,5 @@
   --separator: #bdbdbd;
   --accent-text: var(--teal-500);
   --error-red: #d50000;
+  --error-card-bg: #ff8a80;
 }
