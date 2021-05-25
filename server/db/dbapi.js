@@ -1,10 +1,10 @@
 const { QueryTypes, Op } = require('sequelize');
 
 const sequelizeConnection = require('./sequelizeConfig');
-const User = require('./sequelizeModels/user');
-const Chat = require('./sequelizeModels/chat');
-const ChatUser = require('./sequelizeModels/chatUser');
-const Message = require('./sequelizeModels/message');
+const User = require('./models/user');
+const Chat = require('./models/chat');
+const ChatUser = require('./models/chatUser');
+const Message = require('./models/message');
 
 /**
  * Получить всех пользователей
