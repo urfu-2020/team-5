@@ -9,7 +9,6 @@ import {getDialogInfo} from "../../../utils/chatUtils";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {getDeclOfNum} from "../../../utils/stringUtils";
 import {UserCard} from "../../UtilComponents/ChatMemberCard/UserCard";
-import {Button} from "../../UtilComponents/Button/Button";
 
 
 

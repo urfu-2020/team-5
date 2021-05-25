@@ -84,7 +84,7 @@ const ChatMessages = ({currentChatInfo}) => {
   }
 
   return (
-    <div className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
+    <ul className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
       {
         // если чат сменился и еще не загрузился
         prevChatId !== id ? <Spinner className="spinner_chat-main"/> : (
@@ -125,7 +125,7 @@ const ChatMessages = ({currentChatInfo}) => {
         )
       }
       <div ref={endMessagesRef}/>
-    </div>
+    </ul>
   );
 };
 

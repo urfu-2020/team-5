@@ -29,10 +29,10 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
   };
 
   return (
-    <form className="send-message-form" aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
+    <form className="send-message-form " aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
       <label
         htmlFor="input-file"
-        className="button"
+        className="button rounded-button"
         aria-label="прикрепить файлы"
         role="button"
         tabIndex="0"
@@ -56,6 +56,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         </svg>
       </label>
       <input
+        autoFocus={true}
         value={isModalOpen ? '' : inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         type="text"
@@ -63,7 +64,11 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         autoComplete="off"
         placeholder="Введите сообщение..."
       />
-      <Button type="submit" aria-label="отправить сообщение">
+      <Button
+        className="rounded-button centred-button"
+        type="submit"
+        aria-label="отправить сообщение"
+      >
         <svg
           className="svg-button send-message-form__send-button"
           xmlns="http://www.w3.org/2000/svg"

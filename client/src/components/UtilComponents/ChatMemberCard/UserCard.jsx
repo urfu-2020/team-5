@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import {Button} from "../Button/Button";
 
-export const UserCard = ({ cardClassName, iconClassName, usernameClassName, user, onCardClick }) => {
+export const UserCard = ({ cardClassName, iconClassName, usernameClassName, user, onCardClick, ...otherProps }) => {
   return (
     <Button
       onClick={onCardClick}
@@ -11,6 +11,7 @@ export const UserCard = ({ cardClassName, iconClassName, usernameClassName, user
       }
       key={user.id}
       Icon={<img className={iconClassName ? iconClassName : ''} src={user.avatarUrl} alt="user avatar" />}
+      {...otherProps}
     >
       <p className={usernameClassName ? usernameClassName : ''}>{user.username}</p>
     </Button>

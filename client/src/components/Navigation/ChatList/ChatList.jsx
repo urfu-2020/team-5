@@ -12,7 +12,7 @@ const ChatList = () => {
   const currentUserId = useSelector(selectCurrentUser).id;
 
   return (
-    <ul>
+    <ul className="chat-list">
       {
         Object.values(userChats)
           .sort((firstChat, secondChat) => {
@@ -32,13 +32,15 @@ const ChatList = () => {
             const {dialogAvatarUrl, dialogChatTitle} = getDialogInfo(members, chatType, currentUserId);
             return (
               <ChatCard
+                className="chat-list__chat-card"
                 key={id}
                 chatId={id}
                 chatType={chatType}
-                title={chatTitle}
+                title={dialogChatTitle ? dialogChatTitle : chatTitle}
                 avatarUrl={dialogAvatarUrl ? dialogAvatarUrl : chatAvatarUrl}
-                currentChatId={dialogChatTitle ? dialogChatTitle : currentChatId}
+                currentChatId={currentChatId}
                 lastMessage={lastMessage}
+
                 isOnline={false}
                 countUnreadMessage={1}
               />

@@ -7,7 +7,7 @@ import {Button} from "../../UtilComponents/Button/Button";
 export const NavigationHeader = ({setOpenSideMenu}) => (
   <header className="navigationHeaderWrapper">
     <Button
-      className="button"
+      className="rounded-button"
       aria-label="Открыть главное меню"
       type="button"
       onClick={() => setOpenSideMenu(true)}

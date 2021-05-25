@@ -72,7 +72,7 @@ export const InputFileModal = ({inputMessage, setInputMessage, setModalOpen }) =
       </section>
 
       <Button
-        className="input-file-modal__close-button"
+        className="rounded-button centred-button input-file-modal__close-button"
         aria-label="закрыть окно"
         onClick={() => setModalOpen(false)}
       >

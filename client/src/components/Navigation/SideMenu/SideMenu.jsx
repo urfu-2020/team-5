@@ -1,6 +1,7 @@
 import {useSelector} from "react-redux";
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
+import FocusLock from 'react-focus-lock';
 
 import './side-menu.css';
 
@@ -42,47 +43,56 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
         )
       }
 
-      <div
-        role="menu"
-        tabIndex="0"
-        onKeyDown={keyDownHandler}
-        className={`side-menu ${isSideMenuOpen ? 'side-menu_open' : 'side-menu_close'}`}
-      >
-        <div className="side-menu__header">
-          <img className="side-menu__user-avatar" src={user.avatarUrl} alt="аватар пользователя"/>
-          <p className="side-menu__user-name">{user.username}</p>
+      <FocusLock disabled={!isSideMenuOpen}>
+        <div
+          role="menu"
+          tabIndex={isSideMenuOpen ? '0' : '-1'}
+          aria-hidden={!isSideMenuOpen}
+          onKeyDown={keyDownHandler}
+          className={`side-menu ${isSideMenuOpen ? 'side-menu_open' : 'side-menu_close'}`}
+        >
+          <div className="side-menu__header">
+            <img className="side-menu__user-avatar" src={user.avatarUrl} alt="аватар пользователя"/>
+            <p className="side-menu__user-name">{user.username}</p>
+          </div>
+          <ul className="side-menu__main">
+            <Button
+              aria-label="Новая группа"
+              tabIndex={isSideMenuOpen ? '0' : '-1'}
+              Icon={<NewChatIcon className="side-menu-option__icon"/>}
+              className="centred-button button-with-pre-icon"
+              onClick={() => {
+                setNewChatModalOpen(true);
+                setOpenSideMenu(false);
+              }}
+            >
+              Новая группа
+            </Button>
+
+            <Button
+              aria-label="Настройки"
+              tabIndex={isSideMenuOpen ? '0' : '-1'}
+              Icon={<SettingsIcon className="side-menu-option__icon"/>}
+              className="centred-button button-with-pre-icon"
+            >
+              Настройки
+            </Button>
+
+            <Button
+              aria-label="Темная тема"
+              tabIndex={isSideMenuOpen ? '0' : '-1'}
+              as="label"
+              htmlFor="night-mode-toggle"
+              className="centred-button button-with-pre-icon night-mode-toggle-wrapper"
+              Icon={<DarkModeIcon className="side-menu-option__icon"/>}
+            >
+              Темная тема
+              <Toggle toggleId="night-mode-toggle" className="night-mode-toggle"/>
+            </Button>
+
+          </ul>
         </div>
-        <div className="side-menu__main">
-          <Button
-            Icon={<NewChatIcon className="side-menu-option__icon"/>}
-            className="button-with-pre-icon"
-            onClick={() => {
-              setNewChatModalOpen(true);
-              setOpenSideMenu(false);
-            }}
-          >
-            Новая группа
-          </Button>
-
-          <Button
-            Icon={<SettingsIcon className="side-menu-option__icon"/>}
-            className="button-with-pre-icon"
-          >
-            Настройки
-          </Button>
-
-          <Button
-            as="label"
-            htmlFor="night-mode-toggle"
-            className="button-with-pre-icon night-mode-toggle-wrapper"
-            Icon={<DarkModeIcon className="side-menu-option__icon"/>}
-          >
-            Ночной режим
-            <Toggle toggleId="night-mode-toggle" className="night-mode-toggle"/>
-          </Button>
-
-        </div>
-      </div>
+      </FocusLock>
 
       {
         isCreateNewChatModalOpen && <CreateNewChatModal

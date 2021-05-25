@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import './FirstStep/first-step-create-new-chat-modal.css';
 import {FirstStepCreateNewChatModal} from "./FirstStep/FirstStepCreateNewChatModal";
 import {SecondStepCreateNewChatModal} from "./SecondStep/SecondStepCreateNewChatModal";
+import FocusLock from "react-focus-lock";
 
 export const CreateNewChatModal = ({setNewChatModalOpen}) => {
   const [chatTitle, setChatTitle] = useState('');
@@ -14,7 +15,14 @@ export const CreateNewChatModal = ({setNewChatModalOpen}) => {
       setNewChatModalOpen(false);
   };
 
-  return (
+  const keyDownHandler = e => {
+    if (e.key === 'Escape') {
+      setNewChatModalOpen(false);
+    }
+  };
+
+
+    return (
     <>
       <div
         tabIndex="-1"
@@ -23,9 +31,11 @@ export const CreateNewChatModal = ({setNewChatModalOpen}) => {
         onClick={handleOverlayClick}
       />
 
+      <FocusLock>
       {
         step === 0 ? (
           <FirstStepCreateNewChatModal
+            onKeyDown={keyDownHandler}
             chatTitle={chatTitle}
             setChatTitle={setChatTitle}
             setNewChatModalOpen={setNewChatModalOpen}
@@ -33,12 +43,14 @@ export const CreateNewChatModal = ({setNewChatModalOpen}) => {
           />
         ) : (
           <SecondStepCreateNewChatModal
+            onKeyDown={keyDownHandler}
             setStep={setStep}
             setNewChatModalOpen={setNewChatModalOpen}
             chatTitle={chatTitle}
           />
         )
       }
+      </FocusLock>
     </>
   );
 }

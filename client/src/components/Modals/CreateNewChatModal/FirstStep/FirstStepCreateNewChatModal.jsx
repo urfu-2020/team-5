@@ -4,38 +4,56 @@ import {NewChatIcon} from "../../../UtilComponents/Icons/NewChatIcon";
 import {Button} from "../../../UtilComponents/Button/Button";
 
 import './first-step-create-new-chat-modal.css';
+import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
 
 
-export const FirstStepCreateNewChatModal = ({chatTitle, setChatTitle, setNewChatModalOpen, setStep}) => {
+export const FirstStepCreateNewChatModal = ({
+  onKeyDown,
+                                              chatTitle,
+                                              setChatTitle,
+                                              setNewChatModalOpen,
+                                              setStep
+                                            }) => {
   const [hasError, setHasError] = useState(false);
   const [isBlurOnErrorState, blurOnErrorState] = useState(false);
 
   const handleInputChange = e => {
     const newText = e.target.value;
     setChatTitle(newText);
-    if(isBlurOnErrorState && newText === '') {
+    if (isBlurOnErrorState && newText === '') {
       setHasError(true);
-    } else if(hasError) {
+    } else if (hasError) {
       setHasError(false);
       blurOnErrorState(false);
     }
   };
 
   const handleBlur = e => {
-    if(!isBlurOnErrorState) {
+    if (!isBlurOnErrorState) {
       blurOnErrorState(true);
     }
-    if(e.target.value === '') {
+    if (e.target.value === '') {
       setHasError(true);
     }
   };
 
   return (
-    <div className="first-step-create-new-chat-modal">
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+    <div
+      onKeyDown={onKeyDown}
+      className="first-step-create-new-chat-modal"
+      role="dialog"
+      aria-label="Модальное окно создания чата, 1 этап."
+      aria-labelledby="input-chat-title"
+    >
       <div className="first-step-create-new-chat-modal__chat-info">
+        <Button
+          className="rounded-button centred-button create-chat-modal__close-icon"
+          Icon={<CloseIcon className="svg-button" />}
+        />
         <NewChatIcon className="first-step-create-new-chat-modal__chat-avatar default-chat-avatar"/>
         <div className="first-step-create-new-chat-modal__chat-title-input-wrapper">
-          <label className="input-chat-title-label" htmlFor="input-chat-title">Название чата:</label>
+          <label className="input-chat-title-label" htmlFor="input-chat-title">Введите название чата:</label>
           <input
             onBlur={handleBlur}
             onChange={handleInputChange}
@@ -63,6 +81,7 @@ export const FirstStepCreateNewChatModal = ({chatTitle, setChatTitle, setNewChat
 };
 
 FirstStepCreateNewChatModal.propTypes = {
+  onKeyDown: PropTypes.string,
   chatTitle: PropTypes.string,
   setChatTitle: PropTypes.func,
   setNewChatModalOpen: PropTypes.func,
