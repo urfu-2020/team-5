@@ -48,6 +48,7 @@ export const FirstStepCreateNewChatModal = ({
     >
       <div className="first-step-create-new-chat-modal__chat-info">
         <Button
+          onClick={() => setNewChatModalOpen(false)}
           className="rounded-button centred-button create-chat-modal__close-icon"
           Icon={<CloseIcon className="svg-button" />}
         />

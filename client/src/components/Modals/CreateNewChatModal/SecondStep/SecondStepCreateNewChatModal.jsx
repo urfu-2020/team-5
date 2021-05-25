@@ -46,6 +46,7 @@ export const SecondStepCreateNewChatModal = ({
       aria-label="Модальное окно создания чата, 2 этап."
     >
       <Button
+        onClick={() => setNewChatModalOpen(false)}
         className="rounded-button centred-button create-chat-modal__close-icon"
         Icon={<CloseIcon className="svg-button" />}
       />
