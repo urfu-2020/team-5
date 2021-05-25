@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {convertRawStartChatsData, getNewChat} from "../../../utils/chatConverters";
+import {convertRawStartChatsData} from "../../../utils/chatConverters";
 
 
 class ChatsState {

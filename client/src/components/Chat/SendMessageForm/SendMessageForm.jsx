@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router";
@@ -12,6 +12,13 @@ import {Button} from "../../UtilComponents/Button/Button";
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
   const chatId = +useParams().chatId;
   const dispatch = useDispatch();
+
+  const inputMessageRef = useRef(null);
+
+  useEffect(() => {
+    if(inputMessageRef.current)
+      inputMessageRef.current.focus();
+  }, [chatId]);
 
   const sendMessageHandler = e => {
     e.preventDefault();
@@ -56,7 +63,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         </svg>
       </label>
       <input
-        autoFocus={true}
+        ref={inputMessageRef}
         value={isModalOpen ? '' : inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         type="text"

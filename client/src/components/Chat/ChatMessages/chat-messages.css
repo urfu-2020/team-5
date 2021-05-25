@@ -4,8 +4,8 @@
 
 .chat-container__chat-area {
   display: flex;
-  gap: 6px;
   flex-direction: column;
+  gap: 6px;
 }
 
 .chat-area > :first-child {

@@ -18,8 +18,8 @@
 .second-step-create-new-chat-modal__head {
   display: flex;
   flex-flow: column;
-  justify-content: space-between;
   gap: 2rem;
+  justify-content: space-between;
 }
 
 .second-step-create-new-chat-modal__title {
