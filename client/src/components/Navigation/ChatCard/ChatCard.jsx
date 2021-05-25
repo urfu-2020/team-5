@@ -7,11 +7,11 @@ import './chat-card.css';
 import {useSelector} from "react-redux";
 import {getTimeInLocaleString} from "../../../utils/time";
 import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
-import {MessageReadIcon} from "../../Controls/Icons/MessageReadIcon";
-import {MessageUnreadIcon} from "../../Controls/Icons/MessageUnreadIcon";
-import {SavedMessagesIcon} from "../../Controls/Icons/SavedMessagesIcon";
+import {MessageReadIcon} from "../../UtilComponents/Icons/MessageReadIcon";
+import {MessageUnreadIcon} from "../../UtilComponents/Icons/MessageUnreadIcon";
+import {SavedMessagesIcon} from "../../UtilComponents/Icons/SavedMessagesIcon";
 import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
-import {NewChatIcon} from "../../Controls/Icons/NewChatIcon";
+import {NewChatIcon} from "../../UtilComponents/Icons/NewChatIcon";
 
 
 export const ChatCard = ({ chatId, currentChatId, chatType,
@@ -80,11 +80,11 @@ export const ChatCard = ({ chatId, currentChatId, chatType,
 
 
 ChatCard.propTypes = {
-  chatId: PropTypes.number.isRequired,
+  chatId: PropTypes.number,
   currentChatId: PropTypes.number,
   chatType: PropTypes.oneOf(['Own', 'Dialog', 'Group']),
   lastMessage: PropTypes.shape({
-    id: PropTypes.string,
+    id: PropTypes.number,
     chatId: PropTypes.number,
     senderId: PropTypes.number,
     text: PropTypes.string,
@@ -92,8 +92,8 @@ ChatCard.propTypes = {
     status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']),
     time: PropTypes.string,
   }),
-  title: PropTypes.string.isRequired,
-  isOnline: PropTypes.bool.isRequired,
+  title: PropTypes.string,
+  isOnline: PropTypes.bool,
   countUnreadMessage: PropTypes.number,
   avatarUrl: PropTypes.string
 };

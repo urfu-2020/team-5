@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import './side-menu.css';
 
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
-import {NewChatIcon} from "../../Controls/Icons/NewChatIcon";
-import {SettingsIcon} from "../../Controls/Icons/SettingsIcon";
-import {DarkModeIcon} from "../../Controls/Icons/DarkModeIcon";
-import {Toggle} from "../../Controls/Toggle/Toggle";
+import {NewChatIcon} from "../../UtilComponents/Icons/NewChatIcon";
+import {SettingsIcon} from "../../UtilComponents/Icons/SettingsIcon";
+import {DarkModeIcon} from "../../UtilComponents/Icons/DarkModeIcon";
+import {Toggle} from "../../UtilComponents/Toggle/Toggle";
 import {CreateNewChatModal} from "../../Modals/CreateNewChatModal/CreateNewChatModal";
-import {Button} from "../../Controls/Button/Button";
+import {Button} from "../../UtilComponents/Button/Button";
 
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {

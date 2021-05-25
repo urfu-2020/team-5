@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 
 import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
-import {Spinner} from "./Controls/Spinner/Spinner";
+import {Spinner} from "./UtilComponents/Spinner/Spinner";
 import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
@@ -12,7 +12,7 @@ import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
 import {initSocket} from "../store/middlewares/socketMiddleware";
 import {selectAppError} from "../store/slices/appSlice/appSelectors";
-import {ErrorCard} from "./Controls/ErrorCard/ErrorCard";
+import {ErrorCard} from "./UtilComponents/ErrorCard/ErrorCard";
 import {setError} from "../store/slices/appSlice/appSlice";
 
 

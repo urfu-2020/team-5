@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {MessageReadIcon} from "../../../Controls/Icons/MessageReadIcon";
-import {MessageUnreadIcon} from "../../../Controls/Icons/MessageUnreadIcon";
+import {MessageReadIcon} from "../../../UtilComponents/Icons/MessageReadIcon";
+import {MessageUnreadIcon} from "../../../UtilComponents/Icons/MessageUnreadIcon";
 
 export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
   return (

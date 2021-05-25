@@ -8,7 +8,8 @@ const { getUsersByIds } = require('../db/dbapi');
 
 async function validateNewChat(chatTitle, selectedUsers) {
   if (chatTitle === '') return { error: true, errorMessage: 'Название чата не может быть пустым.' };
-  if (selectedUsers.length === 0) return { error: true, errorMessage: 'Название чата не может быть пустым.' };
+  console.log(selectedUsers)
+  if (selectedUsers.length === 0) return { error: true, errorMessage: 'В группе должен быть хотя бы 1 собеседник.' };
 
   const ids = selectedUsers.map((user) => user.id);
 

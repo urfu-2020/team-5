@@ -15,7 +15,6 @@ export function getNewChat(chat, chatUserRecords) {
         id: userId
       };
     });
-
   return {
     ...chat,
     members

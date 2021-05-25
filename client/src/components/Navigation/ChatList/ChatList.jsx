@@ -4,6 +4,7 @@ import {ChatCard} from '../ChatCard/ChatCard';
 import {useSelector} from "react-redux";
 import {selectCurrentChatId, selectUserChats} from "../../../store/slices/chatsSlice/chatsSelectors";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
+import {getDialogInfo} from "../../../utils/chatUtils";
 
 const ChatList = () => {
   const currentChatId = useSelector(selectCurrentChatId);
@@ -28,25 +29,16 @@ const ChatList = () => {
           .map(({
                   id, chatType, chatAvatarUrl, chatTitle, lastMessage, members
                 }) => {
-            if (chatType === 'Dialog') {
-              const sobesednik = members.find(member => member.id !== currentUserId);
-              chatAvatarUrl = sobesednik.avatarUrl;
-              chatTitle = sobesednik.username;
-            }
-            if (chatType === 'Own') {
-              chatAvatarUrl = members[0].avatarUrl;
-              chatTitle = members[0].username;
-            }
+            const {dialogAvatarUrl, dialogChatTitle} = getDialogInfo(members, chatType, currentUserId);
             return (
               <ChatCard
                 key={id}
                 chatId={id}
                 chatType={chatType}
                 title={chatTitle}
-                avatarUrl={chatAvatarUrl}
-                currentChatId={currentChatId}
+                avatarUrl={dialogAvatarUrl ? dialogAvatarUrl : chatAvatarUrl}
+                currentChatId={dialogChatTitle ? dialogChatTitle : currentChatId}
                 lastMessage={lastMessage}
-
                 isOnline={false}
                 countUnreadMessage={1}
               />

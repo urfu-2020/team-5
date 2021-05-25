@@ -23,3 +23,21 @@ export const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller
     console.error(e);
   }
 };
+
+export const getDialogInfo = (members, chatType, currentUserId) => {
+  let chatAvatarUrl, chatTitle;
+  if (chatType === 'Dialog') {
+    const sobesednik = members.find(member => member.id !== currentUserId);
+    chatAvatarUrl = sobesednik.avatarUrl;
+    chatTitle = sobesednik.username;
+  }
+  if (chatType === 'Own') {
+    chatAvatarUrl = members[0].avatarUrl;
+    chatTitle = members[0].username;
+  }
+
+  return {
+    dialogAvatarUrl: chatAvatarUrl,
+    dialogChatTitle: chatTitle
+  };
+};

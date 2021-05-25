@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import PropTypes from 'prop-types';
-import {NewChatIcon} from "../../../Controls/Icons/NewChatIcon";
-import {Button} from "../../../Controls/Button/Button";
+import {NewChatIcon} from "../../../UtilComponents/Icons/NewChatIcon";
+import {Button} from "../../../UtilComponents/Button/Button";
 
 import './first-step-create-new-chat-modal.css';
 

@@ -34,7 +34,7 @@ export const Chat = () => {
   return currentChat ? (
     <main className="chat-container">
       <MemoizedChatHeader
-        title={currentChat.chatTitle}
+        currentChat={currentChat}
         isOnline={true}
       />
       <MemoizedChatMessages

@@ -2,12 +2,13 @@ import React, {useEffect, useState} from "react";
 import PropTypes from 'prop-types';
 
 import './second-step-create-new-chat-modal.css';
-import {SearchIcon} from "../../../Controls/Icons/SearchIcon";
-import {Button} from "../../../Controls/Button/Button";
-import {Spinner} from "../../../Controls/Spinner/Spinner";
+import {SearchIcon} from "../../../UtilComponents/Icons/SearchIcon";
+import {Button} from "../../../UtilComponents/Button/Button";
+import {Spinner} from "../../../UtilComponents/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
 import {createNewChat} from "../../../../store/middlewares/socketMiddleware";
 import {selectCurrentUser} from "../../../../store/slices/userSlice/userSelectors";
+import {UserCard} from "../../../UtilComponents/ChatMemberCard/UserCard";
 
 
 export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModalOpen}) => {
@@ -52,19 +53,17 @@ export const SecondStepCreateNewChatModal = ({setStep, chatTitle, setNewChatModa
           users.map(user => {
             if(user.id !== currentUserId && user.username.includes(searchInput)) {
               const selected = selectedUsers.find(selectedUser => selectedUser === user);
+
               return (
-                <Button
-                  onClick={() => setSelectedUsers(prev => (
+                <UserCard
+                  user={user}
+                  cardClassName={`new-chat-user ${selected ? 'new-chat-user_selected' : ''}`}
+                  onCardClick={() => setSelectedUsers(prev => (
                     !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
                   ))}
-                  className={
-                    `button-with-pre-icon new-chat-user ${selected ? 'new-chat-user_selected' : ''}`
-                  }
-                  key={user.id}
-                  Icon={<img className="new-chat-user__avatar" src={user.avatarUrl} alt="user avatar" />}
-                >
-                  <p className="new-chat-user__username">{user.username}</p>
-                </Button>
+                  iconClassName="new-chat-user__avatar"
+                  usernameClassName="new-chat-user__username"
+                />
               );
             }
           }) : <Spinner />

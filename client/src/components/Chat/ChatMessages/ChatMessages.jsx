@@ -7,7 +7,7 @@ import './chat-messages.css';
 import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
 import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../utils/time";
-import {Spinner} from "../../Controls/Spinner/Spinner";
+import {Spinner} from "../../UtilComponents/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
 import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
@@ -91,7 +91,11 @@ const ChatMessages = ({currentChatInfo}) => {
           <>
             {
               isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
-                isAllMessagesLoaded ? <p> Начало диалога. </p> : null
+                isAllMessagesLoaded ? (
+                  <p className="chat-info-message chat-area__start-dialog-message">
+                    Начало диалога.
+                  </p>
+                ) : null
             }
             {
               messages.map(({id, text, senderId, time, status}, index) => {
@@ -99,7 +103,7 @@ const ChatMessages = ({currentChatInfo}) => {
                   <React.Fragment key={id}>
                     {
                       isNewDay(messages, index) ? (
-                        <h4 className="chat-date chat-area__chat-date">
+                        <h4 className="chat-info-message chat-area__date">
                           {getDayInLocaleString(time)}
                         </h4>
                       ) : null
@@ -131,8 +135,8 @@ ChatMessages.propTypes = {
   currentChatInfo: PropTypes.shape({
     id: PropTypes.number.isRequired,
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
-    chatAvatarUrl: PropTypes.string.isRequired,
-    chatTitle: PropTypes.string.isRequired,
+    chatAvatarUrl: PropTypes.string,
+    chatTitle: PropTypes.string,
     members: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
       username: PropTypes.string,
@@ -140,7 +144,7 @@ ChatMessages.propTypes = {
       githubUrl: PropTypes.string
     })),
     lastMessage: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       chatId: PropTypes.number.isRequired,
       senderId: PropTypes.number.isRequired,
       text: PropTypes.string.isRequired,
