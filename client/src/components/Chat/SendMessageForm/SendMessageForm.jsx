@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router";
@@ -6,12 +6,19 @@ import {useParams} from "react-router";
 import './send-message-form.css';
 
 import {sendMessage} from "../../../store/middlewares/socketMiddleware";
-import {Button} from "../../Controls/Button/Button";
+import {Button} from "../../UtilComponents/Button/Button";
 
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
   const chatId = +useParams().chatId;
   const dispatch = useDispatch();
+
+  const inputMessageRef = useRef(null);
+
+  useEffect(() => {
+    if(inputMessageRef.current)
+      inputMessageRef.current.focus();
+  }, [chatId]);
 
   const sendMessageHandler = e => {
     e.preventDefault();
@@ -29,10 +36,10 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
   };
 
   return (
-    <form className="send-message-form" aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
+    <form className="send-message-form " aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
       <label
         htmlFor="input-file"
-        className="button"
+        className="button rounded-button"
         aria-label="прикрепить файлы"
         role="button"
         tabIndex="0"
@@ -56,6 +63,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         </svg>
       </label>
       <input
+        ref={inputMessageRef}
         value={isModalOpen ? '' : inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         type="text"
@@ -63,7 +71,11 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         autoComplete="off"
         placeholder="Введите сообщение..."
       />
-      <Button type="submit" aria-label="отправить сообщение">
+      <Button
+        className="rounded-button centred-button"
+        type="submit"
+        aria-label="отправить сообщение"
+      >
         <svg
           className="svg-button send-message-form__send-button"
           xmlns="http://www.w3.org/2000/svg"

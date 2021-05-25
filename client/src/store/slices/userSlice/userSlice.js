@@ -33,7 +33,7 @@ const initialUserState = {
   isUserLoading: true
 };
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: 'user',
   initialState: initialUserState,
   extraReducers: {

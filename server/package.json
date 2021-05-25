@@ -18,12 +18,12 @@
     "focus-trap": "^6.3.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "mssql": "^6.3.1",
     "npm-run-all": "^4.1.5",
     "passport": "^0.4.1",
     "passport-github": "^1.1.0",
+    "sequelize": "^6.6.2",
     "surge": "^0.23.0",
-    "uuid": "^8.3.2",
+    "tedious": "^11.0.8",
     "ws": "^7.4.5"
   },
   "devDependencies": {

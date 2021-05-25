@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {convertRawNewDialog, convertRawStartChatsData} from "../../../utils/chatConverters";
+import {convertRawStartChatsData} from "../../../utils/chatConverters";
 
 
 class ChatsState {
@@ -22,18 +22,19 @@ const initialChatsState = {
   isChatsDataLoading: true
 };
 
-export const chatsSlice = createSlice({
+const chatsSlice = createSlice({
   name: 'chats',
   initialState: initialChatsState,
   reducers: {
     /**
      * Установить инфу о чатах после логина + в каждом по последнему сообщению
      * @param state {ChatsState}
-     * @param action {{ type: string, payload: { userChats: Array<UserChatModel>, lastMessages: Array<MessageModel>} }}
+     * @param action {{ type: string, payload:
+     * { userChats: Array<ChatInDbModel>, chatSobesedniki: Array<UserChatModel>, lastMessages: Array<MessageModel>} }}
      */
     setChatsData(state, {payload}) {
-      const {userChats, lastMessages} = payload;
-      state.userChats = convertRawStartChatsData(userChats, lastMessages);
+      const {userChats, chatUserRecords, lastMessages} = payload;
+      state.userChats = convertRawStartChatsData(userChats, chatUserRecords, lastMessages);
       state.isChatsDataLoading = false;
     },
     /**
@@ -55,11 +56,11 @@ export const chatsSlice = createSlice({
     /**
      * Добавить диалог с новым пользователем
      * @param state {ChatsState}
-     * @param action {UserChatModel}
+     * @param action {{chat: ChatInDbModel, sobesedniki: Array<UserModel>}}
      */
-    addDialogWithNewUser(state, {payload}) {
-      const newChat = convertRawNewDialog(payload);
-      state.userChats[newChat.chatId] = newChat;
+    addNewChat(state, {payload}) {
+      const {chat} = payload;
+      state.userChats[chat.id] = chat;
     }
   }
 });
@@ -70,7 +71,7 @@ const { actions, reducer } = chatsSlice;
 
 export const {
   setChatsData,
-  addDialogWithNewUser,
+  addNewChat,
   addChatMessage,
   setCurrentChatId
 } = actions;

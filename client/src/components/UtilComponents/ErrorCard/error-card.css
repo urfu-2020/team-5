@@ -1,0 +1,33 @@
+.error-card {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 0.5rem;
+  width: 20rem;
+  height: 10rem;
+  overflow: hidden;
+  text-align: center;
+  background-color: var(--error-card-bg);
+  border-radius: 4px;
+  box-shadow: 0 0 4px 0 rgba(50, 50, 50, 0.75);
+  opacity: 0.9;
+}
+
+.error-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  font-size: 1.2rem;
+  font-weight: normal;
+  background-color: var(--error-red);
+}
+
+.error-card__close-button {
+  position: absolute;
+  top: 0.2rem;
+  right: 0.2rem;
+}
+
+.error-card__close-button:hover {
+  cursor: pointer;
+}

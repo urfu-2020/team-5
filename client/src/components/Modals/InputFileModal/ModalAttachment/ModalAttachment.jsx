@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import './modal-attachment.css';
-import {Button} from "../../../../Controls/Button/Button";
+import {Button} from "../../../UtilComponents/Button/Button";
 
 export const ModalAttachment = ({ title }) => (
   <section
@@ -30,7 +30,10 @@ export const ModalAttachment = ({ title }) => (
       </p>
     </div>
     <div className="attachment__file-buttons">
-      <Button aria-label="Редактировать файл">
+      <Button
+        className="rounded-button centred-button"
+        aria-label="Редактировать файл"
+      >
         <svg
           className="svg-button"
           xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +50,10 @@ export const ModalAttachment = ({ title }) => (
           />
         </svg>
       </Button>
-      <Button aria-label="Открепить файл">
+      <Button
+        aria-label="Открепить файл"
+        className="rounded-button centred-button"
+      >
         <svg
           className="svg-button"
           xmlns="http://www.w3.org/2000/svg"

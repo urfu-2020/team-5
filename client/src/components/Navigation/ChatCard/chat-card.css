@@ -11,6 +11,12 @@
   background-color: var(--bg-color);
 }
 
+.card:focus-visible {
+  background-color: var(--teal-50);
+  box-shadow: 2px 0 0 2px var(--teal-500);
+  transition: all 0.2s;
+}
+
 .card_current {
   background-color: var(--teal-50);
 }
@@ -97,4 +103,10 @@ h3 {
   color: var(--bg-color);
   background-color: var(--teal-500);
   border-radius: 1em;
+}
+
+.chat-card-avatar-icon {
+  width: 64px;
+  height: 64px;
+  fill: var(--teal-200);
 }

@@ -6,7 +6,7 @@ import './chat.css';
 
 import {MemoizedChatMessages} from "./ChatMessages/ChatMessages";
 import {SendMessageForm} from "./SendMessageForm/SendMessageForm";
-import {InputFileModal} from "./SendMessageForm/InputFileModal/InputFIleModal";
+import {InputFileModal} from "../Modals/InputFileModal/InputFIleModal";
 import {MemoizedChatHeader} from "./ChatHeader/ChatHeader";
 import {NotFoundPage} from "../NotFoundPage/NotFoundPage";
 import {setCurrentChatId} from "../../store/slices/chatsSlice/chatsSlice";
@@ -34,7 +34,7 @@ export const Chat = () => {
   return currentChat ? (
     <main className="chat-container">
       <MemoizedChatHeader
-        title={currentChat.chatTitle}
+        currentChat={currentChat}
         isOnline={true}
       />
       <MemoizedChatMessages

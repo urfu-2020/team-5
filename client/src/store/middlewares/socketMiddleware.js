@@ -1,9 +1,13 @@
-import {addChatMessage, addDialogWithNewUser, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {setError} from "../slices/appSlice/appSlice";
 
 const INIT_SOCKET = 'socket/init';
 export const initSocket = () => ({type: INIT_SOCKET});
 const ADD_DIALOGS_WITH_NEW_USER = 'socket/addDialogsWithNewUser';
 export const addDialogsWithNewUser = () => ({ type: ADD_DIALOGS_WITH_NEW_USER });
+const CREATE_NEW_CHAT = 'socket/createNewChat';
+export const createNewChat =
+  (chatTitle, selectedUsers) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, selectedUsers}});
 const SEND_MESSAGE = 'socket/sendMessage';
 export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
 
@@ -13,7 +17,6 @@ export const socketMiddleware = store => next => action => {
   switch (action.type) {
     case INIT_SOCKET: {
       socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
-
       socket.onmessage = function (event) {
         const message = JSON.parse(event.data);
         switch (message.type) {
@@ -25,16 +28,25 @@ export const socketMiddleware = store => next => action => {
             store.dispatch({type: setChatsData.type, payload: message.payload});
             break;
           }
-          case 'addNewDialog': {
-            store.dispatch({type: addDialogWithNewUser.type, payload: message.payload});
+          case 'addNewChat': {
+            store.dispatch({type: addNewChat.type, payload: message.payload});
             break;
           }
           case 'chatMessage': {
             store.dispatch({type: addChatMessage.type, payload: message.payload});
             break;
           }
+          case 'errorMessage': {
+            store.dispatch({type: setError.type, payload: message.payload});
+            break;
+          }
         }
       };
+      break;
+    }
+
+    case CREATE_NEW_CHAT: {
+      socket.send(JSON.stringify({type: 'createNewChat', payload: action.payload }));
       break;
     }
 
