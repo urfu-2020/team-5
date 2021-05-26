@@ -1,17 +1,41 @@
-const { QueryTypes, Op } = require('sequelize');
+const mssql = require('mssql');
 
-const sequelize = require('./sequelizeConfig');
-const User = require('./sequelizeModels/User');
-const Chat = require('./sequelizeModels/Chat');
-const ChatUser = require('./sequelizeModels/ChatUser');
-const Message = require('./sequelizeModels/Message');
+const sqlConfig = {
+  user: process.env.DB_USER,
+  password: process.env.DB_PWD,
+  database: process.env.DB_NAME,
+  server: process.env.DB_SERVER,
+  pool: {
+    max: 10,
+    min: 0,
+    idleTimeoutMillis: 30000
+  },
+  options: {
+    encrypt: true, // for azure
+    trustServerCertificate: process.env.NODE_ENV === 'development'
+  }
+};
+
+/**
+ * Запрос к бд
+ * @param query {string}
+ * @returns {Promise<void|Promise>}
+ */
+async function dbRequest(query) {
+  try {
+    const request = (await mssql.connect(sqlConfig)).request();
+    return request.query(query);
+  } catch (e) {
+    return console.error(e);
+  }
+}
 
 /**
  * Получить всех пользователей
  * @returns {Array<UserModel>}
  */
 async function getUsers() {
-  return User.findAll({ raw: true });
+  return (await dbRequest('SELECT * FROM Users')).recordset;
 }
 
 /**
@@ -20,14 +44,14 @@ async function getUsers() {
  * @returns {Array<UserModel>}
  */
 async function getUsersByIds(ids) {
-  return User.findAll({
-    where: {
-      id: {
-        [Op.in]: ids
-      }
-    },
-    raw: true
-  });
+  const inQuery = `${ids.reduce((acc, id, index) => {
+    if (index === ids.length - 1) {
+      return ` ${id}`;
+    }
+    return `${id},`;
+  }, '')}`;
+
+  return (await dbRequest(`SELECT * FROM Users WHERE id IN (${inQuery})`)).recordset;
 }
 
 /**
@@ -37,12 +61,10 @@ async function getUsersByIds(ids) {
  * @returns {UserModel | boolean}
  */
 async function getUser(column, value) {
-  return User.findOne({
-    where: {
-      [column]: value
-    },
-    raw: true
-  });
+  const resValue = typeof value === 'string' ? `'${value}'` : value;
+  const user = await dbRequest(`SELECT * FROM Users WHERE ${column} = ${resValue}`);
+  if (user) return user.recordset[0];
+  return false;
 }
 
 /**
@@ -53,13 +75,9 @@ async function getUser(column, value) {
  * @returns {UserModel}
  */
 async function createAndGetUser(username, avatarUrl, githubUrl) {
-  const user = await User.create({
-    username,
-    avatarUrl,
-    githubUrl
-  });
-
-  return user.dataValues;
+  await dbRequest(`INSERT INTO Users(username, avatarUrl, githubUrl)
+   VALUES('${username}', '${avatarUrl}', '${githubUrl}')`);
+  return getUser('username', username);
 }
 
 /**
@@ -68,12 +86,11 @@ async function createAndGetUser(username, avatarUrl, githubUrl) {
  * @returns {ChatModel}
  */
 async function createAndGetNewChatGroup(chatTitle) {
-  const newChatGroup = await Chat.create({
-    chatTitle,
-    chatType: 'Group'
-  }, { fields: ['chatTitle', 'chatType'] });
+  return (await dbRequest(`
+          INSERT INTO Chats(chatTitle, chatType) VALUES('${chatTitle}', 'Group');
 
-  return newChatGroup.get({ plain: true });
+          SELECT * FROM Chats WHERE id=(SELECT SCOPE_IDENTITY());`)
+  ).recordset[0];
 }
 
 /**
@@ -89,7 +106,7 @@ async function addUsersInChat(chatId, users) {
     return `${acc}(${chatId}, ${user.id}),`;
   }, '');
 
-  await sequelize.query(`INSERT INTO ChatUsers VALUES ${insertValues}`, { type: QueryTypes.INSERT });
+  await dbRequest(`INSERT INTO ChatUsers VALUES ${insertValues}`);
 }
 
 /**
@@ -97,7 +114,7 @@ async function addUsersInChat(chatId, users) {
  * @param username {String}
  */
 async function addDialogsWithNewUser(username) {
-  await sequelize.query(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
+  await dbRequest(`EXEC AddDialogsWithNewUser @newUserUsername='${username}'`);
 }
 
 /**
@@ -106,7 +123,7 @@ async function addDialogsWithNewUser(username) {
  * @returns {Array<ChatInDbModel>}
  */
 async function getUserChats(userId) {
-  return sequelize.query(`SELECT * FROM GetUserChats(${userId})`, { type: QueryTypes.SELECT });
+  return (await dbRequest(`SELECT * FROM GetUserChats(${userId})`)).recordset;
 }
 
 /**
@@ -115,7 +132,7 @@ async function getUserChats(userId) {
  * @returns Array<UserChatModel>
  */
 async function getUserChatsChatUserRecords(userId) {
-  return sequelize.query(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`, { type: QueryTypes.SELECT });
+  return (await dbRequest(`SELECT * FROM GetUserChatsChatUserRecords(${userId})`)).recordset;
 }
 
 /**
@@ -124,12 +141,8 @@ async function getUserChatsChatUserRecords(userId) {
  * @returns {Array<Number>}
  */
 async function getUserChatsIds(userId) {
-  return (await ChatUser.findAll({
-    where: {
-      userId
-    },
-    raw: true
-  })).map((obj) => obj.chatId);
+  return (await dbRequest(`SELECT DISTINCT chatId FROM ChatUsers WHERE userId = ${userId}`))
+    .recordset.map((obj) => obj.chatId);
 }
 
 /**
@@ -140,15 +153,7 @@ async function getUserChatsIds(userId) {
  * @returns Array<MessageModel>
  */
 async function getChatMessages(chatId, offset, take) {
-  return Message.findAll({
-    where: {
-      chatId
-    },
-    offset,
-    limit: take,
-    order: [['time', 'DESC']],
-    raw: true
-  });
+  return (await dbRequest(`SELECT * FROM GetChatMessages(${chatId}, ${offset}, ${take})`)).recordset;
 }
 
 /**
@@ -157,7 +162,7 @@ async function getChatMessages(chatId, offset, take) {
  * @returns Array<MessageModel>
  */
 async function getUserLastChatMessages(userId) {
-  return sequelize.query(`SELECT * FROM GetUserLastChatMessages(${userId})`, { type: QueryTypes.SELECT });
+  return (await dbRequest(`SELECT * FROM GetUserLastChatMessages(${userId})`)).recordset;
 }
 
 /**
@@ -168,16 +173,12 @@ async function getUserLastChatMessages(userId) {
 async function createAndGetMessage({
   chatId, senderId, text, hasAttachments, status, time
 }) {
-  const newMessage = await Message.create({
-    chatId,
-    senderId,
-    text,
-    hasAttachments,
-    status,
-    time: sequelize.cast(time, 'datetime')
-  }, { fields: ['chatId', 'senderId', 'text', 'hasAttachments', 'status', 'time'] });
+  return (await dbRequest(`
+      INSERT INTO Messages(chatId, senderId, text, hasAttachments, status, time)
+      VALUES (${chatId}, ${senderId}, '${text}', ${hasAttachments ? 1 : 0}, '${status}', CAST('${time}' as DATETIME));
 
-  return newMessage.get({ plain: true });
+      SELECT * FROM MESSAGES WHERE id = (SELECT SCOPE_IDENTITY());
+    `)).recordset[0];
 }
 
 module.exports = {
