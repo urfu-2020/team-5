@@ -1,9 +1,8 @@
 const { Sequelize } = require('sequelize');
 
-const CONNECTION_URL = process.env.DATABASE_CONNECTION_STRING;
-
-const sequelizeConnection = new Sequelize(CONNECTION_URL, {
-  logging: process.env.NODE_ENV === 'production' ? false : console.log
+const sequelizeConnection = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PWD, {
+  host: process.env.DB_SERVER,
+  dialect: 'mssql'
 });
 
 module.exports = sequelizeConnection;
