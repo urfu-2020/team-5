@@ -1,3 +1,4 @@
+
 GO
 CREATE TABLE Users (
 	id INT PRIMARY KEY IDENTITY,
@@ -32,7 +33,6 @@ CREATE TABLE Messages (
 	time DATETIME NOT NULL
 );
 
-select * from ChatUsers
 
 /* При первом логине этот пользователь добавляется в диалоги ко всем другим */
 GO
@@ -70,7 +70,6 @@ BEGIN
 END
 
 
-
 /* Получить все записи чаты, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChats(@userId INT)
@@ -81,6 +80,7 @@ AS RETURN
 	JOIN ChatUsers
 	ON Chats.id = ChatUsers.chatId
 	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
+
 
 GO
 CREATE FUNCTION GetUserChatsChatUserRecords(@userId INT)
@@ -98,8 +98,6 @@ AS RETURN
 	ON ChatUsers.userId = Users.id
 	WHERE Chats.id IN (SELECT ChatId FROM ChatUsers WHERE userId = @userId)
 
-
-
 /* Получить id чатов, в которых состоит пользователь */
 GO
 CREATE FUNCTION GetUserChatsIds(@userId INT)
@@ -109,6 +107,9 @@ AS RETURN
 	FROM ChatUsers
 	WHERE userId = @userId
 
+
+/* Получить сообщения из чата, начиная с новых (самое новое - первое) */
+GO
 CREATE FUNCTION GetChatMessages(@chatId INT, @offset INT, @take INT)
 RETURNS TABLE
 AS RETURN
@@ -117,6 +118,8 @@ AS RETURN
 	WHERE Messages.chatId = @chatId
 	ORDER BY Messages.time DESC
 	OFFSET (@offset) ROWS FETCH NEXT (@take) ROWS ONLY
+
+
 
 /* Получить последние (одно из каждого) сообщения всех чатов, в которых есть пользователь */
 GO
@@ -154,4 +157,3 @@ BEGIN
 
 	RETURN;
 END
-
