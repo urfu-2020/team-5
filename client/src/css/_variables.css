@@ -1,5 +1,6 @@
 :root {
   --teal-50: #e0f2f1;
+  --teal-100: #b2dfdb;
   --teal-200: #80cbc4;
   --teal-500: #009688;
   --green-500: #4caf50;
@@ -9,4 +10,6 @@
   --grey-200: #eee;
   --separator: #bdbdbd;
   --accent-text: var(--teal-500);
+  --error-red: #d50000;
+  --error-card-bg: #ff8a80;
 }

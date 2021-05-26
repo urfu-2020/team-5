@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import './input-file-modal.css';
 
 import { ModalAttachment } from './ModalAttachment/ModalAttachment';
-import {Button} from "../../../Controls/Button/Button";
+import {Button} from "../../UtilComponents/Button/Button";
 
 const files = [
   { id: 123, title: 'file1.txt' },
@@ -72,7 +72,7 @@ export const InputFileModal = ({inputMessage, setInputMessage, setModalOpen }) =
       </section>
 
       <Button
-        className="input-file-modal__close-button"
+        className="rounded-button centred-button input-file-modal__close-button"
         aria-label="закрыть окно"
         onClick={() => setModalOpen(false)}
       >

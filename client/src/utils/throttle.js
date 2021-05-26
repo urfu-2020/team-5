@@ -1,3 +1,9 @@
+/**
+ * вызов функции будет происходить не чаще, чем раз в ${ms} миллисекунд
+ * @param func {Function}
+ * @param ms {number}
+ * @returns {Function}
+ */
 export function throttle(func, ms) {
   let isThrottled = false,
     savedArgs,

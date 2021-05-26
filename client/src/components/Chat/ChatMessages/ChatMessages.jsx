@@ -6,50 +6,17 @@ import './chat-messages.css';
 
 import {ChatMessage} from './ChatMessage/ChatMessage';
 import {throttle} from "../../../utils/throttle";
-import {getDayInLocaleString, getTimeInLocaleString} from "../../../utils/time";
-import {Spinner} from "../../Controls/Spinner/Spinner";
+import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../utils/time";
+import {Spinner} from "../../UtilComponents/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
-
-
-const getSobesednikAvatarUrl = (sobesedniki, senderId) => {
-  return sobesedniki.find(user => user.id === senderId).avatarUrl;
-};
-
-const isMyMessage = (myId, senderId) => {
-  return myId === senderId;
-};
-
-const isNewDay = (messages, index) => {
-  if (index === 0) return true;
-  const prevMessageTime = new Date(messages[index - 1].time);
-  const newMessageTime = new Date(messages[index].time);
-  return newMessageTime.getFullYear() !== prevMessageTime.getFullYear() ||
-    newMessageTime.getMonth() !== prevMessageTime.getMonth() ||
-    newMessageTime.getDate() !== prevMessageTime.getDate();
-};
-
-const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {
-  const {LOAD_MESSAGES_THRESHOLD} = config;
-  try {
-    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${offset}/${LOAD_MESSAGES_THRESHOLD}`, {
-      signal: controller.signal
-    })).json();
-
-    if (oldMessages.length < LOAD_MESSAGES_THRESHOLD) {
-      cbOnAllLoaded();
-    }
-    return {oldMessages};
-  } catch (e) {
-    console.error(e);
-  }
-};
+import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
 
 
 const ChatMessages = ({currentChatInfo}) => {
   const currentUser = useSelector(selectCurrentUser);
 
-  const {chatId, sobesedniki, lastMessage} = currentChatInfo;
+  const {id, members, lastMessage} = currentChatInfo;
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -64,14 +31,14 @@ const ChatMessages = ({currentChatInfo}) => {
     fetchControllerRef.current = new AbortController();
     (async () => {
       const response = await loadOldMessages({
-        chatId,
+        chatId: id,
         offset: 0,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
       });
       if(response) {
         setMessages(response.oldMessages);
-        setPrevChatId(chatId);
+        setPrevChatId(id);
       }
     })();
 
@@ -80,7 +47,7 @@ const ChatMessages = ({currentChatInfo}) => {
       prevLastMessageRef.current = null;
       setIsAllMessagesLoaded(false);
     };
-  }, [chatId]);
+  }, [id]);
 
   useEffect(() => {
     setMessages(prevMessages => [...prevMessages, lastMessage]);
@@ -95,11 +62,15 @@ const ChatMessages = ({currentChatInfo}) => {
       }
   }, [messages]);
 
-  const addMessagesOnScroll = async e => {
-    if (e.target.scrollTop === 0 && !isAllMessagesLoaded && !isOldMessagesLoading) {
+  async function addMessagesOnScroll(e) {
+    if (  e.target.scrollTop === 0 &&
+      !isAllMessagesLoaded &&
+      !isOldMessagesLoading &&
+      messages.length >= config.LOAD_MESSAGES_THRESHOLD
+    ) {
       setOldMessagesLoading(true);
       const response = await loadOldMessages({
-        chatId,
+        chatId: id,
         offset: messages.length,
         cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
         controller: fetchControllerRef.current
@@ -110,18 +81,21 @@ const ChatMessages = ({currentChatInfo}) => {
         setOldMessagesLoading(false);
       }
     }
-  };
-
+  }
 
   return (
-    <div className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
+    <ul className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
       {
         // если чат сменился и еще не загрузился
-        prevChatId !== chatId ? <Spinner className="spinner_chat-main"/> : (
+        prevChatId !== id ? <Spinner className="spinner_chat-main"/> : (
           <>
             {
               isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
-                isAllMessagesLoaded ? <p> Начало диалога. </p> : null
+                isAllMessagesLoaded ? (
+                  <p className="chat-info-message chat-area__start-dialog-message">
+                    Начало диалога.
+                  </p>
+                ) : null
             }
             {
               messages.map(({id, text, senderId, time, status}, index) => {
@@ -129,7 +103,7 @@ const ChatMessages = ({currentChatInfo}) => {
                   <React.Fragment key={id}>
                     {
                       isNewDay(messages, index) ? (
-                        <h4 className="chat-date chat-area__chat-date">
+                        <h4 className="chat-info-message chat-area__date">
                           {getDayInLocaleString(time)}
                         </h4>
                       ) : null
@@ -139,7 +113,7 @@ const ChatMessages = ({currentChatInfo}) => {
                       time={getTimeInLocaleString(time)}
                       isMyMessage={isMyMessage(currentUser.id, senderId)}
                       avatarUrl={isMyMessage(currentUser.id, senderId) ? currentUser.avatarUrl :
-                        getSobesednikAvatarUrl(sobesedniki, senderId)}
+                        getSobesednikAvatarUrl(members, senderId)}
                       status={status}
                       attachments={[]}
                     />
@@ -151,7 +125,7 @@ const ChatMessages = ({currentChatInfo}) => {
         )
       }
       <div ref={endMessagesRef}/>
-    </div>
+    </ul>
   );
 };
 
@@ -159,18 +133,18 @@ export const MemoizedChatMessages = React.memo(ChatMessages);
 
 ChatMessages.propTypes = {
   currentChatInfo: PropTypes.shape({
-    chatId: PropTypes.number.isRequired,
+    id: PropTypes.number.isRequired,
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
-    chatAvatarUrl: PropTypes.string.isRequired,
-    chatTitle: PropTypes.string.isRequired,
-    sobesedniki: PropTypes.arrayOf(PropTypes.shape({
+    chatAvatarUrl: PropTypes.string,
+    chatTitle: PropTypes.string,
+    members: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.number,
       username: PropTypes.string,
       avatarUrl: PropTypes.string,
       githubUrl: PropTypes.string
     })),
     lastMessage: PropTypes.shape({
-      id: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
       chatId: PropTypes.number.isRequired,
       senderId: PropTypes.number.isRequired,
       text: PropTypes.string.isRequired,

@@ -51,21 +51,23 @@
   box-shadow: 0 0 0 2px var(--teal-500);
 }
 
-ul {
+.chat-list {
   display: flex;
   flex-direction: column;
+  gap: 2px;
+  padding: 2px 0;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
-ul::-webkit-scrollbar {
+.chat-list::-webkit-scrollbar {
   background-color: transparent;
 }
 
-li {
+.chat-list__chat-card {
   list-style-type: none;
 }
 
-li:hover {
+.chat-list__chat-card:hover {
   background-color: var(--teal-50);
 }

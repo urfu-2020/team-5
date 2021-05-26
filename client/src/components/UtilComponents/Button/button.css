@@ -2,17 +2,35 @@
 
 .button {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   padding: 0.5rem;
   overflow: hidden;
   color: var(--teal-500);
-  cursor: pointer;
   background-color: transparent;
   border: none;
-  border-radius: 2em;
   outline: none;
+  transition: color 0.3s;
+}
+
+.rounded-button {
+  border-radius: 2em;
+}
+
+.centred-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.svg-button {
+  fill: var(--teal-500);
+}
+
+.text-button {
+  height: 2.5rem;
+  padding: 5px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  border-radius: 4px;
 }
 
 .button:hover {
@@ -25,15 +43,13 @@
   transition: all 0.2s;
 }
 
-.svg-button {
-  width: 25px;
-  height: 25px;
-  fill: var(--teal-500);
+.text-button:disabled {
+  color: var(--teal-100);
 }
 
-.text-button {
-  font-size: 1rem;
-  text-transform: uppercase;
+.text-button:disabled:hover {
+  cursor: auto;
+  background: none;
 }
 
 .input-file-modal__close-button {
@@ -55,4 +71,17 @@
   cursor: pointer;
   background-color: transparent;
   transform: scale(1.1);
+}
+
+.button-with-pre-icon {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 20px;
+  justify-content: flex-start;
+  height: 50px;
+  padding-right: 20px;
+  padding-left: 20px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 0;
 }
