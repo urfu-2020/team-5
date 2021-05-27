@@ -1,7 +1,6 @@
 const passport = require('passport');
 const GitHubStrategy = require('passport-github').Strategy;
-
-const dbapi = require('../db/dbapi');
+const { createAndGetUser, getUser } = require('../db/dbapi');
 
 passport.use(new GitHubStrategy({
   clientID: process.env.GITHUB_CLIENT_ID,
@@ -9,13 +8,13 @@ passport.use(new GitHubStrategy({
   callbackURL: `${process.env.SERVER_URL}/auth/github/login/callback`
 }, async (accessToken, refreshToken, profile, cb) => {
   try {
-    const jsonUser = profile._json;
-    const user = await dbapi.getUserByName(jsonUser.login);
+    const { username, profileUrl } = profile;
+    const avatarUrl = profile._json.avatar_url;
+    let user = await getUser('username', username);
     if (!user) {
-      await dbapi.createUser(jsonUser.login, jsonUser.avatar_url, jsonUser.html_url);
-      await dbapi.addDialogsWithNewUser(jsonUser.login);
+      user = await createAndGetUser(username, avatarUrl, profileUrl);
     }
-    return cb(null, profile);
+    return cb(null, user);
   } catch (e) {
     return cb(e, null);
   }

@@ -1,30 +1,26 @@
 const express = require('express');
-
-const {
-  getUserByName, getUserChats, getUserLastChatMessages, getUsers
-} = require('../db/dbapi');
+const { getUsers } = require('../db/dbapi');
 
 const router = express.Router();
 
+/**
+ * Получить всех пользователей
+ */
 router.get('/contacts', async (req, res) => {
   res.json({
     contacts: await getUsers()
   });
 });
 
-router.get('/:userId/chatsData', async (req, res) => {
-  const { userId } = req.params;
-  const rawChatsInfo = await getUserChats(userId);
-  const lastMessages = await getUserLastChatMessages(userId);
-  res.json({ rawChatsInfo, lastMessages });
-});
-
+/**
+ * Получить данные о текущем пользователе (после авторизации)
+ */
 router.get('/self', async (req, res) => {
-  let user = null;
+  let user;
   if (req.user) {
-    user = await getUserByName(req.user.username);
+    const { isNewUser, ...sessionUser } = req.user;
+    user = sessionUser;
   }
-
   res.json({
     user
   });

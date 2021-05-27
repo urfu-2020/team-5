@@ -1,12 +1,11 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {setChatsData} from "./chatsThunks";
+import {convertRawStartChatsData} from "../../../utils/chatConverters";
 
 
 class ChatsState {
   /**
-   *
    * @param currentChatId {number}
-   * @param userChats {{ number: ChatModel }}
+   * @param userChats {Object.<number, ChatModel>}
    * @param isChatsDataLoading {boolean}
    */
   constructor(currentChatId, userChats, isChatsDataLoading) {
@@ -16,20 +15,30 @@ class ChatsState {
   }
 }
 
-/**
- * @type ChatsState
- */
+
 const initialChatsState = {
   currentChatId: null,
   userChats: {},
   isChatsDataLoading: true
 };
 
-export const chatsSlice = createSlice({
+const chatsSlice = createSlice({
   name: 'chats',
   initialState: initialChatsState,
   reducers: {
     /**
+     * Установить инфу о чатах после логина + в каждом по последнему сообщению
+     * @param state {ChatsState}
+     * @param action {{ type: string, payload:
+     * { userChats: Array<ChatInDbModel>, chatSobesedniki: Array<UserChatModel>, lastMessages: Array<MessageModel>} }}
+     */
+    setChatsData(state, {payload}) {
+      const {userChats, chatUserRecords, lastMessages} = payload;
+      state.userChats = convertRawStartChatsData(userChats, chatUserRecords, lastMessages);
+      state.isChatsDataLoading = false;
+    },
+    /**
+     * Обновить последнее сообщение в чате с id === ${action.payload.chatId}
      * @param state {ChatsState}
      * @param action {{ type: string, payload: MessageModel }}
      */
@@ -37,24 +46,21 @@ export const chatsSlice = createSlice({
       state.userChats[payload.chatId].lastMessage = payload;
     },
     /**
+     * Обновить текущий чат
      * @param state {ChatsState}
-     * @param action {{ type: string, payload: number }}}
+     * @param action {{ type: string, payload: number }}
      */
     setCurrentChatId(state, {payload}) {
       state.currentChatId = payload;
-    }
-  },
-  extraReducers: {
-    [setChatsData.pending]: (state) => {
-      state.isChatsDataLoading = true;
     },
     /**
+     * Добавить диалог с новым пользователем
      * @param state {ChatsState}
-     * @param action {{ type: string, payload: { number: ChatModel } }}
+     * @param action {{chat: ChatInDbModel, sobesedniki: Array<UserModel>}}
      */
-    [setChatsData.fulfilled]: (state, {payload}) => {
-      state.userChats = payload;
-      state.isChatsDataLoading = false;
+    addNewChat(state, {payload}) {
+      const {chat} = payload;
+      state.userChats[chat.id] = chat;
     }
   }
 });
@@ -64,6 +70,8 @@ export const chatsSlice = createSlice({
 const { actions, reducer } = chatsSlice;
 
 export const {
+  setChatsData,
+  addNewChat,
   addChatMessage,
   setCurrentChatId
 } = actions;

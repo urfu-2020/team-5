@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {MessageReadIcon} from "../../../Controls/Icons/MessageReadIcon";
-import {MessageUnreadIcon} from "../../../Controls/Icons/MessageUnreadIcon";
+import {MessageReadIcon} from "../../../UtilComponents/Icons/MessageReadIcon";
+import {MessageUnreadIcon} from "../../../UtilComponents/Icons/MessageUnreadIcon";
 
 export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
   return (
-    <div className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}>
+    <li
+      className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}
+      // aria-label={isMyMessage ? `Мое сообщение: ${text}` : `Сообщение собеседника: ${text}`}
+    >
       <div
         className={`cloud message__cloud
         ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}
@@ -33,7 +36,7 @@ export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
         }
       </div>
       <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`}/>
-    </div>
+    </li>
   );
 };
 

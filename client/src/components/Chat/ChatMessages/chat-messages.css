@@ -1,35 +1,3 @@
-.chat-header {
-  background-color: var(--bg-color);
-  border-left: var(--separator) solid 1px;
-}
-
-.chat-container__chat-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.chat-header__chat-data {
-  margin-left: 10px;
-}
-
-.chat-name {
-  color: var(--primary-text);
-}
-
-.chat-status {
-  color: var(--secondary-text);
-}
-
-.chat-data__chat-name,
-.chat-data__chat-status {
-  margin: 5px;
-}
-
-.options-container__icon {
-  margin-right: 10px;
-}
-
 .icon {
   fill: var(--secondary-text);
 }
@@ -37,6 +5,7 @@
 .chat-container__chat-area {
   display: flex;
   flex-direction: column;
+  gap: 6px;
 }
 
 .chat-area > :first-child {
@@ -48,16 +17,22 @@
   overflow-y: auto;
 }
 
-.chat-date {
+.chat-info-message {
   font-weight: normal;
   color: white;
   background-color: gray;
   border-radius: 35px;
 }
 
-.chat-area__chat-date {
+.chat-area__start-dialog-message {
+  position: relative;
+  top: 4px;
+  padding: 5px 10px;
+  margin: 0 auto;
+}
+
+.chat-area__date {
   position: sticky;
-  top: 10px;
   padding: 5px 10px;
   margin: 0 auto;
 }
@@ -67,11 +42,11 @@
 }
 
 .chat-area__message_income {
-  margin: 5px;
+  margin: 0 5px;
 }
 
 .chat-area__message_my {
-  margin: 5px 5px 5px auto;
+  margin: 0 5px 0 auto;
 }
 
 .message__chat-avatar {

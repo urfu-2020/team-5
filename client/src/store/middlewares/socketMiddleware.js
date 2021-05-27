@@ -1,59 +1,61 @@
-import {addChatMessage} from "../slices/chatsSlice/chatsSlice";
-import {setCurrentUser} from "../slices/userSlice/userThunks";
-import {setChatsData} from "../slices/chatsSlice/chatsThunks";
+import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {setError} from "../slices/appSlice/appSlice";
 
-
+const INIT_SOCKET = 'socket/init';
+export const initSocket = () => ({type: INIT_SOCKET});
+const ADD_DIALOGS_WITH_NEW_USER = 'socket/addDialogsWithNewUser';
+export const addDialogsWithNewUser = () => ({ type: ADD_DIALOGS_WITH_NEW_USER });
+const CREATE_NEW_CHAT = 'socket/createNewChat';
+export const createNewChat =
+  (chatTitle, selectedUsers) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, selectedUsers}});
 const SEND_MESSAGE = 'socket/sendMessage';
 export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
 
 let socket;
 
-const initSocket = (store) => {
-  socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
-
-  socket.onmessage = function(event) {
-    const message = JSON.parse(event.data);
-    switch (message.type) {
-      case 'chatMessage': {
-        store.dispatch({ type: addChatMessage.type, payload: message.payload});
-        return;
-      }
-    }
-  };
-};
-
-const sendWhenSocketOpen = (socket, message) => {
-  if(socket.readyState === 0)
-    socket.addEventListener('open', () => {
-      socket.send(message);
-    });
-  else {
-    socket.send(message);
-  }
-};
-
 export const socketMiddleware = store => next => action => {
   switch (action.type) {
-    case setCurrentUser.fulfilled.type: {
-      if(action.payload) {
-        const {id} = action.payload;
-        initSocket(store);
-        sendWhenSocketOpen(socket, JSON.stringify({ type: 'setUserId', payload: id }));
-      }
-      return next(action);
+    case INIT_SOCKET: {
+      socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
+      socket.onmessage = function (event) {
+        const message = JSON.parse(event.data);
+        switch (message.type) {
+          case 'ping': {
+            socket.send(JSON.stringify({type: 'pong'}));
+            break;
+          }
+          case 'setChatsData': {
+            store.dispatch({type: setChatsData.type, payload: message.payload});
+            break;
+          }
+          case 'addNewChat': {
+            store.dispatch({type: addNewChat.type, payload: message.payload});
+            break;
+          }
+          case 'chatMessage': {
+            store.dispatch({type: addChatMessage.type, payload: message.payload});
+            break;
+          }
+          case 'errorMessage': {
+            store.dispatch({type: setError.type, payload: message.payload});
+            break;
+          }
+        }
+      };
+      break;
     }
 
-    case setChatsData.fulfilled.type: {
-      const chatIds = Object.keys(action.payload);
-      sendWhenSocketOpen(socket, JSON.stringify({type: 'setChats', payload: chatIds}));
-      return next(action);
+    case CREATE_NEW_CHAT: {
+      socket.send(JSON.stringify({type: 'createNewChat', payload: action.payload }));
+      break;
     }
 
     case SEND_MESSAGE: {
-      socket.send(JSON.stringify({ type: 'chatMessage', payload: action.payload }));
-      return;
+      socket.send(JSON.stringify({type: 'chatMessage', payload: action.payload}));
+      break;
     }
 
-    default: next(action);
+    default:
+      next(action);
   }
 };

@@ -1,70 +1,137 @@
 const WebSocket = require('ws');
-const Message = require('../../client/src/models/message');
-const { storeChatMessage } = require('../db/dbapi');
-
-/**
- * chatId -> members
- * @type {{
- *   number: Array<WebSocket>
- * }}
- */
-const rooms = {};
-
-const sendToRoomMembers = (chatId, message) => {
-  rooms[chatId].forEach((client) => {
-    client.send(message);
-  });
-};
+const session = require('../session');
+const { validateNewChat } = require('./socketUtils');
+const { createAndGetMessage } = require('../db/dbapi');
+const { createAndGetNewChatGroup } = require('../db/dbapi');
+const { getUserChatsChatUserRecords } = require('../db/dbapi');
+const { addUsersInChat } = require('../db/dbapi');
+const {
+  getUserChats,
+  getUserLastChatMessages, addDialogsWithNewUser
+} = require('../db/dbapi');
+const {
+  rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
+} = require('./socketRooms');
 
 /**
  * Настраиваем сокеты
  * @param server {Server}
  */
 function configureSocket(server) {
-  const io = new WebSocket.Server({ server });
+  const io = new WebSocket.Server({ noServer: true });
+  const heartbeatInterval = configureRoomsHeartbeat(60 * 1000);
 
-  io.on('connection', (socket) => {
-    socket.on('message', (rawMessage) => {
+  // При апгрейде на сокеты прокидываем объект сессии
+  server.on('upgrade', (req, socket, head) => {
+    io.handleUpgrade(req, socket, head, async (ws) => {
+      session(req, {}, () => {
+        ws.sessionUser = req.session.passport.user;
+        io.emit('connection', ws);
+      });
+    });
+  });
+
+  io.on('connection', async (socket) => {
+    socket.isAlive = true;
+    const { sessionUser } = socket;
+
+    let userChats = await getUserChats(sessionUser.id);
+    // Если у пользователя еще нет чатов (даже с собой), значит это новый пользователь
+    if (userChats.length === 0) {
+      await addDialogsWithNewUser(sessionUser.username);
+      userChats = await getUserChats(sessionUser.id);
+      connectUserToRooms(socket, userChats);
+      const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
+
+      // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
+      io.clients.forEach((client) => {
+        if (client !== socket) {
+          // для client находим его чат с новым пользователем
+          const chatUser = chatUserRecords.find(
+            (cu) => cu.userId === client.sessionUser.id
+          );
+          const dialogWithNewUser = userChats.find((chat) => chat.id === chatUser.chatId);
+
+          // модель чата для фронта
+          const chat = {
+            ...dialogWithNewUser,
+            chatTitle: sessionUser.username,
+            chatAvatarUrl: sessionUser.avatarUrl,
+            members: [client.sessionUser, sessionUser]
+          };
+
+          client.send(JSON.stringify({
+            type: 'addNewChat',
+            payload: { chat }
+          }));
+          rooms[dialogWithNewUser.id].push(client);
+        }
+      });
+    } else connectUserToRooms(socket, userChats);
+
+    // при подключении пользователя отсылаем ему начальные данные о его чатах
+    const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
+    const lastMessages = await getUserLastChatMessages(sessionUser.id);
+    socket.send(JSON.stringify({
+      type: 'setChatsData',
+      payload: { userChats, chatUserRecords, lastMessages }
+    }));
+
+    socket.on('message', async (rawMessage) => {
       const message = JSON.parse(rawMessage);
-
       switch (message.type) {
-        case 'setUserId': {
-          socket.userId = message.payload;
+        case 'pong': {
+          socket.isAlive = true;
           break;
         }
 
-        case 'setChats': {
-          const chatIds = message.payload;
-          chatIds.forEach((chatId) => {
-            if (rooms[chatId]) {
-              rooms[chatId].push(socket);
-            } else {
-              rooms[chatId] = [socket];
+        case 'createNewChat': {
+          const { chatTitle, selectedUsers } = message.payload;
+          const validateObj = await validateNewChat(chatTitle, selectedUsers);
+          if (validateObj.error) {
+            const { errorMessage } = validateObj;
+            return socket.send(JSON.stringify({
+              type: 'errorMessage',
+              payload: { errorMessage }
+            }));
+          }
+
+          const newChat = await createAndGetNewChatGroup(chatTitle);
+          const chatId = newChat.id;
+          const allUsers = [sessionUser, ...selectedUsers];
+          // тут еще проверять что все юзеры есть в бд
+          await addUsersInChat(chatId, allUsers);
+          const chat = { ...newChat, members: allUsers };
+
+          io.clients.forEach((client) => {
+            // Если клиент есть в комнате
+            if (allUsers.find((user) => user.id === client.sessionUser.id)) {
+              client.send(JSON.stringify({
+                type: 'addNewChat',
+                payload: { chat }
+              }));
+
+              if (!rooms[chatId]) rooms[chatId] = [];
+              rooms[chatId].push(client);
             }
-
-            /* потом
-            rooms[chatId].members.forEach((client) => {
-              if (client.userId !== socket.userId) client.send('setMemberOnline');
-            }); */
           });
-
-          socket.chatIds = chatIds;
           break;
         }
 
         case 'chatMessage': {
           const {
-            messageId, chatId, senderId, text, hasAttachments, status, time
+            chatId, text, hasAttachments, status, time
           } = message.payload;
-
-          storeChatMessage({
-            messageId, chatId, senderId, text, hasAttachments, status, time
-          });
-
-          const resultMessage = new Message(messageId, chatId, senderId, text, hasAttachments, status, time);
-          sendToRoomMembers(chatId, JSON.stringify({
-            type: 'chatMessage', payload: resultMessage
-          }));
+          const senderId = sessionUser.id;
+          // Если пользователь есть в чате, то сохраняем сообщение в бд и отсылаем его в этот чат
+          if (rooms[chatId] && rooms[chatId].includes(socket)) {
+            const resultMessage = await createAndGetMessage({
+              chatId, senderId, text, hasAttachments, status, time
+            });
+            sendToRoomMembers(chatId, JSON.stringify({
+              type: 'chatMessage', payload: resultMessage
+            }));
+          }
           break;
         }
 
@@ -75,17 +142,17 @@ function configureSocket(server) {
     });
 
     socket.on('close', () => {
-      if (socket.chatIds) {
-        socket.chatIds.forEach((chatId) => {
-          const { userId } = socket;
-          rooms[chatId] = rooms[chatId].filter((client) => client.userId !== userId);
-          if (rooms[chatId].length === 0) delete rooms[chatId];
-          // потом + наверное стоит отправлять не в каждый чат по отдельности, а как-нибудь сразу
-          // sendToRoomMembers(chatId, { type: 'setUserOffline', payload: { chatId, userId } });
-        });
-      }
+      leaveAllRooms(socket);
     });
+
+    socket.on('error', (e) => {
+      console.log('error', e);
+    });
+  });
+
+  io.on('close', () => {
+    clearInterval(heartbeatInterval);
   });
 }
 
-module.exports = { configureSocket };
+module.exports = configureSocket;

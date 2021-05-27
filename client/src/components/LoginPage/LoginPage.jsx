@@ -1,7 +1,7 @@
 import React from "react";
 
 import './login-page.css';
-import {Button} from "../Controls/Button/Button";
+import {Button} from "../UtilComponents/Button/Button";
 
 
 export const LoginPage = () => {

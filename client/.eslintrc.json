@@ -40,6 +40,7 @@
       "prefer-double"
     ],
     "jsx-a11y/no-noninteractive-element-to-interactive-role": "warn",
-    "jsx-a11y/no-noninteractive-tabindex": "warn"
+    "jsx-a11y/no-noninteractive-tabindex": "warn",
+    "jsx-a11y/no-autofocus": "off"
   }
 }

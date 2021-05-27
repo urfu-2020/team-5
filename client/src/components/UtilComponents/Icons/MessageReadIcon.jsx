@@ -2,6 +2,7 @@ import React from "react";
 
 export const MessageReadIcon = () => (
   <svg
+    aria-label="сообщение прочитано"
     className="messageStatus"
     height="20px"
     viewBox="0 0 24 24"
