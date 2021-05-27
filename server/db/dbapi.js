@@ -44,13 +44,7 @@ async function getUsers() {
  * @returns {Array<UserModel>}
  */
 async function getUsersByIds(ids) {
-  const inQuery = `${ids.reduce((acc, id, index) => {
-    if (index === ids.length - 1) {
-      return ` ${id}`;
-    }
-    return `${id},`;
-  }, '')}`;
-
+  const inQuery = ids.join(',');
   return (await dbRequest(`SELECT * FROM Users WHERE id IN (${inQuery})`)).recordset;
 }
 
