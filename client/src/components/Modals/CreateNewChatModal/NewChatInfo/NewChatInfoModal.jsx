@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import PropTypes from 'prop-types';
 import {NewChatIcon} from "../../../UtilComponents/Icons/NewChatIcon";
 import {Button} from "../../../UtilComponents/Button/Button";
@@ -6,6 +6,7 @@ import {Button} from "../../../UtilComponents/Button/Button";
 import './new-chat-info-modal.css';
 import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
 import {Modal} from "../../ModalBase/Modal";
+import {ErrorOnEmptyInput} from "../../../UtilComponents/Inputs/ErrorOnEmptyInput/ErrorOnEmptyInput";
 
 
 export const NewChatInfoModal = ({
@@ -14,62 +15,34 @@ export const NewChatInfoModal = ({
                                    setNewChatModalOpen,
                                    setStep
                                  }) => {
-  const [hasError, setHasError] = useState(false);
-  const [isBlurOnErrorState, blurOnErrorState] = useState(false);
-
-  const handleInputChange = e => {
-    const newText = e.target.value;
-    setChatTitle(newText);
-    if (isBlurOnErrorState && newText === '') {
-      setHasError(true);
-    } else if (hasError) {
-      setHasError(false);
-      blurOnErrorState(false);
-    }
-  };
-
-  const handleBlur = e => {
-    if (!isBlurOnErrorState) {
-      blurOnErrorState(true);
-    }
-    if (e.target.value === '') {
-      setHasError(true);
-    }
-  };
-
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <Modal
       onOverlayClick={() => setNewChatModalOpen(false)}
-      className="first-step-create-new-chat-modal"
+      className="new-chat-info-modal"
       role="dialog"
       aria-label="Модальное окно создания чата, 1 этап."
       aria-labelledby="input-chat-title"
     >
-      <div className="first-step-create-new-chat-modal__chat-info">
+      <div className="new-chat-info-modal__chat-info">
         <Button
           onClick={() => setNewChatModalOpen(false)}
           className="rounded-button centred-button create-chat-modal__close-icon"
           Icon={<CloseIcon className="svg-button"/>}
         />
-        <NewChatIcon className="first-step-create-new-chat-modal__chat-avatar default-chat-avatar"/>
-        <div className="first-step-create-new-chat-modal__chat-title-input-wrapper">
+        <NewChatIcon className="new-chat-info-modal__chat-avatar default-chat-avatar"/>
+        <div className="new-chat-info-modal__chat-title-input-wrapper">
           <label className="input-chat-title-label" htmlFor="input-chat-title">Введите название чата:</label>
-          <input
-            onBlur={handleBlur}
-            onChange={handleInputChange}
+          <ErrorOnEmptyInput
             value={chatTitle}
+            onChange={setChatTitle}
             type="text"
-            className={`create-new-chat-modal-input ${hasError ? 'create-new-chat-modal-input_error' : ''}`}
             id="input-chat-title"
+            errorMessage="Название чата не может быть пустым"
           />
-          {
-            hasError &&
-            <p className="first-step-create-new-chat-modal__helper-text">Название чата не может быть пустым</p>
-          }
         </div>
       </div>
-      <div className="first-step-create-new-chat-modal__buttons">
+      <div className="new-chat-info-modal__buttons">
         <Button className="text-button" onClick={() => setNewChatModalOpen(false)}> Отмена </Button>
         <Button
           disabled={chatTitle === ''}

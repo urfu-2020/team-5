@@ -1,0 +1,18 @@
+.base-input {
+  padding: 0 0 2px 2px;
+  font-size: 1.3rem;
+  border: none;
+  border-bottom: 2px solid var(--teal-200);
+  transition: border 0.3s;
+  width: 100%;
+}
+
+.base-input:focus {
+  border-bottom: 2px solid var(--teal-500);
+  outline: none;
+}
+
+.error-on-empty-input_error,
+.error-on-empty-input_error:focus {
+  border-bottom: 2px solid var(--error-red);
+}

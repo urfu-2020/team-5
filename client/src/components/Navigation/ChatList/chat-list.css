@@ -30,7 +30,6 @@
   align-items: center;
 }
 
-
-.chat-list__no-channels-message {
-
+.no-channels-message__new-channel-button {
+  font-size: 1rem;
 }

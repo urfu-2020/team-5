@@ -1,19 +1,25 @@
-.new-chat-info-modal {
+.create-new-channel-modal {
   display: grid;
-  grid-template-rows: 6fr 1fr;
+  grid-template-rows: 8fr 1fr;
   width: 450px;
-  height: 200px;
+  height: 300px;
   padding: 20px;
 }
 
-.new-chat-info-modal__chat-info {
+.channel-info {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+}
+
+.channel-info__first-row {
   display: flex;
   gap: 1rem;
   align-items: center;
   justify-content: flex-start;
 }
 
-.new-chat-info-modal__chat-avatar {
+.create-new-channel-modal__channel-avatar {
   width: 8rem;
   height: 8rem;
   padding: 5px;
@@ -22,7 +28,7 @@
   fill: #80cbc4;
 }
 
-.new-chat-info-modal__chat-title-input-wrapper {
+.create-new-channel-modal__channel-title-input-wrapper {
   position: relative;
   display: flex;
   flex-flow: column nowrap;
@@ -31,26 +37,25 @@
   height: 100px;
 }
 
-.new-chat-info-modal__helper-text {
+.create-new-channel-modal__helper-text {
   position: relative;
   bottom: 0;
   font-size: 0.8rem;
   color: var(--error-red);
 }
 
-.input-chat-title-label {
+.input-channel-title-label {
   font-size: 1.1rem;
 }
 
-
-.create-chat-modal__close-icon {
+.create-channel-modal__close-icon {
   position: absolute;
   top: 10px;
   right: 10px;
 }
 
-.new-chat-info-modal__buttons,
-.second-step-create-new-chat-modal__buttons {
+.create-new-channel-modal__buttons,
+.second-step-create-new-channel-modal__buttons {
   display: flex;
   flex-flow: row nowrap;
   gap: 5%;

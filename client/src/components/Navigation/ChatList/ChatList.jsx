@@ -1,6 +1,6 @@
 import React, {useMemo} from 'react';
 import PropTypes from 'prop-types';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import './chat-list.css';
 
@@ -10,11 +10,14 @@ import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {getDialogInfo} from "../../../utils/chatUtils";
 import {tabTypes} from "../Navigation";
 import {Button} from "../../UtilComponents/Button/Button";
+import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 
 
 const ChatList = ({selectedTab}) => {
   const currentChatId = useSelector(selectCurrentChatId);
   const rawUserChats = Object.values(useSelector(selectUserChats));
+
+  const dispatch = useDispatch();
 
   const userChats = useMemo(() => {
     return selectedTab === tabTypes.Chats ?
@@ -27,13 +30,16 @@ const ChatList = ({selectedTab}) => {
     <ul className={`chat-list ${userChats.length === 0 ? 'chat-list_empty' : ''}`}>
       {
         userChats.length === 0 && selectedTab === tabTypes.Channels && (
-          <div className="chat-list__no-channels-message no-channels-message">
+          <div className="no-channels-message">
             Вы не подписаны ни на один канал.
-            <Button>
+            <Button className="no-channels-message__new-channel-button">
               Подпишитесь
             </Button>
               или
-            <Button>
+            <Button
+              className="no-channels-message__new-channel-button"
+              onClick={() => dispatch(setNewChannelModalOpen(true))}
+            >
               Создайте свой
             </Button>
           </div>

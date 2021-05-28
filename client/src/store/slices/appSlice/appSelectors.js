@@ -8,4 +8,7 @@ export const selectAppError = createSelector(
   app => app.error
 );
 
-
+export const selectIsCreateNewChannelModalOpen = createSelector(
+  selectApp,
+  app => app.isCreateNewChannelModalOpen
+);
