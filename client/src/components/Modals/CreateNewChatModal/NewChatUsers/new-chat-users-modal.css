@@ -1,18 +1,10 @@
 .second-step-create-new-chat-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 100;
   display: grid;
   grid-template-rows: 1.5fr 10fr 1fr;
   grid-row-gap: 1rem;
   width: 400px;
   height: 600px;
   padding: 20px;
-  background-color: var(--bg-color);
-  border-radius: 4px;
-  box-shadow: 3px 2px 4px 0 rgba(50, 50, 50, 0.59);
-  transform: translate(-50%, -50%);
 }
 
 .second-step-create-new-chat-modal__head {

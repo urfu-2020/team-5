@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import PropTypes from 'prop-types';
 
-import './second-step-create-new-chat-modal.css';
+import './new-chat-users-modal.css';
 import {Button} from "../../../UtilComponents/Button/Button";
 import {Spinner} from "../../../UtilComponents/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
@@ -9,14 +9,14 @@ import {createNewChat} from "../../../../store/middlewares/socketMiddleware";
 import {selectCurrentUser} from "../../../../store/slices/userSlice/userSelectors";
 import {UserCard} from "../../../UtilComponents/ChatMemberCard/UserCard";
 import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
+import {Modal} from "../../ModalBase/Modal";
 
 
-export const SecondStepCreateNewChatModal = ({
-                                               setStep,
-                                               chatTitle,
-                                               onKeyDown,
-                                               setNewChatModalOpen
-}) => {
+export const NewChatUsersModal = ({
+                                    setStep,
+                                    chatTitle,
+                                    setNewChatModalOpen
+                                  }) => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(selectCurrentUser).id;
   const [users, setUsers] = useState(null);
@@ -38,9 +38,10 @@ export const SecondStepCreateNewChatModal = ({
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <form
+    <Modal
+      as="form"
+      onOverlayClick={() => setNewChatModalOpen(false)}
       className="second-step-create-new-chat-modal"
-      onKeyDown={onKeyDown}
       onSubmit={submitHandler}
       role="dialog"
       aria-label="Модальное окно создания чата, 2 этап."
@@ -48,7 +49,7 @@ export const SecondStepCreateNewChatModal = ({
       <Button
         onClick={() => setNewChatModalOpen(false)}
         className="rounded-button centred-button create-chat-modal__close-icon"
-        Icon={<CloseIcon className="svg-button" />}
+        Icon={<CloseIcon className="svg-button"/>}
       />
       <div className="second-step-create-new-chat-modal__head">
         <h3 className="second-step-create-new-chat-modal__title"> Добавить участников </h3>
@@ -71,24 +72,25 @@ export const SecondStepCreateNewChatModal = ({
       >
         {
           users ?
-          users.map(user => {
-            if(user.id !== currentUserId && user.username.includes(searchInput)) {
-              const selected = selectedUsers.find(selectedUser => selectedUser === user);
+            users.map(user => {
+              if (user.id !== currentUserId && user.username.includes(searchInput)) {
+                const selected = selectedUsers.find(selectedUser => selectedUser === user);
 
-              return (
-                <UserCard
-                  user={user}
-                  role="listitem"
-                  cardClassName={`new-chat-user ${selected ? 'new-chat-user_selected' : ''}`}
-                  onCardClick={() => setSelectedUsers(prev => (
-                    !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
-                  ))}
-                  iconClassName="new-chat-user__avatar"
-                  usernameClassName="new-chat-user__username"
-                />
-              );
-            }
-          }) : <Spinner />
+                return (
+                  <UserCard
+                    key={user.id}
+                    user={user}
+                    role="listitem"
+                    cardClassName={`new-chat-user ${selected ? 'new-chat-user_selected' : ''}`}
+                    onCardClick={() => setSelectedUsers(prev => (
+                      !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
+                    ))}
+                    iconClassName="new-chat-user__avatar"
+                    usernameClassName="new-chat-user__username"
+                  />
+                );
+              }
+            }) : <Spinner/>
         }
       </ul>
 
@@ -106,12 +108,11 @@ export const SecondStepCreateNewChatModal = ({
           type="submit"
         > Создать </Button>
       </div>
-    </form>
+    </Modal>
   );
 };
 
-SecondStepCreateNewChatModal.propTypes = {
-  onKeyDown: PropTypes.func,
+NewChatUsersModal.propTypes = {
   setStep: PropTypes.func,
   setNewChatModalOpen: PropTypes.func,
   chatTitle: PropTypes.string

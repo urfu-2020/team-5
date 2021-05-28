@@ -12,12 +12,14 @@ import {DarkModeIcon} from "../../UtilComponents/Icons/DarkModeIcon";
 import {Toggle} from "../../UtilComponents/Toggle/Toggle";
 import {CreateNewChatModal} from "../../Modals/CreateNewChatModal/CreateNewChatModal";
 import {Button} from "../../UtilComponents/Button/Button";
+import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   const user = useSelector(selectCurrentUser);
 
   const [isCreateNewChatModalOpen, setNewChatModalOpen] = useState(false);
+  const [isCreateNewChannelModalOpen, setNewChannelModalOpen] = useState(false);
 
   const keyDownHandler = e => {
     if (e.key === 'Escape') {
@@ -70,6 +72,19 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
             </Button>
 
             <Button
+              aria-label="Новый канал"
+              tabIndex={isSideMenuOpen ? '0' : '-1'}
+              Icon={<NewChannelIcon className="side-menu-option__icon"/>}
+              className="centred-button button-with-pre-icon"
+              onClick={() => {
+                setNewChannelModalOpen(true);
+                setOpenSideMenu(false);
+              }}
+            >
+              Новый канал
+            </Button>
+
+            <Button
               aria-label="Настройки"
               tabIndex={isSideMenuOpen ? '0' : '-1'}
               Icon={<SettingsIcon className="side-menu-option__icon"/>}
@@ -99,6 +114,9 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
           isCreateNewChatModalOpen={isCreateNewChatModalOpen}
           setNewChatModalOpen={setNewChatModalOpen}
         />
+      }
+      {
+        // isCreateNewChannelModalOpen && <CreateNewChannelModal />
       }
     </>
   );

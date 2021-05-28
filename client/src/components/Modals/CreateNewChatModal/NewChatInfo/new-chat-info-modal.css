@@ -1,17 +1,9 @@
 .first-step-create-new-chat-modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  z-index: 100;
   display: grid;
   grid-template-rows: 6fr 1fr;
   width: 450px;
   height: 200px;
   padding: 20px;
-  background-color: var(--bg-color);
-  border-radius: 4px;
-  box-shadow: 3px 2px 4px 0 rgba(50, 50, 50, 0.59);
-  transform: translate(-50%, -50%);
 }
 
 .first-step-create-new-chat-modal__chat-info {

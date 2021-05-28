@@ -3,17 +3,17 @@ import PropTypes from 'prop-types';
 import {NewChatIcon} from "../../../UtilComponents/Icons/NewChatIcon";
 import {Button} from "../../../UtilComponents/Button/Button";
 
-import './first-step-create-new-chat-modal.css';
+import './new-chat-info-modal.css';
 import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
+import {Modal} from "../../ModalBase/Modal";
 
 
-export const FirstStepCreateNewChatModal = ({
-  onKeyDown,
-                                              chatTitle,
-                                              setChatTitle,
-                                              setNewChatModalOpen,
-                                              setStep
-                                            }) => {
+export const NewChatInfoModal = ({
+                                   chatTitle,
+                                   setChatTitle,
+                                   setNewChatModalOpen,
+                                   setStep
+                                 }) => {
   const [hasError, setHasError] = useState(false);
   const [isBlurOnErrorState, blurOnErrorState] = useState(false);
 
@@ -39,8 +39,8 @@ export const FirstStepCreateNewChatModal = ({
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
-    <div
-      onKeyDown={onKeyDown}
+    <Modal
+      onOverlayClick={() => setNewChatModalOpen(false)}
       className="first-step-create-new-chat-modal"
       role="dialog"
       aria-label="Модальное окно создания чата, 1 этап."
@@ -50,7 +50,7 @@ export const FirstStepCreateNewChatModal = ({
         <Button
           onClick={() => setNewChatModalOpen(false)}
           className="rounded-button centred-button create-chat-modal__close-icon"
-          Icon={<CloseIcon className="svg-button" />}
+          Icon={<CloseIcon className="svg-button"/>}
         />
         <NewChatIcon className="first-step-create-new-chat-modal__chat-avatar default-chat-avatar"/>
         <div className="first-step-create-new-chat-modal__chat-title-input-wrapper">
@@ -77,12 +77,11 @@ export const FirstStepCreateNewChatModal = ({
           onClick={() => setStep(1)}
         > Далее </Button>
       </div>
-    </div>
+    </Modal>
   );
 };
 
-FirstStepCreateNewChatModal.propTypes = {
-  onKeyDown: PropTypes.string,
+NewChatInfoModal.propTypes = {
   chatTitle: PropTypes.string,
   setChatTitle: PropTypes.func,
   setNewChatModalOpen: PropTypes.func,

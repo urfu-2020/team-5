@@ -1,21 +1,4 @@
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 99;
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  transition: 0.3s;
-}
-
 .input-file-modal {
-  position: relative;
-  z-index: 100;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -23,8 +6,6 @@
   width: 450px;
   height: 300px;
   padding: 1.2rem 2rem;
-  background-color: var(--bg-color);
-  border-radius: 5px;
 }
 
 .input-file-modal__input-text {
