@@ -10,13 +10,13 @@ import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../ut
 import {Spinner} from "../../UtilComponents/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
-import {getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
+import {getChatStartMessage, getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
 
 
 const ChatMessages = ({currentChatInfo}) => {
   const currentUser = useSelector(selectCurrentUser);
 
-  const {id, members, lastMessage} = currentChatInfo;
+  const {id, members, lastMessage, chatType, owner} = currentChatInfo;
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -93,7 +93,7 @@ const ChatMessages = ({currentChatInfo}) => {
               isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
                 isAllMessagesLoaded ? (
                   <p className="chat-info-message chat-area__start-dialog-message">
-                    Начало диалога.
+                    {getChatStartMessage(chatType, currentUser.id, owner, members)}
                   </p>
                 ) : null
             }
@@ -134,7 +134,14 @@ export const MemoizedChatMessages = React.memo(ChatMessages);
 ChatMessages.propTypes = {
   currentChatInfo: PropTypes.shape({
     id: PropTypes.number.isRequired,
-    chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
+    chatType: PropTypes.oneOf(["Own", "Dialog", "Group", "Channel"]),
+    description: PropTypes.string,
+    owner: PropTypes.shape({
+      id: PropTypes.number,
+      username: PropTypes.string,
+      avatarUrl: PropTypes.string,
+      githubUrl: PropTypes.string
+    }),
     chatAvatarUrl: PropTypes.string,
     chatTitle: PropTypes.string,
     members: PropTypes.arrayOf(PropTypes.shape({

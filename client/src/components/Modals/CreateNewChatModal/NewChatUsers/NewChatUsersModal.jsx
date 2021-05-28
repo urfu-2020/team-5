@@ -5,11 +5,12 @@ import './new-chat-users-modal.css';
 import {Button} from "../../../UtilComponents/Button/Button";
 import {Spinner} from "../../../UtilComponents/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
-import {createNewChat} from "../../../../store/middlewares/socketMiddleware";
 import {selectCurrentUser} from "../../../../store/slices/userSlice/userSelectors";
 import {UserCard} from "../../../UtilComponents/ChatMemberCard/UserCard";
 import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
 import {Modal} from "../../ModalBase/Modal";
+import {createNewChat} from "../../../../store/middlewares/socketReduxActions";
+import {BaseInput} from "../../../UtilComponents/Inputs/BaseInput/BaseInput";
 
 
 export const NewChatUsersModal = ({
@@ -54,7 +55,7 @@ export const NewChatUsersModal = ({
       <div className="second-step-create-new-chat-modal__head">
         <h3 className="second-step-create-new-chat-modal__title"> Добавить участников </h3>
         <div className="second-step-create-new-chat-modal__search-panel">
-          <input
+          <BaseInput
             type="text"
             onChange={e => setSearchInput(e.target.value)}
             value={searchInput}

@@ -5,8 +5,8 @@ import {useParams} from "react-router";
 
 import './send-message-form.css';
 
-import {sendMessage} from "../../../store/middlewares/socketMiddleware";
 import {Button} from "../../UtilComponents/Button/Button";
+import {sendMessage} from "../../../store/middlewares/socketReduxActions";
 
 
 export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {

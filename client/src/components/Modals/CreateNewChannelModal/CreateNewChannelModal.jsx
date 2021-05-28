@@ -10,6 +10,7 @@ import {BaseInput} from "../../UtilComponents/Inputs/BaseInput/BaseInput";
 import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 import {useDispatch} from "react-redux";
+import {createNewChannel} from "../../../store/middlewares/socketReduxActions";
 
 
 export const CreateNewChannelModal = () => {
@@ -18,6 +19,11 @@ export const CreateNewChannelModal = () => {
 
   const dispatch = useDispatch();
   const closeModal = useCallback(() => dispatch(setNewChannelModalOpen(false)), [dispatch]);
+
+  const createChannel = useCallback(() => {
+    dispatch(createNewChannel(channelTitle, channelDescription));
+    dispatch(setNewChannelModalOpen(false));
+  })
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
@@ -53,7 +59,7 @@ export const CreateNewChannelModal = () => {
           </label>
           <BaseInput
             value={channelDescription}
-            onChange={setChannelDescription}
+            onChange={e => setChannelDescription(e.target.value)}
             id="input-channel-description"
           />
         </div>
@@ -63,6 +69,7 @@ export const CreateNewChannelModal = () => {
         <Button
           disabled={channelTitle === ''}
           className="text-button"
+          onClick={createChannel}
         > Создать </Button>
       </div>
     </Modal>

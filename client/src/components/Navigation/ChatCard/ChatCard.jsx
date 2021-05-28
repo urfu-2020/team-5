@@ -6,12 +6,10 @@ import './chat-card.css';
 
 import {useSelector} from "react-redux";
 import {getTimeInLocaleString} from "../../../utils/time";
-import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../UtilComponents/Icons/MessageUnreadIcon";
-import {SavedMessagesIcon} from "../../UtilComponents/Icons/SavedMessagesIcon";
 import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
-import {NewChatIcon} from "../../UtilComponents/Icons/NewChatIcon";
+import {getRenderChatInfo} from "../../../utils/chatUtils";
 
 
 export const ChatCard = ({
@@ -30,32 +28,24 @@ export const ChatCard = ({
       openChatHandler();
   };
 
+  const renderChatInfo = getRenderChatInfo(chatType, {title, avatarUrl, isOnline});
+
   return (
     <li
       className={`card ${currentChatId === chatId ? 'card_current' : ''} ${className ? className : ''}`}
-      role={"button"}
+      role="button"
       tabIndex={0}
       onClick={openChatHandler}
       onKeyDown={openChatOnEnter}
-      aria-label={
-        chatType === 'Own' ? 'Сохраненные сообщения' :
-          chatType === 'Dialog' ? `Диалог c пользователем ${title}` :
-            chatType === 'Group' && `Группа ${title}`
-      }
+      aria-label={renderChatInfo.ariaLabel}
     >
-      {
-        chatType === 'Own' ? <SavedMessagesIcon className="chat-card-avatar-icon"/> :
-          chatType === 'Group' ? <NewChatIcon className="chat-card-avatar-icon"/> :
-            <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
-      }
+      {renderChatInfo.avatar}
       <div className="card__content">
         <h3
           className="dialogHeader"
           aria-label="Название чата"
         >
-          {
-            chatType === 'Own' ? 'Saved Messages' : title
-          }
+          {chatType === 'Own' ? 'Saved Messages' : title}
         </h3>
         {
           lastMessage ?
@@ -101,7 +91,7 @@ ChatCard.propTypes = {
   className: PropTypes.string,
   chatId: PropTypes.number,
   currentChatId: PropTypes.number,
-  chatType: PropTypes.oneOf(['Own', 'Dialog', 'Group']),
+  chatType: PropTypes.oneOf(['Own', 'Dialog', 'Group', 'Channel']),
   lastMessage: PropTypes.shape({
     id: PropTypes.number,
     chatId: PropTypes.number,

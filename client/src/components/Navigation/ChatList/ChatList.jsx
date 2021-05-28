@@ -20,8 +20,9 @@ const ChatList = ({selectedTab}) => {
   const dispatch = useDispatch();
 
   const userChats = useMemo(() => {
-    return selectedTab === tabTypes.Chats ?
-      rawUserChats.filter(chat => chat.type !== 'Channel') : rawUserChats.filter(chat => chat.type === 'Channel');
+    if(selectedTab === tabTypes.Chats)
+      return rawUserChats.filter(chat => chat.chatType !== 'Channel');
+    else return rawUserChats.filter(chat => chat.chatType === 'Channel');
   }, [rawUserChats, selectedTab]);
 
   const currentUserId = useSelector(selectCurrentUser).id;

@@ -1,13 +1,10 @@
 const WebSocket = require('ws');
 const session = require('../session');
-const { validateNewChat } = require('./socketUtils');
-const { createAndGetMessage } = require('../db/dbapi');
-const { createAndGetNewChatGroup } = require('../db/dbapi');
-const { getUserChatsChatUserRecords } = require('../db/dbapi');
-const { addUsersInChat } = require('../db/dbapi');
+const { validateNewChat, validateNewChannel, sendError } = require('./socketUtils');
 const {
-  getUserChats,
-  getUserLastChatMessages, addDialogsWithNewUser
+  createAndGetNewChatGroup, createAndGetMessage, createAndGetChannel,
+  getUserChats, getUserChatsChatUserRecords, addUsersInChat,
+  getUserLastChatMessages, addDialogsWithNewUser, joinToChat, leaveFromChat
 } = require('../db/dbapi');
 const {
   rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
@@ -85,24 +82,38 @@ function configureSocket(server) {
           break;
         }
 
+        case 'createNewChannel': {
+          const { channelTitle, channelDescription } = message.payload;
+          const validateObj = await validateNewChannel(channelTitle, channelDescription);
+          if (validateObj.error) {
+            sendError(socket, validateObj);
+          }
+          const newChannel = await createAndGetChannel(channelTitle, channelDescription, sessionUser.id);
+
+          joinToChat(newChannel.id, sessionUser.id);
+          socket.send(JSON.stringify({
+            type: 'addNewChat',
+            payload: { chat: { ...newChannel, members: [sessionUser], owner: sessionUser } }
+          }));
+          break;
+        }
+
         case 'createNewChat': {
           const { chatTitle, selectedUsers } = message.payload;
           const validateObj = await validateNewChat(chatTitle, selectedUsers);
           if (validateObj.error) {
-            const { errorMessage } = validateObj;
-            return socket.send(JSON.stringify({
-              type: 'errorMessage',
-              payload: { errorMessage }
-            }));
+            sendError(socket, validateObj);
           }
-
-          const newChat = await createAndGetNewChatGroup(chatTitle);
+          const newChat = await createAndGetNewChatGroup(chatTitle, sessionUser.id);
           const chatId = newChat.id;
           const allUsers = [sessionUser, ...selectedUsers];
           // тут еще проверять что все юзеры есть в бд
           await addUsersInChat(chatId, allUsers);
-          const chat = { ...newChat, members: allUsers };
-
+          const chat = {
+            ...newChat,
+            members: allUsers,
+            owner: sessionUser
+          };
           io.clients.forEach((client) => {
             // Если клиент есть в комнате
             if (allUsers.find((user) => user.id === client.sessionUser.id)) {

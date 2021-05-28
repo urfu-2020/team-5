@@ -1,4 +1,9 @@
 
+drop table Messages;
+drop table ChatUsers;
+drop table Chats;
+drop table Users;
+
 GO
 CREATE TABLE Users (
 	id INT PRIMARY KEY IDENTITY,
@@ -10,11 +15,12 @@ CREATE TABLE Users (
 
 CREATE TABLE Chats (
 	id INT IDENTITY PRIMARY KEY,
-	chatType NVARCHAR(20) CHECK(chatType IN ('Own', 'Dialog', 'Group')),
-	chatAvatarUrl NVARCHAR(512),
-	chatTitle NVARCHAR(255)
+	chatType NVARCHAR(20) CHECK(chatType IN ('Own', 'Dialog', 'Group', 'Channel')),
+	chatTitle NVARCHAR(255),
+	owner INT FOREIGN KEY REFERENCES Users(id),
+	description NVARCHAR(512),
+	chatAvatarUrl NVARCHAR(512)
 );
-
 
 GO
 CREATE TABLE ChatUsers (
@@ -52,13 +58,13 @@ BEGIN
 	BEGIN
 		IF (@nextUserId <> @newUserId)
 		BEGIN
-			INSERT INTO Chats(chatType) VALUES ('Dialog');
+			INSERT INTO Chats(chatType, [owner]) VALUES ('Dialog', @newUserId);
 			DECLARE @dialogId INT = @@IDENTITY;
 			INSERT INTO ChatUsers VALUES (@dialogId, @newUserId), (@dialogId, @nextUserId);
 		END
 		ELSE
 		BEGIN
-			INSERT INTO Chats(chatType) VALUES ('Own');
+			INSERT INTO Chats(chatType, [owner]) VALUES ('Own', @newUserId);
 			INSERT INTO ChatUsers VALUES (@@IDENTITY, @newUserId);
 		END
 
@@ -75,7 +81,13 @@ GO
 CREATE FUNCTION GetUserChats(@userId INT)
 RETURNS TABLE
 AS RETURN
-	SELECT DISTINCT id, chatType, chatAvatarUrl, chatTitle
+	SELECT DISTINCT
+		Chats.id,
+		Chats.chatType,
+		Chats.chatAvatarUrl,
+		Chats.chatTitle,
+		Chats.owner,
+		Chats.description
 	FROM Chats
 	JOIN ChatUsers
 	ON Chats.id = ChatUsers.chatId

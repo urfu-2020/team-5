@@ -1,19 +1,26 @@
+const {getUsersByIds} = require('../db/dbapi');
+
+// TODO Сделать так, чтобы при ошибке форма на клиенте не закрывалась
+
 /**
  * Валидация нового чата
  * @param chatTitle {String}
  * @param selectedUsers {Array<UserModel>}
  * @return {{error: boolean}|{errorMessage: string, error: boolean}}
  */
-const { getUsersByIds } = require('../db/dbapi');
-
 async function validateNewChat(chatTitle, selectedUsers) {
-  if (chatTitle === '') return { error: true, errorMessage: 'Название чата не может быть пустым.' };
-  if (selectedUsers.length === 0) return { error: true, errorMessage: 'В группе должен быть хотя бы 1 собеседник.' };
+  if (chatTitle === '') {
+    return { error: true, errorMessage: 'Название чата не может быть пустым.' };
+  }
+  if (chatTitle.length > 255) {
+    return { error: true, errorMessage: 'Максимальная длинна названия чата - 255 символов.' };
+  }
+  if (selectedUsers.length === 0) {
+    return { error: true, errorMessage: 'В группе должен быть хотя бы 1 собеседник.' };
+  }
 
   const ids = selectedUsers.map((user) => user.id);
-
   const usersFromDb = await getUsersByIds(ids);
-
   if (usersFromDb.length < ids.length) {
     return {
       error: true,
@@ -24,6 +31,31 @@ async function validateNewChat(chatTitle, selectedUsers) {
   return { error: false };
 }
 
+async function validateNewChannel(channelTitle, channelDescription) {
+  if (channelTitle === '') {
+    return { error: true, errorMessage: 'Название канала не может быть пустым.' };
+  }
+  if (channelTitle.length > 255) {
+    return { error: true, errorMessage: 'Максимальная длинна названия канала - 255 символов.' };
+  }
+  if (channelDescription.length > 512) {
+    return { error: true, errorMessage: 'Максимальная длинна описания - 512 символов' };
+  }
+
+  return { error: false };
+}
+
+
+function sendError(socket, validateObj) {
+  const { errorMessage } = validateObj;
+  return socket.send(JSON.stringify({
+    type: 'errorMessage',
+    payload: { errorMessage }
+  }));
+}
+
 module.exports = {
-  validateNewChat
+  validateNewChat,
+  validateNewChannel,
+  sendError
 };

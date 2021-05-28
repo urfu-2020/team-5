@@ -1,15 +1,6 @@
 import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
 import {setError} from "../slices/appSlice/appSlice";
-
-const INIT_SOCKET = 'socket/init';
-export const initSocket = () => ({type: INIT_SOCKET});
-const ADD_DIALOGS_WITH_NEW_USER = 'socket/addDialogsWithNewUser';
-export const addDialogsWithNewUser = () => ({ type: ADD_DIALOGS_WITH_NEW_USER });
-const CREATE_NEW_CHAT = 'socket/createNewChat';
-export const createNewChat =
-  (chatTitle, selectedUsers) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, selectedUsers}});
-const SEND_MESSAGE = 'socket/sendMessage';
-export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
+import {CREATE_NEW_CHANNEL, CREATE_NEW_CHAT, INIT_SOCKET, SEND_MESSAGE} from "./socketReduxActions";
 
 let socket;
 
@@ -47,6 +38,11 @@ export const socketMiddleware = store => next => action => {
 
     case CREATE_NEW_CHAT: {
       socket.send(JSON.stringify({type: 'createNewChat', payload: action.payload }));
+      break;
+    }
+
+    case CREATE_NEW_CHANNEL: {
+      socket.send(JSON.stringify({type: 'createNewChannel', payload: action.payload }));
       break;
     }
 

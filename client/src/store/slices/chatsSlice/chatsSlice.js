@@ -59,6 +59,7 @@ const chatsSlice = createSlice({
      * @param action {{chat: ChatInDbModel, sobesedniki: Array<UserModel>}}
      */
     addNewChat(state, {payload}) {
+      console.log(payload);
       const {chat} = payload;
       state.userChats[chat.id] = chat;
     }
