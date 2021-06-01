@@ -2,10 +2,9 @@
  * Получить чат (в представлении фронта)
  * @param chat {ChatInDbModel}
  * @param chatUserRecords {Array<UserChatModel>}
- * @returns {{members: {id: UserChatModel.userId|number}[]}}
+ * @returns {ChatModel} без lastMessages
  */
-export function getNewChat(chat, chatUserRecords) {
-
+function getNewChatFromChatUserRecords(chat, chatUserRecords) {
   // находим собеседников, которые есть в этом чате
   const members = chatUserRecords.filter(cs => cs.chatId === chat.id)
     .map(chatUserRecord => {
@@ -17,6 +16,7 @@ export function getNewChat(chat, chatUserRecords) {
     });
   return {
     ...chat,
+    owner: members.find(member => member.id === chat.owner),
     members
   };
 }
@@ -31,7 +31,7 @@ export function getNewChat(chat, chatUserRecords) {
 export function convertRawStartChatsData(rawChatsInfo, chatUserRecords, lastMessages) {
   const chats = {};
   rawChatsInfo.forEach(chat => {
-    chats[chat.id] = getNewChat(chat, chatUserRecords);
+    chats[chat.id] = getNewChatFromChatUserRecords(chat, chatUserRecords);
   });
 
   lastMessages.forEach((message) => {

@@ -6,23 +6,26 @@ import './chat-card.css';
 
 import {useSelector} from "react-redux";
 import {getTimeInLocaleString} from "../../../utils/time";
-import {ChatAvatar} from "./ChatAvatar/ChatAvatar";
 import {MessageReadIcon} from "../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../UtilComponents/Icons/MessageUnreadIcon";
-import {SavedMessagesIcon} from "../../UtilComponents/Icons/SavedMessagesIcon";
 import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
-import {NewChatIcon} from "../../UtilComponents/Icons/NewChatIcon";
+import {getDialogInfo, getRenderChatInfo} from "../../../utils/chatUtils";
 
 
-export const ChatCard = ({
-                           chatId, currentChatId, chatType, className,
-                           title, isOnline, lastMessage, countUnreadMessage, avatarUrl
-                         }) => {
+export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearching }) => {
+  let {id, chatType, chatAvatarUrl, chatTitle, lastMessage, members, description} = chat;
+
+  if(chatType === 'Dialog' || chatType === 'Own') {
+    const { dialogAvatarUrl, dialogChatTitle } = getDialogInfo(members, chatType, currentUserId);
+    if (dialogAvatarUrl) chatAvatarUrl = dialogAvatarUrl;
+    if (dialogChatTitle) chatTitle = dialogChatTitle;
+  }
+
   const history = useHistory();
   const userId = useSelector(selectUserId);
 
   const openChatHandler = () => {
-    history.push(`/chat/${chatId}`);
+    history.push(`/chat/${id}`);
   };
 
   const openChatOnEnter = (e) => {
@@ -30,34 +33,32 @@ export const ChatCard = ({
       openChatHandler();
   };
 
+  const renderChatInfo = getRenderChatInfo(chatType,
+    {title: chatTitle, avatarUrl: chatAvatarUrl, isOnline: false});
+
   return (
     <li
-      className={`card ${currentChatId === chatId ? 'card_current' : ''} ${className ? className : ''}`}
-      role={"button"}
+      className={`card ${currentChatId === id ? 'card_current' : ''} ${className ? className : ''}`}
+      role="button"
       tabIndex={0}
       onClick={openChatHandler}
       onKeyDown={openChatOnEnter}
-      aria-label={
-        chatType === 'Own' ? 'Сохраненные сообщения' :
-          chatType === 'Dialog' ? `Диалог c пользователем ${title}` :
-            chatType === 'Group' && `Группа ${title}`
-      }
+      aria-label={renderChatInfo.ariaLabel}
     >
-      {
-        chatType === 'Own' ? <SavedMessagesIcon className="chat-card-avatar-icon"/> :
-          chatType === 'Group' ? <NewChatIcon className="chat-card-avatar-icon"/> :
-            <ChatAvatar avatarUrl={avatarUrl} isOnline={isOnline}/>
-      }
-      <div className="card__content">
+      {renderChatInfo.avatar}
+      <div className={`card__content ${chatType === "Channel" && isSearching ?
+        'card__content_searching' : 'card__content_chat'}`}
+      >
         <h3
           className="dialogHeader"
           aria-label="Название чата"
         >
-          {
-            chatType === 'Own' ? 'Saved Messages' : title
-          }
+          {chatType === 'Own' ? 'Saved Messages' : chatTitle}
         </h3>
         {
+          chatType === "Channel" && isSearching ? (
+            <p className="card__description">{description}</p>
+            ) :
           lastMessage ?
             lastMessage.senderId === userId ? (
               <>
@@ -74,9 +75,7 @@ export const ChatCard = ({
                   {/*кстати тут не подумали про указание дней*/}
                   {getTimeInLocaleString(lastMessage.time)}
                 </p>
-                {
-                  lastMessage.status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />
-                }
+                {lastMessage.status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />}
               </>
             ) : (
               <>
@@ -87,7 +86,7 @@ export const ChatCard = ({
                   {getTimeInLocaleString(lastMessage.time)}
                 </p>
                 <p className="messagePreview">{lastMessage.text}</p>
-                <p className="unreadMessageCounter">{countUnreadMessage}</p>
+                {/*<p className="unreadMessageCounter">{countUnreadMessage}</p>*/}
               </>
             ) : null
         }
@@ -99,20 +98,36 @@ export const ChatCard = ({
 
 ChatCard.propTypes = {
   className: PropTypes.string,
-  chatId: PropTypes.number,
   currentChatId: PropTypes.number,
-  chatType: PropTypes.oneOf(['Own', 'Dialog', 'Group']),
-  lastMessage: PropTypes.shape({
-    id: PropTypes.number,
-    chatId: PropTypes.number,
-    senderId: PropTypes.number,
-    text: PropTypes.string,
-    hasAttachments: PropTypes.bool,
-    status: PropTypes.oneOf(['Read', 'Unread', 'UnSend']),
-    time: PropTypes.string,
+  currentUserId: PropTypes.number,
+  isSearching: PropTypes.bool,
+  chat: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    chatType: PropTypes.oneOf(["Own", "Dialog", "Group", "Channel"]),
+    description: PropTypes.string,
+    owner: PropTypes.shape({
+      id: PropTypes.number,
+      username: PropTypes.string,
+      avatarUrl: PropTypes.string,
+      githubUrl: PropTypes.string
+    }),
+    chatAvatarUrl: PropTypes.string,
+    chatTitle: PropTypes.string,
+    members: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.number,
+      username: PropTypes.string,
+      avatarUrl: PropTypes.string,
+      githubUrl: PropTypes.string
+    })),
+    lastMessage: PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      chatId: PropTypes.number.isRequired,
+      senderId: PropTypes.number.isRequired,
+      text: PropTypes.string.isRequired,
+      hasAttachments: PropTypes.bool,
+      status: PropTypes.string.isRequired,
+      time: PropTypes.string.isRequired
+    })
   }),
-  title: PropTypes.string,
-  isOnline: PropTypes.bool,
-  countUnreadMessage: PropTypes.number,
-  avatarUrl: PropTypes.string
+  isSubscribed: PropTypes.bool
 };

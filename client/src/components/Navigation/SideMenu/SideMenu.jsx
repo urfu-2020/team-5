@@ -1,4 +1,4 @@
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import FocusLock from 'react-focus-lock';
@@ -12,10 +12,19 @@ import {DarkModeIcon} from "../../UtilComponents/Icons/DarkModeIcon";
 import {Toggle} from "../../UtilComponents/Toggle/Toggle";
 import {CreateNewChatModal} from "../../Modals/CreateNewChatModal/CreateNewChatModal";
 import {Button} from "../../UtilComponents/Button/Button";
-
+import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
+import {CreateNewChannelModal} from "../../Modals/CreateNewChannelModal/CreateNewChannelModal";
+import {
+  selectIsCreateNewChannelModalOpen
+} from "../../../store/slices/appSlice/appSelectors";
+import {Overlay} from "../../UtilComponents/Overlay/Overlay";
+import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   const user = useSelector(selectCurrentUser);
+  const isCreateNewChannelModalOpen = useSelector(selectIsCreateNewChannelModalOpen);
+
+  const dispatch = useDispatch();
 
   const [isCreateNewChatModalOpen, setNewChatModalOpen] = useState(false);
 
@@ -25,22 +34,10 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
     }
   };
 
-  const handleOverlayClick = e => {
-    if (e.target.classList.contains('modal-overlay'))
-      setOpenSideMenu(false);
-  };
-
   return (
     <>
       {
-        isSideMenuOpen && (
-          <div
-            tabIndex="-1"
-            aria-hidden="true"
-            className="modal-overlay"
-            onClick={handleOverlayClick}
-          />
-        )
+        isSideMenuOpen && <Overlay onClick={() => setOpenSideMenu(false)} />
       }
 
       <FocusLock disabled={!isSideMenuOpen}>
@@ -70,6 +67,19 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
             </Button>
 
             <Button
+              aria-label="Новый канал"
+              tabIndex={isSideMenuOpen ? '0' : '-1'}
+              Icon={<NewChannelIcon className="side-menu-option__icon"/>}
+              className="centred-button button-with-pre-icon"
+              onClick={() => {
+                dispatch(setNewChannelModalOpen(true));
+                setOpenSideMenu(false);
+              }}
+            >
+              Новый канал
+            </Button>
+
+            <Button
               aria-label="Настройки"
               tabIndex={isSideMenuOpen ? '0' : '-1'}
               Icon={<SettingsIcon className="side-menu-option__icon"/>}
@@ -95,14 +105,13 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
       </FocusLock>
 
       {
-        isCreateNewChatModalOpen && <CreateNewChatModal
-          isCreateNewChatModalOpen={isCreateNewChatModalOpen}
-          setNewChatModalOpen={setNewChatModalOpen}
-        />
+        (isCreateNewChatModalOpen && <CreateNewChatModal setNewChatModalOpen={setNewChatModalOpen} />) ||
+        (isCreateNewChannelModalOpen && <CreateNewChannelModal />)
       }
     </>
   );
 };
+
 
 SideMenu.propTypes = {
   isSideMenuOpen: PropTypes.bool,

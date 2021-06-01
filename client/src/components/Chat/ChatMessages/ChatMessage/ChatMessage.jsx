@@ -2,8 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {MessageReadIcon} from "../../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../../UtilComponents/Icons/MessageUnreadIcon";
+import {NewChannelIcon} from "../../../UtilComponents/Icons/NewChannelIcon";
 
-export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
+export const ChatMessage = ({chatType, text, time, isMyMessage, avatarUrl, status}) => {
   return (
     <li
       className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}
@@ -35,12 +36,18 @@ export const ChatMessage = ({text, time, isMyMessage, avatarUrl, status}) => {
           ) : null
         }
       </div>
-      <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`}/>
+      {
+        chatType === 'Channel' ?
+          <NewChannelIcon className="message__chat-avatar icon-message-avatar" /> :
+          <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`} />
+      }
+
     </li>
   );
 };
 
 ChatMessage.propTypes = {
+  chatType: PropTypes.oneOf(['Own', 'Group', 'Dialog', 'Channel']),
   text: PropTypes.string,
   time: PropTypes.string.isRequired,
   isMyMessage: PropTypes.bool.isRequired,

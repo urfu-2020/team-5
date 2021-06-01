@@ -1,13 +1,12 @@
 const WebSocket = require('ws');
 const session = require('../session');
-const { validateNewChat } = require('./socketUtils');
-const { createAndGetMessage } = require('../db/dbapi');
-const { createAndGetNewChatGroup } = require('../db/dbapi');
-const { getUserChatsChatUserRecords } = require('../db/dbapi');
-const { addUsersInChat } = require('../db/dbapi');
 const {
-  getUserChats,
-  getUserLastChatMessages, addDialogsWithNewUser
+  validateNewChat, validateNewChannel, sendError, getFrontChatById
+} = require('./socketUtils');
+const {
+  createAndGetNewChatGroup, createAndGetMessage, createAndGetChannel,
+  getUserChats, getUserChatsChatUserRecords, addUsersInChat,
+  getUserLastChatMessages, addDialogsWithNewUser, joinToChat, leaveFromChat
 } = require('../db/dbapi');
 const {
   rooms, connectUserToRooms, configureRoomsHeartbeat, sendToRoomMembers, leaveAllRooms
@@ -40,7 +39,7 @@ function configureSocket(server) {
     if (userChats.length === 0) {
       await addDialogsWithNewUser(sessionUser.username);
       userChats = await getUserChats(sessionUser.id);
-      connectUserToRooms(socket, userChats);
+      connectUserToRooms(socket, userChats.map((chat) => chat.id));
       const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
 
       // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
@@ -67,7 +66,7 @@ function configureSocket(server) {
           rooms[dialogWithNewUser.id].push(client);
         }
       });
-    } else connectUserToRooms(socket, userChats);
+    } else connectUserToRooms(socket, userChats.map((chat) => chat.id));
 
     // при подключении пользователя отсылаем ему начальные данные о его чатах
     const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
@@ -85,24 +84,39 @@ function configureSocket(server) {
           break;
         }
 
+        case 'createNewChannel': {
+          const { channelTitle, channelDescription } = message.payload;
+          const validateObj = await validateNewChannel(channelTitle, channelDescription);
+          if (validateObj.error) {
+            sendError(socket, validateObj);
+          }
+          const newChannel = await createAndGetChannel(channelTitle, channelDescription, sessionUser.id);
+          await joinToChat(newChannel.id, sessionUser.id);
+          socket.send(JSON.stringify({
+            type: 'addNewChat',
+            payload: { chat: { ...newChannel, members: [sessionUser], owner: sessionUser } }
+          }));
+
+          rooms[newChannel.id] = [socket];
+          break;
+        }
+
         case 'createNewChat': {
           const { chatTitle, selectedUsers } = message.payload;
           const validateObj = await validateNewChat(chatTitle, selectedUsers);
           if (validateObj.error) {
-            const { errorMessage } = validateObj;
-            return socket.send(JSON.stringify({
-              type: 'errorMessage',
-              payload: { errorMessage }
-            }));
+            sendError(socket, validateObj);
           }
-
-          const newChat = await createAndGetNewChatGroup(chatTitle);
+          const newChat = await createAndGetNewChatGroup(chatTitle, sessionUser.id);
           const chatId = newChat.id;
           const allUsers = [sessionUser, ...selectedUsers];
           // тут еще проверять что все юзеры есть в бд
           await addUsersInChat(chatId, allUsers);
-          const chat = { ...newChat, members: allUsers };
-
+          const chat = {
+            ...newChat,
+            members: allUsers,
+            owner: sessionUser
+          };
           io.clients.forEach((client) => {
             // Если клиент есть в комнате
             if (allUsers.find((user) => user.id === client.sessionUser.id)) {
@@ -132,6 +146,41 @@ function configureSocket(server) {
               type: 'chatMessage', payload: resultMessage
             }));
           }
+          break;
+        }
+
+        case 'setUnsubscribedChannel': {
+          const chatId = message.payload;
+          const chat = await getFrontChatById(chatId);
+          if (chat && chat.chatType === 'Channel') {
+            connectUserToRooms(socket, [chat.id]);
+            socket.send(JSON.stringify({
+              type: 'setUnsubscribedChannel',
+              payload: chat
+            }));
+          }
+          break;
+        }
+
+        case 'subscribeToChannel': {
+          const channelId = message.payload;
+          await joinToChat(channelId, sessionUser.id);
+          const channel = await getFrontChatById(channelId);
+          socket.send(JSON.stringify({
+            type: 'subscribeToChannel',
+            payload: { chat: channel }
+          }));
+
+          break;
+        }
+
+        case 'unsubscribeFromChannel': {
+          const channelId = message.payload;
+          await leaveFromChat(channelId, sessionUser.id);
+          socket.send(JSON.stringify({
+            type: 'unsubscribeFromChannel',
+            payload: channelId
+          }));
           break;
         }
 

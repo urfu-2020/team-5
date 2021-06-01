@@ -1,0 +1,63 @@
+.create-new-channel-modal {
+  display: grid;
+  grid-template-rows: 8fr 1fr;
+  width: 450px;
+  height: 300px;
+  padding: 20px;
+}
+
+.channel-info {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+}
+
+.channel-info__first-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.create-new-channel-modal__channel-avatar {
+  width: 8rem;
+  height: 8rem;
+  padding: 5px;
+  border: 1px solid #009688;
+  border-radius: 50%;
+  fill: #80cbc4;
+}
+
+.create-new-channel-modal__channel-title-input-wrapper {
+  position: relative;
+  display: flex;
+  flex-flow: column nowrap;
+  flex-grow: 1;
+  justify-content: space-around;
+  height: 100px;
+}
+
+.create-new-channel-modal__helper-text {
+  position: relative;
+  bottom: 0;
+  font-size: 0.8rem;
+  color: var(--error-red);
+}
+
+.input-channel-title-label {
+  font-size: 1.1rem;
+}
+
+.create-channel-modal__close-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.create-new-channel-modal__buttons,
+.second-step-create-new-channel-modal__buttons {
+  display: flex;
+  flex-flow: row nowrap;
+  gap: 5%;
+  justify-content: flex-end;
+}

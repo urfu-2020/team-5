@@ -1,15 +1,17 @@
-import {addChatMessage, addNewChat, setChatsData} from "../slices/chatsSlice/chatsSlice";
+import {
+  addChatMessage,
+  addNewChat, leaveFromChat,
+  setChatsData,
+  setCurrentUnsubscribeChannel, setIsSubscribing
+} from "../slices/chatsSlice/chatsSlice";
 import {setError} from "../slices/appSlice/appSlice";
-
-const INIT_SOCKET = 'socket/init';
-export const initSocket = () => ({type: INIT_SOCKET});
-const ADD_DIALOGS_WITH_NEW_USER = 'socket/addDialogsWithNewUser';
-export const addDialogsWithNewUser = () => ({ type: ADD_DIALOGS_WITH_NEW_USER });
-const CREATE_NEW_CHAT = 'socket/createNewChat';
-export const createNewChat =
-  (chatTitle, selectedUsers) => ({type: CREATE_NEW_CHAT, payload: {chatTitle, selectedUsers}});
-const SEND_MESSAGE = 'socket/sendMessage';
-export const sendMessage = payload => ({type: SEND_MESSAGE, payload});
+import {
+  CREATE_NEW_CHANNEL,
+  CREATE_NEW_CHAT,
+  INIT_SOCKET, SUBSCRIBE_TO_CHANNEL,
+  SEND_MESSAGE,
+  SET_UNSUBSCRIBED_CHANNEL, UNSUBSCRIBE_FROM_CHANNEL
+} from "./socketReduxActions";
 
 let socket;
 
@@ -19,25 +21,40 @@ export const socketMiddleware = store => next => action => {
       socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
       socket.onmessage = function (event) {
         const message = JSON.parse(event.data);
+        const {payload} = message;
         switch (message.type) {
           case 'ping': {
             socket.send(JSON.stringify({type: 'pong'}));
             break;
           }
           case 'setChatsData': {
-            store.dispatch({type: setChatsData.type, payload: message.payload});
+            store.dispatch(setChatsData(payload));
             break;
           }
           case 'addNewChat': {
-            store.dispatch({type: addNewChat.type, payload: message.payload});
+            store.dispatch(addNewChat(payload));
+            break;
+          }
+          case 'subscribeToChannel': {
+            store.dispatch(addNewChat(payload));
+            store.dispatch(setIsSubscribing(false));
+            break;
+          }
+          case 'unsubscribeFromChannel': {
+            store.dispatch(leaveFromChat(payload));
+            store.dispatch(setIsSubscribing(false));
             break;
           }
           case 'chatMessage': {
-            store.dispatch({type: addChatMessage.type, payload: message.payload});
+            store.dispatch(addChatMessage(payload));
             break;
           }
           case 'errorMessage': {
-            store.dispatch({type: setError.type, payload: message.payload});
+            store.dispatch(setError(payload));
+            break;
+          }
+          case 'setUnsubscribedChannel': {
+            store.dispatch(setCurrentUnsubscribeChannel(payload));
             break;
           }
         }
@@ -50,8 +67,28 @@ export const socketMiddleware = store => next => action => {
       break;
     }
 
+    case CREATE_NEW_CHANNEL: {
+      socket.send(JSON.stringify({type: 'createNewChannel', payload: action.payload }));
+      break;
+    }
+
     case SEND_MESSAGE: {
       socket.send(JSON.stringify({type: 'chatMessage', payload: action.payload}));
+      break;
+    }
+
+    case SET_UNSUBSCRIBED_CHANNEL: {
+      socket.send(JSON.stringify({type: 'setUnsubscribedChannel', payload: action.payload }));
+      break;
+    }
+
+    case SUBSCRIBE_TO_CHANNEL: {
+      socket.send(JSON.stringify({type: 'subscribeToChannel', payload: action.payload }));
+      break;
+    }
+
+    case UNSUBSCRIBE_FROM_CHANNEL: {
+      socket.send(JSON.stringify({type: 'unsubscribeFromChannel', payload: action.payload }));
       break;
     }
 

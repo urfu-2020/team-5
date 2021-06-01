@@ -5,15 +5,14 @@ import {useDispatch, useSelector} from "react-redux";
 import {LoginPage} from "./LoginPage/LoginPage";
 import {HomePage} from "./HomePage/HomePage";
 import {Spinner} from "./UtilComponents/Spinner/Spinner";
-import {NotFoundPage} from "./NotFoundPage/NotFoundPage";
 import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
-import {initSocket} from "../store/middlewares/socketMiddleware";
 import {selectAppError} from "../store/slices/appSlice/appSelectors";
 import {ErrorCard} from "./UtilComponents/ErrorCard/ErrorCard";
 import {setError} from "../store/slices/appSlice/appSlice";
+import {initSocket} from "../store/middlewares/socketReduxActions";
 
 
 const App = () => {
@@ -38,7 +37,7 @@ const App = () => {
         <Switch>
           <Route path="/" exact component={HomePage}/>
           <Route path={`/chat/:chatId`} exact component={Chat}/>
-          <Route path="*" component={NotFoundPage}/>
+          {/*<Route path="*" component={NotFoundPage}/>*/}
         </Switch>
         {
           appError && <ErrorCard

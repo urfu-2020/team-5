@@ -1,45 +1,75 @@
-import React from 'react';
+import React, {useMemo} from 'react';
+import PropTypes from 'prop-types';
+import {useDispatch, useSelector} from "react-redux";
+
+import './chat-list.css';
 
 import {ChatCard} from '../ChatCard/ChatCard';
-import {useSelector} from "react-redux";
-import {selectCurrentChatId, selectUserChats} from "../../../store/slices/chatsSlice/chatsSelectors";
+import {selectCurrentChat, selectUserChats} from "../../../store/slices/chatsSlice/chatsSelectors";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
-import {getDialogInfo} from "../../../utils/chatUtils";
+import {tabTypes} from "../Navigation";
+import {Button} from "../../UtilComponents/Button/Button";
+import {SearchResultList} from "./SearchResultList/SearchResultList";
+import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 
-const ChatList = () => {
-  const currentChatId = useSelector(selectCurrentChatId);
-  const userChats = useSelector(selectUserChats);
+
+const ChatList = ({selectedTab, isSearching, searchResult, searchInputRef}) => {
+  const currentChat = useSelector(selectCurrentChat);
   const currentUserId = useSelector(selectCurrentUser).id;
 
-  return (
-    <ul className="chat-list">
+  const rawUserChats = Object.values(useSelector(selectUserChats));
+
+  const dispatch = useDispatch();
+
+  const userChats = useMemo(() => {
+    if (selectedTab === tabTypes.Chats)
+      return rawUserChats.filter(chat => chat.chatType !== 'Channel');
+    else return rawUserChats.filter(chat => chat.chatType === 'Channel');
+  }, [rawUserChats, selectedTab]);
+
+  return isSearching ? <SearchResultList searchResult={searchResult} isSearching={isSearching} /> : (
+    <ul className={`chat-list ${userChats.length === 0 ? 'chat-list_empty' : ''}`}>
       {
-        Object.values(userChats)
+        userChats.length === 0 && selectedTab === tabTypes.Channels && (
+          <div className="no-channels-message">
+            Вы не подписаны ни на один канал.
+            <Button
+              className="no-channels-message__new-channel-button"
+              onClick={() => searchInputRef.current.focus()}
+            >
+              Подпишитесь
+            </Button>
+            или
+            <Button
+              className="no-channels-message__new-channel-button"
+              onClick={() => dispatch(setNewChannelModalOpen(true))}
+            >
+              Создайте свой
+            </Button>
+          </div>
+        )
+      }
+      {
+        userChats && userChats
           .sort((firstChat, secondChat) => {
             const lastFirstChatMessage = firstChat.lastMessage;
             const lastSecondChatMessage = secondChat.lastMessage;
-            if(lastFirstChatMessage && lastSecondChatMessage) {
+            if (lastFirstChatMessage && lastSecondChatMessage) {
               return new Date(lastFirstChatMessage.time) < new Date(lastSecondChatMessage.time) ? 1 : -1;
-            } else if(!lastFirstChatMessage) {
+            } else if (!lastFirstChatMessage) {
               return 1;
             } else {
               return -1;
             }
           })
-          .map(({
-                  id, chatType, chatAvatarUrl, chatTitle, lastMessage, members
-                }) => {
-            const {dialogAvatarUrl, dialogChatTitle} = getDialogInfo(members, chatType, currentUserId);
+          .map(chat => {
             return (
               <ChatCard
+                key={chat.id}
                 className="chat-list__chat-card"
-                key={id}
-                chatId={id}
-                chatType={chatType}
-                title={dialogChatTitle ? dialogChatTitle : chatTitle}
-                avatarUrl={dialogAvatarUrl ? dialogAvatarUrl : chatAvatarUrl}
-                currentChatId={currentChatId}
-                lastMessage={lastMessage}
+                chat={chat}
+                currentChatId={currentChat ? currentChat.id : null}
+                currentUserId={currentUserId}
 
                 isOnline={false}
                 countUnreadMessage={1}
@@ -52,3 +82,10 @@ const ChatList = () => {
 };
 
 export const MemoizedChatList = React.memo(ChatList);
+
+ChatList.propTypes = {
+  isSearching: PropTypes.bool,
+  selectedTab: PropTypes.string,
+  searchResult: PropTypes.func,
+  searchInputRef: PropTypes.object
+};

@@ -1,20 +1,24 @@
 import {createSelector} from "@reduxjs/toolkit";
 
-export const selectChats = state => state.chats;
+const selectChats = state => state.chats;
 
 export const selectUserChats = createSelector(
   selectChats,
   chats => chats.userChats
 );
 
-export const selectCurrentChatId = createSelector(
+export const selectCurrentChat = createSelector(
   selectChats,
-  chats => chats.currentChatId
+  chats => chats.currentChat
 );
 
-export const makeSelectCurrentChat = () => createSelector(
-  selectUserChats,
-  (_, chatId) => chatId,
-  (userChats, chatId) => userChats[chatId]
+export const selectIsChatsDataLoading = createSelector(
+  selectChats,
+  chats => chats.isChatsDataLoading
+);
+
+export const selectIsSubscribing = createSelector(
+  selectChats,
+  chats => chats.IsSubscribing
 );
 

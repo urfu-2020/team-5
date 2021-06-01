@@ -22,15 +22,14 @@ const sendToRoomMembers = (chatId, message) => {
  * Подсоедениться к сокет румам или создать их, если такой еще не было
  * @param socket {WebSocket} сокет, который присоединяется к комнатам
  * @param {UserModel} socket.sessionUser объект сессии сокета
- * @param chats {Array<ChatModel>}
+ * @param chatIds {Array<number>}
  */
-const connectUserToRooms = (socket, chats) => {
-  chats.forEach((chat) => {
-    const { id } = chat;
-    if (rooms[id]) {
-      rooms[id].push(socket);
+const connectUserToRooms = (socket, chatIds) => {
+  chatIds.forEach((chatId) => {
+    if (rooms[chatId]) {
+      rooms[chatId].push(socket);
     } else {
-      rooms[id] = [socket];
+      rooms[chatId] = [socket];
     }
   });
 };

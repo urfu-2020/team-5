@@ -1,0 +1,41 @@
+
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 2px 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.chat-list_empty {
+  justify-content: center;
+}
+
+.chat-list::-webkit-scrollbar {
+  background-color: transparent;
+}
+
+.chat-list__chat-card {
+  list-style-type: none;
+}
+
+.chat-list__chat-card:hover {
+  background-color: var(--teal-50);
+}
+
+.no-channels-message {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+.no-channels-message__new-channel-button {
+  font-size: 1rem;
+}
+
+.search-result-header {
+  text-align: center;
+  border-top: 2px solid var(--teal-200);
+  padding: 10px 0;
+}
