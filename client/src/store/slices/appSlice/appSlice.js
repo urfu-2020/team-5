@@ -1,22 +1,28 @@
 import {createSlice} from '@reduxjs/toolkit';
+import {setSearchResult} from "./appThunks";
 
 
 class AppState {
   /**
-   * @param setNewChannelModalOpen {Function}
    * @param isCreateNewChannelModalOpen {boolean}
+   * @param isSearching {boolean}
    * @param error {String}
+   * @param searchResult {String}
    */
-  constructor(isCreateNewChannelModalOpen, setNewChannelModalOpen, error) {
+  constructor(isCreateNewChannelModalOpen, isSearching, error, searchResult) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
+    this.isSearching = isSearching;
+    this.searchResult = searchResult;
   }
 }
 
 
 const initialAppState = {
   isCreateNewChannelModalOpen: false,
-  error: null
+  error: null,
+  isSearching: false,
+  searchResult: null
 };
 
 const appSlice = createSlice({
@@ -36,6 +42,22 @@ const appSlice = createSlice({
      */
     setError(state, {payload}) {
       state.error = payload.errorMessage;
+    },
+    setIsSearching(state, {payload}) {
+      state.isSearching = payload;
+    }
+  },
+  extraReducers: {
+    [setSearchResult.pending]: (state) => {
+      state.isSearching = true;
+    },
+    /**
+     * Получить по строке из поиска данные о каналах с сервера
+     * @param state {AppState}
+     * @param payload {ChatModel}
+     */
+    [setSearchResult.fulfilled]: (state, {payload}) => {
+      state.searchResult = payload;
     }
   }
 });
@@ -45,7 +67,8 @@ const { actions, reducer } = appSlice;
 
 export const {
   setNewChannelModalOpen,
-  setError
+  setError,
+  setIsSearching
 } = actions;
 
 export default reducer;

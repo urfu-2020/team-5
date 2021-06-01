@@ -8,8 +8,7 @@ import {SearchIcon} from "../../UtilComponents/Icons/SearchIcon";
 import {getDialogInfo} from "../../../utils/chatUtils";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {getDeclOfNum} from "../../../utils/stringUtils";
-import {UserCard} from "../../UtilComponents/ChatMemberCard/UserCard";
-
+import {Button} from "../../UtilComponents/Button/Button";
 
 
 /* eslint max-len: "off" */
@@ -64,7 +63,6 @@ export const ChatHeader = ({currentChat, isOnline}) => {
                     className="chat-data__chat-status chat-status"
                     onMouseEnter={groupMembersMouseEnterHandler}
                     onMouseLeave={groupMembersMouseLeaveHandler}
-                    // onClick={() => setMembersListOpen(true)}
                   >
                     {`${members.length} ${getDeclOfNum(members.length, ['участник', 'участника', 'участников'],)}`}
                   </p>
@@ -76,13 +74,15 @@ export const ChatHeader = ({currentChat, isOnline}) => {
                     >
                       {
                         members.map(member => (
-                          <UserCard
+
+                          <Button
                             key={member.id}
-                            user={member}
-                            cardClassName="members-list__member member"
-                            iconClassName="member__avatar"
-                            usernameClassName="member__username"
-                          />
+                            className={'members-list__member member button-with-pre-icon'}
+                            Icon={<img className="member__avatar" src={member.avatarUrl} alt="user avatar"/>}
+                            role="listitem"
+                          >
+                            <p className={"member__username"}>{member.username}</p>
+                          </Button>
                         ))
                       }
                     </div>
@@ -118,7 +118,7 @@ export const MemoizedChatHeader = React.memo(ChatHeader);
 ChatHeader.propTypes = {
   currentChat: PropTypes.shape({
     id: PropTypes.number,
-    chatType: PropTypes.oneOf(["Own", "Dialog", "Group"]),
+    chatType: PropTypes.oneOf(["Own", "Dialog", "Group", "Channel"]),
     chatAvatarUrl: PropTypes.string,
     chatTitle: PropTypes.string,
     members: PropTypes.arrayOf(PropTypes.shape({

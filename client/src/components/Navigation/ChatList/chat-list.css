@@ -33,3 +33,9 @@
 .no-channels-message__new-channel-button {
   font-size: 1rem;
 }
+
+.search-result-header {
+  text-align: center;
+  border-top: 2px solid var(--teal-200);
+  padding: 10px 0;
+}

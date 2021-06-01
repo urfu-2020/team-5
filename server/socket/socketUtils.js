@@ -1,6 +1,27 @@
-const {getUsersByIds} = require('../db/dbapi');
+const {
+  getChatMessages, getChatInfo, getChatMembers, getUser, getUsersByIds
+} = require('../db/dbapi');
 
 // TODO Сделать так, чтобы при ошибке форма на клиенте не закрывалась
+
+/**
+ * По айди чата получить его представление на фронте
+ * @param chatId {number}
+ * @return {Promise<{owner: *, members: *}>}
+ */
+const getFrontChatById = async (chatId) => {
+  const chat = await getChatInfo(chatId);
+  const chatOwner = await getUser('id', chat.owner);
+  const chatMembers = await getChatMembers(chatId);
+  const lastMessages = await getChatMessages(chatId, 0, 1);
+
+  return {
+    ...chat,
+    owner: chatOwner,
+    lastMessage: lastMessages.length > 0 ? lastMessages[0] : null,
+    members: chatMembers
+  };
+};
 
 /**
  * Валидация нового чата
@@ -45,7 +66,6 @@ async function validateNewChannel(channelTitle, channelDescription) {
   return { error: false };
 }
 
-
 function sendError(socket, validateObj) {
   const { errorMessage } = validateObj;
   return socket.send(JSON.stringify({
@@ -57,5 +77,6 @@ function sendError(socket, validateObj) {
 module.exports = {
   validateNewChat,
   validateNewChannel,
-  sendError
+  sendError,
+  getFrontChatById
 };

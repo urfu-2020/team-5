@@ -1,10 +1,10 @@
 .base-input {
+  width: 100%;
   padding: 0 0 2px 2px;
   font-size: 1.3rem;
   border: none;
   border-bottom: 2px solid var(--teal-200);
   transition: border 0.3s;
-  width: 100%;
 }
 
 .base-input:focus {

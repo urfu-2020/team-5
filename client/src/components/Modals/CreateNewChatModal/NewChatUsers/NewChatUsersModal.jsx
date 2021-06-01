@@ -6,7 +6,6 @@ import {Button} from "../../../UtilComponents/Button/Button";
 import {Spinner} from "../../../UtilComponents/Spinner/Spinner";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCurrentUser} from "../../../../store/slices/userSlice/userSelectors";
-import {UserCard} from "../../../UtilComponents/ChatMemberCard/UserCard";
 import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
 import {Modal} from "../../ModalBase/Modal";
 import {createNewChat} from "../../../../store/middlewares/socketReduxActions";
@@ -78,17 +77,17 @@ export const NewChatUsersModal = ({
                 const selected = selectedUsers.find(selectedUser => selectedUser === user);
 
                 return (
-                  <UserCard
+                  <Button
                     key={user.id}
-                    user={user}
-                    role="listitem"
-                    cardClassName={`new-chat-user ${selected ? 'new-chat-user_selected' : ''}`}
-                    onCardClick={() => setSelectedUsers(prev => (
+                    onClick={() => setSelectedUsers(prev => (
                       !selected ? [...prev, user] : selectedUsers.filter(selectedUser => selectedUser !== user)
                     ))}
-                    iconClassName="new-chat-user__avatar"
-                    usernameClassName="new-chat-user__username"
-                  />
+                    className={`new-chat-user button-with-pre-icon ${selected ? 'new-chat-user_selected' : ''}`}
+                    Icon={<img className="new-chat-user__avatar" src={user.avatarUrl} alt="user avatar" />}
+                    role="listitem"
+                  >
+                    <p className={"new-chat-user__username"}>{user.username}</p>
+                  </Button>
                 );
               }
             }) : <Spinner/>

@@ -15,7 +15,7 @@
   font-size: 1em;
   color: var(--primary-text);
   background-color: var(--grey-200);
-  border: none;
+  border: 2px solid transparent;
   border-radius: 2em;
   outline: none;
   transition: all 0.3s;
@@ -25,29 +25,29 @@
 .search input:focus,
 .search input:active {
   background-color: var(--bg-color);
-  box-shadow: 0 0 0 2px var(--teal-500);
+  border-color: var(--teal-500);
 }
 
 .navigation-header {
   display: flex;
-  gap: 12px;
   flex-flow: column;
+  gap: 12px;
 }
 
 .navigation-header__first-line {
   display: flex;
+  gap: 12px;
   padding: 12px;
-  gap: 12px
 }
 
 .header-tabs__tab {
-  height: 2.5rem;
   width: 50%;
+  height: 2.5rem;
   font-size: 1rem;
 }
 
 .chats-tab_selected {
-  transition: border-bottom-color 0.2s;
   background-color: var(--teal-50);
   border-bottom: var(--teal-200) 2px solid;
+  transition: border-bottom-color 0.2s;
 }

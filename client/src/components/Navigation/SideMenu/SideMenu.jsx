@@ -14,10 +14,11 @@ import {CreateNewChatModal} from "../../Modals/CreateNewChatModal/CreateNewChatM
 import {Button} from "../../UtilComponents/Button/Button";
 import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 import {CreateNewChannelModal} from "../../Modals/CreateNewChannelModal/CreateNewChannelModal";
-import {selectIsCreateNewChannelModalOpen} from "../../../store/slices/appSlice/appSelectors";
+import {
+  selectIsCreateNewChannelModalOpen
+} from "../../../store/slices/appSlice/appSelectors";
 import {Overlay} from "../../UtilComponents/Overlay/Overlay";
 import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
-
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   const user = useSelector(selectCurrentUser);
@@ -104,10 +105,8 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
       </FocusLock>
 
       {
-        isCreateNewChatModalOpen && <CreateNewChatModal setNewChatModalOpen={setNewChatModalOpen} />
-      }
-      {
-        isCreateNewChannelModalOpen && <CreateNewChannelModal />
+        (isCreateNewChatModalOpen && <CreateNewChatModal setNewChatModalOpen={setNewChatModalOpen} />) ||
+        (isCreateNewChannelModalOpen && <CreateNewChannelModal />)
       }
     </>
   );

@@ -6,7 +6,6 @@ import {NewChannelIcon} from "../components/UtilComponents/Icons/NewChannelIcon"
 import React from "react";
 import {getDeclOfNum} from "./stringUtils";
 
-
 export const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {
   const {LOAD_MESSAGES_THRESHOLD} = config;
   try {
@@ -49,13 +48,12 @@ export const getDialogInfo = (members, chatType, currentUserId) => {
   };
 };
 
-
 /**
  * Получить инфу для рендера чата или канала в меню слева (пока авы у всех кроме диалога это иконки)
  * @param chatType {String}
  * @param title: {String}
  * @param avatarUrl {String} Только для диалога
- * @param isOnline {String} Только для диалога
+ * @param isOnline {boolean} Только для диалога
  */
 export const getRenderChatInfo = (chatType, {title, avatarUrl, isOnline}) => {
   switch (chatType) {

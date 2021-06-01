@@ -46,9 +46,9 @@
 }
 
 .member {
+  align-items: center;
   width: 100%;
   font-size: 1rem;
-  align-items: center;
 }
 
 .member__avatar {

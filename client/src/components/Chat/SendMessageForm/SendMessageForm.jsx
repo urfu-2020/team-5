@@ -9,7 +9,8 @@ import {Button} from "../../UtilComponents/Button/Button";
 import {sendMessage} from "../../../store/middlewares/socketReduxActions";
 
 
-export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInputMessage}) => {
+export const SendMessageForm = ({isInputFileModalOpen, setInputFileModalOpen,
+                                  inputMessage, setInputMessage}) => {
   const chatId = +useParams().chatId;
   const dispatch = useDispatch();
 
@@ -44,7 +45,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
         role="button"
         tabIndex="0"
       >
-        <input type="file" id="input-file" hidden multiple onChange={() => setModalOpen(true)} />
+        <input type="file" id="input-file" hidden multiple onChange={() => setInputFileModalOpen(true)} />
         <svg
           className="svg-button send-message-form__attach-files-button"
           xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +65,7 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
       </label>
       <input
         ref={inputMessageRef}
-        value={isModalOpen ? '' : inputMessage}
+        value={isInputFileModalOpen ? '' : inputMessage}
         onChange={e => setInputMessage(e.target.value)}
         type="text"
         className="send-message-form__input-text input-message"
@@ -94,8 +95,8 @@ export const SendMessageForm = ({isModalOpen, setModalOpen, inputMessage, setInp
 
 
 SendMessageForm.propTypes = {
-  isModalOpen: PropTypes.bool.isRequired,
-  setModalOpen: PropTypes.func.isRequired,
+  isInputFileModalOpen: PropTypes.bool.isRequired,
+  setInputFileModalOpen: PropTypes.func.isRequired,
   inputMessage: PropTypes.string.isRequired,
   setInputMessage: PropTypes.func.isRequired
 };

@@ -23,7 +23,7 @@ export const CreateNewChannelModal = () => {
   const createChannel = useCallback(() => {
     dispatch(createNewChannel(channelTitle, channelDescription));
     dispatch(setNewChannelModalOpen(false));
-  })
+  }, [channelDescription, channelTitle]);
 
   return (
     // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions

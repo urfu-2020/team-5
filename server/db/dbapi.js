@@ -181,7 +181,7 @@ async function createAndGetMessage({
  * @param channelTitle {String}
  * @param channelDescription {String}
  * @param owner {number}
- * @returns {ChatModel}
+ * @returns {ChatInDbModel}
  */
 async function createAndGetChannel(channelTitle, channelDescription, owner) {
   return (await dbRequest(`
@@ -212,6 +212,40 @@ async function leaveFromChat(chatId, userId) {
   await dbRequest(`DELETE FROM ChatUsers WHERE chatId=${chatId} AND userId=${userId}`);
 }
 
+/**
+ * Получить все каналы
+ * @param query {String}
+ */
+async function getAllChannelsByQuery(query) {
+  return (await dbRequest(`SELECT * FROM Chats WHERE chatType='Channel' AND chatTitle LIKE '${query}%'`)).recordset;
+}
+
+/**
+ * Получить инфу о чате по ид
+ * @param id {number}
+ * @returns {ChatInDbModel | boolean}
+ */
+async function getChatInfo(id) {
+  const res = (await dbRequest(`SELECT * FROM Chats WHERE id=${id}`)).recordset;
+  if (res.length === 0) return false;
+  return res[0];
+}
+
+/**
+ * Получить участников чата
+ * @param chatId {number}
+ * @returns Array<UserModel>
+ */
+async function getChatMembers(chatId) {
+  return (await dbRequest(`
+      SELECT Users.id, Users.username, Users.avatarUrl, Users.githubUrl
+      FROM ChatUsers
+      JOIN Users
+      ON Users.id = ChatUsers.userId
+      WHERE ChatUsers.chatId=${chatId}
+  `)).recordset;
+}
+
 module.exports = {
   addUsersInChat,
   getUsers,
@@ -228,6 +262,8 @@ module.exports = {
   getUserLastChatMessages,
   createAndGetChannel,
   joinToChat,
-  leaveFromChat
+  leaveFromChat,
+  getAllChannelsByQuery,
+  getChatInfo,
+  getChatMembers
 };
-

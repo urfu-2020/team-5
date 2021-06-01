@@ -13,10 +13,10 @@ import {config} from "../../../config";
 import {getChatStartMessage, getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
 
 
-const ChatMessages = ({currentChatInfo}) => {
+const ChatMessages = ({currentChat}) => {
   const currentUser = useSelector(selectCurrentUser);
 
-  const {id, members, lastMessage, chatType, owner} = currentChatInfo;
+  const {id, members, lastMessage, chatType, owner} = currentChat;
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -28,6 +28,7 @@ const ChatMessages = ({currentChatInfo}) => {
   const prevLastMessageRef = useRef(null);
 
   useEffect(() => {
+    // Подгрузка последних сообщений чата при переключении чата
     fetchControllerRef.current = new AbortController();
     (async () => {
       const response = await loadOldMessages({
@@ -53,11 +54,12 @@ const ChatMessages = ({currentChatInfo}) => {
     setMessages(prevMessages => [...prevMessages, lastMessage]);
   }, [lastMessage]);
 
+  // TODO Придумать что-то со скролом...
   useEffect(() => {
       if (endMessagesRef.current &&
          (!prevLastMessageRef.current ||
            lastMessage !== prevLastMessageRef.current)) {
-        endMessagesRef.current.scrollIntoView({ behavior: "smooth"});
+        endMessagesRef.current.scrollIntoView({alignTop: true, behavior: "smooth"});
         prevLastMessageRef.current = lastMessage;
       }
   }, [messages]);
@@ -109,6 +111,7 @@ const ChatMessages = ({currentChatInfo}) => {
                       ) : null
                     }
                     <ChatMessage
+                      chatType={chatType}
                       text={text}
                       time={getTimeInLocaleString(time)}
                       isMyMessage={isMyMessage(currentUser.id, senderId)}
@@ -124,7 +127,7 @@ const ChatMessages = ({currentChatInfo}) => {
           </>
         )
       }
-      <div ref={endMessagesRef}/>
+      <div className="end-messages-ref" ref={endMessagesRef}/>
     </ul>
   );
 };
@@ -132,7 +135,7 @@ const ChatMessages = ({currentChatInfo}) => {
 export const MemoizedChatMessages = React.memo(ChatMessages);
 
 ChatMessages.propTypes = {
-  currentChatInfo: PropTypes.shape({
+  currentChat: PropTypes.shape({
     id: PropTypes.number.isRequired,
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group", "Channel"]),
     description: PropTypes.string,

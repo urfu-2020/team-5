@@ -1,6 +1,8 @@
 const WebSocket = require('ws');
 const session = require('../session');
-const { validateNewChat, validateNewChannel, sendError } = require('./socketUtils');
+const {
+  validateNewChat, validateNewChannel, sendError, getFrontChatById
+} = require('./socketUtils');
 const {
   createAndGetNewChatGroup, createAndGetMessage, createAndGetChannel,
   getUserChats, getUserChatsChatUserRecords, addUsersInChat,
@@ -37,7 +39,7 @@ function configureSocket(server) {
     if (userChats.length === 0) {
       await addDialogsWithNewUser(sessionUser.username);
       userChats = await getUserChats(sessionUser.id);
-      connectUserToRooms(socket, userChats);
+      connectUserToRooms(socket, userChats.map((chat) => chat.id));
       const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
 
       // всем, кто сейчас онлайн, отправляем диалог с новым пользователем
@@ -64,7 +66,7 @@ function configureSocket(server) {
           rooms[dialogWithNewUser.id].push(client);
         }
       });
-    } else connectUserToRooms(socket, userChats);
+    } else connectUserToRooms(socket, userChats.map((chat) => chat.id));
 
     // при подключении пользователя отсылаем ему начальные данные о его чатах
     const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
@@ -89,12 +91,13 @@ function configureSocket(server) {
             sendError(socket, validateObj);
           }
           const newChannel = await createAndGetChannel(channelTitle, channelDescription, sessionUser.id);
-
-          joinToChat(newChannel.id, sessionUser.id);
+          await joinToChat(newChannel.id, sessionUser.id);
           socket.send(JSON.stringify({
             type: 'addNewChat',
             payload: { chat: { ...newChannel, members: [sessionUser], owner: sessionUser } }
           }));
+
+          rooms[newChannel.id] = [socket];
           break;
         }
 
@@ -143,6 +146,41 @@ function configureSocket(server) {
               type: 'chatMessage', payload: resultMessage
             }));
           }
+          break;
+        }
+
+        case 'setUnsubscribedChannel': {
+          const chatId = message.payload;
+          const chat = await getFrontChatById(chatId);
+          if (chat && chat.chatType === 'Channel') {
+            connectUserToRooms(socket, [chat.id]);
+            socket.send(JSON.stringify({
+              type: 'setUnsubscribedChannel',
+              payload: chat
+            }));
+          }
+          break;
+        }
+
+        case 'subscribeToChannel': {
+          const channelId = message.payload;
+          await joinToChat(channelId, sessionUser.id);
+          const channel = await getFrontChatById(channelId);
+          socket.send(JSON.stringify({
+            type: 'subscribeToChannel',
+            payload: { chat: channel }
+          }));
+
+          break;
+        }
+
+        case 'unsubscribeFromChannel': {
+          const channelId = message.payload;
+          await leaveFromChat(channelId, sessionUser.id);
+          socket.send(JSON.stringify({
+            type: 'unsubscribeFromChannel',
+            payload: channelId
+          }));
           break;
         }
 

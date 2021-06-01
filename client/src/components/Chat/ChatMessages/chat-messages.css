@@ -51,6 +51,7 @@
 
 .message__chat-avatar {
   align-self: flex-end;
+  width: 35px;
   height: 35px;
   border-radius: 100%;
 }
@@ -133,4 +134,9 @@
 
 .ticks {
   fill: var(--teal-500);
+}
+
+.icon-message-avatar {
+  background-color: var(--bg-color);
+  border: 1px solid black;
 }
