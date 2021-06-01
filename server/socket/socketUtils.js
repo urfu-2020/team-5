@@ -1,5 +1,5 @@
 const {
-  getChatMessages, getChatInfo, getChatMembers, getUser, getUsersByIds
+  getChatMessages, getChatInfo, getChatMembers, getUserById, getUsersByIds
 } = require('../db/dbapi');
 
 // TODO Сделать так, чтобы при ошибке форма на клиенте не закрывалась
@@ -11,7 +11,7 @@ const {
  */
 const getFrontChatById = async (chatId) => {
   const chat = await getChatInfo(chatId);
-  const chatOwner = await getUser('id', chat.owner);
+  const chatOwner = await getUserById(chat.owner);
   const chatMembers = await getChatMembers(chatId);
   const lastMessages = await getChatMessages(chatId, 0, 1);
 
