@@ -32,3 +32,13 @@ export const selectIsDarkTheme = createSelector(
   selectApp,
   app => app.isDarkTheme
 );
+
+export const selectIsSwitching = createSelector(
+  selectApp,
+  app => app.isSwitching
+);
+
+export const selectIsThemeLoading = createSelector(
+  selectApp,
+  app => app.isThemeLoading
+);

@@ -5,7 +5,7 @@ const {
 } = require('./socketUtils');
 const {
   createAndGetNewChatGroup, createAndGetMessage, createAndGetChannel,
-  getUserChats, getUserChatsChatUserRecords, addUsersInChat,
+  getUserChats, getUserChatsChatUserRecords, addUsersInChat, getTheme,
   getUserLastChatMessages, addDialogsWithNewUser, joinToChat, leaveFromChat
 } = require('../db/dbapi');
 const {
@@ -68,7 +68,12 @@ function configureSocket(server) {
       });
     } else connectUserToRooms(socket, userChats.map((chat) => chat.id));
 
-    // при подключении пользователя отсылаем ему начальные данные о его чатах
+    // при подключении пользователя отсылаем ему начальные данные о его чатах и тему
+    const isDarkTheme = (await getTheme(sessionUser.id)) === 'DARK';
+    socket.send(JSON.stringify({
+      type: 'setTheme',
+      payload: isDarkTheme
+    }));
     const chatUserRecords = await getUserChatsChatUserRecords(sessionUser.id);
     const lastMessages = await getUserLastChatMessages(sessionUser.id);
     socket.send(JSON.stringify({

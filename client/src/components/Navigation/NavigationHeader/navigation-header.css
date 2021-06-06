@@ -57,8 +57,8 @@
 }
 
 .navigation-header_dark .search input {
-  background-color: var(--control-bg-dark-theme);
   color: var(--text-color-dark-theme);
+  background-color: var(--control-bg-dark-theme);
 }
 
 .navigation-header_dark .search input:active,

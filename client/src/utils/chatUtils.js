@@ -31,7 +31,6 @@ export const loadUntilFoundMessage = async ({chatId, messageId, cbOnAllLoaded, c
 
     // Если вернулось меньше, чем LOAD_MESSAGES_THRESHOLD сообщений, то грузим LOAD_MESSAGES_THRESHOLD сообщений
     if (oldMessages.length < LOAD_MESSAGES_THRESHOLD) {
-      console.log('menshe');
       return loadOldMessages({chatId, controller, offset: 0, cbOnAllLoaded: cbOnAllLoaded });
     }
 

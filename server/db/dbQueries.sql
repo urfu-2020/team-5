@@ -23,6 +23,13 @@ CREATE TABLE ChatUsers (
 );
 
 GO
+CREATE TABLE UsersTheme (
+	userId INT FOREIGN KEY REFERENCES Users(id),
+	theme NVARCHAR(50) CHECK(theme IN ('LIGHT', 'DARK'))
+);
+
+
+GO
 CREATE TABLE Messages (
 	id INT IDENTITY PRIMARY KEY,
 	chatId INT FOREIGN KEY REFERENCES Chats(id) NOT NULL,
@@ -33,9 +40,20 @@ CREATE TABLE Messages (
 	time DATETIME NOT NULL
 );
 
+GO
+CREATE TRIGGER Users_AddTheme
+ON Users
+AFTER INSERT
+AS
+BEGIN
+	INSERT INTO UsersTheme
+	SELECT inserted.id, 'LIGHT'
+	FROM inserted
+END
 
 
 /* При первом логине этот пользователь добавляется в диалоги ко всем другим */
+/* Надо это было (будет?) сделать триггером афтер инсерт юзер */
 GO
 CREATE PROC AddDialogsWithNewUser(@newUserUsername NVARCHAR(255))
 AS

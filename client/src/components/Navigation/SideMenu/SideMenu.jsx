@@ -15,15 +15,18 @@ import {Button} from "../../UtilComponents/Button/Button";
 import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 import {CreateNewChannelModal} from "../../Modals/CreateNewChannelModal/CreateNewChannelModal";
 import {
-  selectIsCreateNewChannelModalOpen, selectIsDarkTheme
+  selectIsCreateNewChannelModalOpen, selectIsDarkTheme, selectIsSwitching
 } from "../../../store/slices/appSlice/appSelectors";
 import {Overlay} from "../../UtilComponents/Overlay/Overlay";
 import {setIsDarkTheme, setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
+import {throttle} from "../../../utils/throttle";
+import {setTheme} from "../../../store/slices/appSlice/appThunks";
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   const user = useSelector(selectCurrentUser);
   const isCreateNewChannelModalOpen = useSelector(selectIsCreateNewChannelModalOpen);
   const isDarkTheme = useSelector(selectIsDarkTheme);
+  const isSwitching = useSelector(selectIsSwitching);
 
   const dispatch = useDispatch();
 
@@ -33,6 +36,10 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
     if (e.key === 'Escape') {
       setOpenSideMenu(false);
     }
+  };
+
+  const switchTheme = e => {
+    dispatch(setTheme(!isDarkTheme));
   };
 
   return (
@@ -105,7 +112,8 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
                 toggleId="night-mode-toggle"
                 className="night-mode-toggle"
                 checked={isDarkTheme}
-                onChange={() => dispatch(setIsDarkTheme(!isDarkTheme))}
+                onChange={throttle(switchTheme, 300)}
+                disabled={isSwitching}
               />
             </Button>
 

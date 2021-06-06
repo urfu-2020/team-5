@@ -13,7 +13,7 @@
   transition: left 0.4s;
 }
 
-.side-menu {
+.side-menu_dark {
   background-color: var(--menu-bg-dark-theme);
 }
 

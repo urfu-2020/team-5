@@ -1,5 +1,5 @@
 import {createSlice} from '@reduxjs/toolkit';
-import {setSearchResult} from "./appThunks";
+import {setSearchResult, setTheme} from "./appThunks";
 
 class AppState {
   /**
@@ -9,15 +9,20 @@ class AppState {
    * @param searchResult {{channels: Array<ChatModel>, messages: Array<MessageModel>}}
    * @param foundMessage {MessageModel}
    * @param isDarkTheme {boolean}
+   * @param isSwitching {boolean}
+   * @param isThemeLoading {boolean}
    */
   constructor(isCreateNewChannelModalOpen, isSearching, error
-              , searchResult, foundMessage, isDarkTheme) {
+              , searchResult, foundMessage, isDarkTheme,
+              isSwitching, isThemeLoading) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
     this.isSearching = isSearching;
     this.searchResult = searchResult;
     this.foundMessage = foundMessage;
     this.isDarkTheme = isDarkTheme;
+    this.isSwitching = isSwitching;
+    this.isThemeLoading = isThemeLoading;
   }
 }
 
@@ -29,7 +34,9 @@ const initialAppState = {
   isSearching: false,
   searchResult: null,
   foundMessage: null,
-  isDarkTheme: false
+  isDarkTheme: false,
+  isSwitching: false,
+  isThemeLoading: true
 };
 
 const appSlice = createSlice({
@@ -62,8 +69,9 @@ const appSlice = createSlice({
       state.foundMessage = null;
       state.foundMessage = payload;
     },
-    setIsDarkTheme(state, {payload}) {
+    setStartTheme(state, {payload}) {
       state.isDarkTheme = payload;
+      state.isThemeLoading = false;
     }
   },
   extraReducers: {
@@ -77,6 +85,13 @@ const appSlice = createSlice({
      */
     [setSearchResult.fulfilled]: (state, {payload}) => {
       state.searchResult = payload;
+    },
+    [setTheme.pending]: (state) => {
+      state.isSwitching = true;
+    },
+    [setTheme.fulfilled]: (state) => {
+      state.isSwitching = false;
+      state.isDarkTheme = !state.isDarkTheme;
     }
   }
 });
@@ -89,7 +104,7 @@ export const {
   setError,
   setIsSearching,
   setFoundMessage,
-  setIsDarkTheme
+  setStartTheme
 } = actions;
 
 export default reducer;

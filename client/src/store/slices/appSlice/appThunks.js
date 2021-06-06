@@ -5,3 +5,7 @@ export const setSearchResult = createAsyncThunk('app/setSearchResult', async (qu
 });
 
 
+export const setTheme = createAsyncThunk('app/setTheme', async (isDarkTheme) => {
+  await fetch(`/user/theme/${isDarkTheme}`);
+});
+

@@ -10,11 +10,11 @@
 }
 
 .modal_dark {
-  background-color: var(--menu-bg-dark-theme);
   color: var(--text-color-dark-theme);
+  background-color: var(--menu-bg-dark-theme);
 }
 
 .modal_dark input {
-  background-color: var(--menu-bg-dark-theme);
   color: var(--text-color-dark-theme);
+  background-color: var(--menu-bg-dark-theme);
 }

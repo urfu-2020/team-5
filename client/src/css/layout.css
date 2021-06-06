@@ -16,7 +16,6 @@
   border-radius: 5px;
 }
 
-
 body {
   font-family: "Roboto", sans-serif;
 }
@@ -26,11 +25,15 @@ body {
   grid-template: "dialogs" "current-dialog" 1fr / 1fr 2fr;
   min-width: 1024px;
   margin: 0;
-  /*background-color: var(--teal-200);*/
+}
+
+.app_light {
+  background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
 }
 
 .app_dark {
   color: var(--text-color-dark-theme);
+  background-color: var(--bg-color-dark-theme);
 }
 
 .app__error-card {

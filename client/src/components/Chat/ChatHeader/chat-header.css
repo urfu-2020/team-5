@@ -5,6 +5,7 @@
 
 .chat-header_dark {
   background-color: var(--menu-bg-dark-theme);
+  border-left: var(--selected-item-dark-theme) solid 1px;
 }
 
 .chat-container__chat-header {

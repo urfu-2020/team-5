@@ -29,7 +29,8 @@
   background-color: var(--control-bg-dark-theme);
 }
 
-.card_dark:focus-visible, .card_dark:hover {
+.card_dark:focus-visible,
+.card_dark:hover {
   background-color: var(--control-bg-dark-theme);
   box-shadow: 2px 0 0 2px var(--bg-color-dark-theme);
   transition: all 0.2s;
