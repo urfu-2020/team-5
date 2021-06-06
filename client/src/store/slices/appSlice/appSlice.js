@@ -7,13 +7,16 @@ class AppState {
    * @param isCreateNewChannelModalOpen {boolean}
    * @param isSearching {boolean}
    * @param error {String}
-   * @param searchResult {String}
+   * @param searchResult {{channels: Array<ChatModel>, messages: Array<MessageModel>}}
+   * @param foundMessage {MessageModel}
    */
-  constructor(isCreateNewChannelModalOpen, isSearching, error, searchResult) {
+  constructor(isCreateNewChannelModalOpen, isSearching, error
+              , searchResult, foundMessage) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
     this.isSearching = isSearching;
     this.searchResult = searchResult;
+    this.foundMessage = foundMessage;
   }
 }
 
@@ -21,8 +24,10 @@ class AppState {
 const initialAppState = {
   isCreateNewChannelModalOpen: false,
   error: null,
+
   isSearching: false,
-  searchResult: null
+  searchResult: null,
+  foundMessage: null
 };
 
 const appSlice = createSlice({
@@ -45,6 +50,15 @@ const appSlice = createSlice({
     },
     setIsSearching(state, {payload}) {
       state.isSearching = payload;
+    },
+    /**
+     * При клике в боковом меню на найденное сообщение прокидывать его в редакс, чтобы в чатике проскролить к нему
+     * @param state {AppState}
+     * @param payload {MessageModel}
+     */
+    setFoundMessage(state, {payload}) {
+      state.foundMessage = null;
+      state.foundMessage = payload;
     }
   },
   extraReducers: {
@@ -54,7 +68,7 @@ const appSlice = createSlice({
     /**
      * Получить по строке из поиска данные о каналах с сервера
      * @param state {AppState}
-     * @param payload {ChatModel}
+     * @param payload {{channels: Array<ChatModel>, messages: Array<MessageModel>}}
      */
     [setSearchResult.fulfilled]: (state, {payload}) => {
       state.searchResult = payload;
@@ -68,7 +82,8 @@ const { actions, reducer } = appSlice;
 export const {
   setNewChannelModalOpen,
   setError,
-  setIsSearching
+  setIsSearching,
+  setFoundMessage
 } = actions;
 
 export default reducer;

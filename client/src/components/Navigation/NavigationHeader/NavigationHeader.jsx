@@ -8,7 +8,7 @@ import {tabTypes} from "../Navigation";
 import {useDebounce} from "../../../hooks/useDebounce";
 import {useDispatch} from "react-redux";
 import {setSearchResult} from "../../../store/slices/appSlice/appThunks";
-import {setIsSearching} from "../../../store/slices/appSlice/appSlice";
+import {setFoundMessage, setIsSearching} from "../../../store/slices/appSlice/appSlice";
 
 
 export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, isSearching, searchInputRef}) => {
@@ -22,6 +22,7 @@ export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, 
         dispatch(setSearchResult(debouncedSearch));
       } else {
         dispatch(setIsSearching(false));
+        dispatch(setFoundMessage(null));
       }
     },
     [debouncedSearch]

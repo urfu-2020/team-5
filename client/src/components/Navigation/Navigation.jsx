@@ -22,7 +22,7 @@ export const Navigation = () => {
   const searchInputRef = useRef();
 
   return (
-    <>
+  <nav className={`navigation ${isSearching ? "navigation_searching" : ''}`}>
       <NavigationHeader
         searchInputRef={searchInputRef}
         isSearching={isSearching}
@@ -40,6 +40,6 @@ export const Navigation = () => {
           isSideMenuOpen={isSideMenuOpen}
           setOpenSideMenu={setOpenSideMenu}
         />
-    </>
+    </nav>
   );
 };

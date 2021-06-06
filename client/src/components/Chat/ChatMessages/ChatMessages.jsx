@@ -1,22 +1,27 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {useSelector} from "react-redux";
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
 import PropTypes from 'prop-types';
 
 import './chat-messages.css';
 
-import {ChatMessage} from './ChatMessage/ChatMessage';
-import {throttle} from "../../../utils/throttle";
-import {getDayInLocaleString, getTimeInLocaleString, isNewDay} from "../../../utils/time";
-import {Spinner} from "../../UtilComponents/Spinner/Spinner";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {config} from "../../../config";
-import {getChatStartMessage, getSobesednikAvatarUrl, isMyMessage, loadOldMessages} from "../../../utils/chatUtils";
+import {
+  loadOldMessages,
+  loadUntilFoundMessage
+} from "../../../utils/chatUtils";
+import {selectFoundMessage} from "../../../store/slices/appSlice/appSelectors";
+import { MemoizedChatMessagesView} from "./ChatMessagesView";
+import {setFoundMessage} from "../../../store/slices/appSlice/appSlice";
 
 
 const ChatMessages = ({currentChat}) => {
-  const currentUser = useSelector(selectCurrentUser);
-
   const {id, members, lastMessage, chatType, owner} = currentChat;
+
+  const currentUser = useSelector(selectCurrentUser);
+  const foundMessage = useSelector(selectFoundMessage);
+
+  const dispatch = useDispatch();
 
   const [messages, setMessages] = useState([]);
   const [isOldMessagesLoading, setOldMessagesLoading] = useState(false);
@@ -29,17 +34,33 @@ const ChatMessages = ({currentChat}) => {
 
   useEffect(() => {
     // Подгрузка последних сообщений чата при переключении чата
-    fetchControllerRef.current = new AbortController();
     (async () => {
-      const response = await loadOldMessages({
-        chatId: id,
-        offset: 0,
-        cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
-        controller: fetchControllerRef.current
-      });
-      if(response) {
+      let response;
+      fetchControllerRef.current = new AbortController();
+      // Если найденного сообщения нет, то подгружаем LOAD_MESSAGES_THRESHOLD сообщений
+      if (!foundMessage) {
+        response = await loadOldMessages({
+          chatId: id,
+          offset: 0,
+          cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
+          controller: fetchControllerRef.current
+        });
+      }
+      // Иначе подгружаем сообщения до искомого
+      // (Если оно находится в первых LOAD_MESSAGES_THRESHOLD сообщениях, то грузим LOAD_MESSAGES_THRESHOLD)
+      else {
+        response = await loadUntilFoundMessage({
+          chatId: id,
+          messageId: foundMessage.id,
+          cbOnAllLoaded: () => setIsAllMessagesLoaded(true),
+          controller: fetchControllerRef.current
+        });
+      }
+
+      if (response) {
         setMessages(response.oldMessages);
-        setPrevChatId(id);
+        if (prevChatId !== id)
+          setPrevChatId(id);
       }
     })();
 
@@ -48,24 +69,26 @@ const ChatMessages = ({currentChat}) => {
       prevLastMessageRef.current = null;
       setIsAllMessagesLoaded(false);
     };
-  }, [id]);
+  }, [id, foundMessage]);
 
   useEffect(() => {
     setMessages(prevMessages => [...prevMessages, lastMessage]);
+    if (prevLastMessageRef.current && prevLastMessageRef.current.id !== lastMessage.id)
+      endMessagesRef.current.scrollIntoView({alignTop: true, behavior: "smooth"});
+
+    prevLastMessageRef.current = lastMessage;
   }, [lastMessage]);
 
-  // TODO Придумать что-то со скролом...
-  useEffect(() => {
-      if (endMessagesRef.current &&
-         (!prevLastMessageRef.current ||
-           lastMessage !== prevLastMessageRef.current)) {
-        endMessagesRef.current.scrollIntoView({alignTop: true, behavior: "smooth"});
-        prevLastMessageRef.current = lastMessage;
-      }
-  }, [messages]);
 
-  async function addMessagesOnScroll(e) {
-    if (  e.target.scrollTop === 0 &&
+  useEffect(() => {
+    if (!foundMessage && endMessagesRef.current && !isOldMessagesLoading) {
+      endMessagesRef.current.scrollIntoView({alignTop: true, behavior: "smooth"});
+    }
+  });
+
+  const addMessagesOnScroll = useCallback( async e => {
+    if (
+      e.target.scrollTop === 0 &&
       !isAllMessagesLoaded &&
       !isOldMessagesLoading &&
       messages.length >= config.LOAD_MESSAGES_THRESHOLD
@@ -78,57 +101,32 @@ const ChatMessages = ({currentChat}) => {
         controller: fetchControllerRef.current
       });
 
-      if(response) {
+      if (response) {
         setMessages(laterMessages => [...response.oldMessages, ...laterMessages]);
         setOldMessagesLoading(false);
       }
     }
-  }
+  }, [id, isAllMessagesLoaded, isOldMessagesLoading, messages.length]);
 
   return (
-    <ul className="chat-area chat-container__chat-area" onScroll={throttle(addMessagesOnScroll, 300)}>
-      {
-        // если чат сменился и еще не загрузился
-        prevChatId !== id ? <Spinner className="spinner_chat-main"/> : (
-          <>
-            {
-              isOldMessagesLoading ? <Spinner className="spinner_chat-load-messages"/> :
-                isAllMessagesLoaded ? (
-                  <p className="chat-info-message chat-area__start-dialog-message">
-                    {getChatStartMessage(chatType, currentUser.id, owner, members)}
-                  </p>
-                ) : null
-            }
-            {
-              messages.map(({id, text, senderId, time, status}, index) => {
-                return (
-                  <React.Fragment key={id}>
-                    {
-                      isNewDay(messages, index) ? (
-                        <h4 className="chat-info-message chat-area__date">
-                          {getDayInLocaleString(time)}
-                        </h4>
-                      ) : null
-                    }
-                    <ChatMessage
-                      chatType={chatType}
-                      text={text}
-                      time={getTimeInLocaleString(time)}
-                      isMyMessage={isMyMessage(currentUser.id, senderId)}
-                      avatarUrl={isMyMessage(currentUser.id, senderId) ? currentUser.avatarUrl :
-                        getSobesednikAvatarUrl(members, senderId)}
-                      status={status}
-                      attachments={[]}
-                    />
-                  </React.Fragment>
-                );
-              })
-            }
-          </>
-        )
-      }
-      <div className="end-messages-ref" ref={endMessagesRef}/>
-    </ul>
+    <MemoizedChatMessagesView
+      prevChatId={prevChatId}
+      endMessagesRef={endMessagesRef}
+
+      currentChatId={id}
+      members={members}
+      chatType={chatType}
+      owner={owner}
+      messages={messages}
+
+      isOldMessagesLoading={isOldMessagesLoading}
+      isAllMessagesLoaded={isAllMessagesLoaded}
+      addMessagesOnScroll={addMessagesOnScroll}
+
+      currentUser={currentUser}
+
+      foundMessage={foundMessage}
+    />
   );
 };
 

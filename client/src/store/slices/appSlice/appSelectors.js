@@ -22,3 +22,8 @@ export const selectSearchResult = createSelector(
   selectApp,
   app => app.searchResult
 );
+
+export const selectFoundMessage = createSelector(
+  selectApp,
+  app => app.foundMessage
+);

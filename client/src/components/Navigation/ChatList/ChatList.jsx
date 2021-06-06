@@ -68,6 +68,7 @@ const ChatList = ({selectedTab, isSearching, searchResult, searchInputRef}) => {
                 key={chat.id}
                 className="chat-list__chat-card"
                 chat={chat}
+                describedMessage={chat.lastMessage}
                 currentChatId={currentChat ? currentChat.id : null}
                 currentUserId={currentUserId}
 

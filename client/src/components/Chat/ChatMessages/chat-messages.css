@@ -5,7 +5,7 @@
 .chat-container__chat-area {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .chat-area > :first-child {
@@ -139,4 +139,28 @@
 .icon-message-avatar {
   background-color: var(--bg-color);
   border: 1px solid black;
+}
+
+.chat-area__message-container {
+  display: flex;
+  width: 100%;
+}
+
+.chat-area__found-message {
+  padding: 2px 0;
+  animation: foundMessage linear 2s forwards;
+}
+
+@keyframes foundMessage {
+  20% {
+    background-color: var(--teal-100);
+  }
+
+  60% {
+    background-color: var(--teal-100);
+  }
+
+  100% {
+    background-color: transparent;
+  }
 }
