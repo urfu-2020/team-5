@@ -51,3 +51,18 @@
   border-bottom: var(--teal-200) 2px solid;
   transition: border-bottom-color 0.2s;
 }
+
+.navigation-header_dark .chats-tab_selected {
+  background-color: var(--control-bg-dark-theme);
+}
+
+.navigation-header_dark .search input {
+  background-color: var(--control-bg-dark-theme);
+  color: var(--text-color-dark-theme);
+}
+
+.navigation-header_dark .search input:active,
+.navigation-header_dark .search input:hover,
+.navigation-header_dark .search input:focus {
+  background-color: var(--control-bg-dark-theme);
+}

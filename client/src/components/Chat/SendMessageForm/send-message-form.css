@@ -8,11 +8,19 @@
   border-left: var(--separator) solid 1px;
 }
 
+.send-message-form_dark, .send-message-form_dark input {
+  background-color: var(--menu-bg-dark-theme);
+}
+
 .input-message {
   font-family: "Roboto", sans-serif;
   font-size: 1.2rem;
   color: var(--primary-text);
   outline: none;
+}
+
+.send-message-form_dark .input-message {
+  color: var(--text-color-dark-theme);
 }
 
 .send-message-form__input-text {

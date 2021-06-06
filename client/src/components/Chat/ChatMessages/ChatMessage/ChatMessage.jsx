@@ -3,13 +3,14 @@ import PropTypes from 'prop-types';
 import {MessageReadIcon} from "../../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../../UtilComponents/Icons/MessageUnreadIcon";
 import {NewChannelIcon} from "../../../UtilComponents/Icons/NewChannelIcon";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {selectIsDarkTheme} from "../../../../store/slices/appSlice/appSelectors";
 
 export const ChatMessage = ({id, chatType, text, time,
                               isMyMessage, avatarUrl, status, foundMessage}) => {
 
   const messageRef = useRef();
-
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   useEffect(() => {
     if (foundMessage && id === foundMessage.id) {
@@ -22,6 +23,7 @@ export const ChatMessage = ({id, chatType, text, time,
 
   return (
     <div className={`chat-area__message-container
+      ${isDarkTheme ? 'message_dark' : ''}
       ${foundMessage && foundMessage.id === id && 'chat-area__found-message'}`}>
       <li
         ref={messageRef}

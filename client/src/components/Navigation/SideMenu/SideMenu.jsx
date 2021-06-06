@@ -15,14 +15,15 @@ import {Button} from "../../UtilComponents/Button/Button";
 import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 import {CreateNewChannelModal} from "../../Modals/CreateNewChannelModal/CreateNewChannelModal";
 import {
-  selectIsCreateNewChannelModalOpen
+  selectIsCreateNewChannelModalOpen, selectIsDarkTheme
 } from "../../../store/slices/appSlice/appSelectors";
 import {Overlay} from "../../UtilComponents/Overlay/Overlay";
-import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
+import {setIsDarkTheme, setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 
 export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   const user = useSelector(selectCurrentUser);
   const isCreateNewChannelModalOpen = useSelector(selectIsCreateNewChannelModalOpen);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   const dispatch = useDispatch();
 
@@ -46,7 +47,10 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
           tabIndex={isSideMenuOpen ? '0' : '-1'}
           aria-hidden={!isSideMenuOpen}
           onKeyDown={keyDownHandler}
-          className={`side-menu ${isSideMenuOpen ? 'side-menu_open' : 'side-menu_close'}`}
+          className=
+            {`side-menu
+            ${isSideMenuOpen ? 'side-menu_open' : 'side-menu_close'}
+            ${isDarkTheme ? 'side-menu_dark' : ''}`}
         >
           <div className="side-menu__header">
             <img className="side-menu__user-avatar" src={user.avatarUrl} alt="аватар пользователя"/>
@@ -97,7 +101,12 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
               Icon={<DarkModeIcon className="side-menu-option__icon"/>}
             >
               Темная тема
-              <Toggle toggleId="night-mode-toggle" className="night-mode-toggle"/>
+              <Toggle
+                toggleId="night-mode-toggle"
+                className="night-mode-toggle"
+                checked={isDarkTheme}
+                onChange={() => dispatch(setIsDarkTheme(!isDarkTheme))}
+              />
             </Button>
 
           </ul>

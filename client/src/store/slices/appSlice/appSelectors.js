@@ -27,3 +27,8 @@ export const selectFoundMessage = createSelector(
   selectApp,
   app => app.foundMessage
 );
+
+export const selectIsDarkTheme = createSelector(
+  selectApp,
+  app => app.isDarkTheme
+);

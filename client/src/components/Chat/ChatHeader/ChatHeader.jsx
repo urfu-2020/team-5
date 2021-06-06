@@ -9,11 +9,13 @@ import {getDialogInfo} from "../../../utils/chatUtils";
 import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {getDeclOfNum} from "../../../utils/stringUtils";
 import {Button} from "../../UtilComponents/Button/Button";
+import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 
 /* eslint max-len: "off" */
 export const ChatHeader = ({currentChat, isOnline}) => {
   const currentUser = useSelector(selectCurrentUser);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
   const {members, chatType, chatTitle} = currentChat;
   const {dialogChatTitle} = getDialogInfo(members, chatType, currentUser.id);
 
@@ -42,7 +44,7 @@ export const ChatHeader = ({currentChat, isOnline}) => {
 
   return (
     <>
-      <header className="chat-header chat-container__chat-header">
+      <header className={`chat-header chat-container__chat-header ${isDarkTheme ? 'chat-header_dark' : ''}`}>
         <section className="chat-header__chat-data">
           <h4 className="chat-data__chat-name chat-name">
             {chatType === 'Own' ? 'Saved Messages' : chatType === 'Dialog' ? dialogChatTitle : chatTitle}

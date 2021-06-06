@@ -13,6 +13,7 @@ import {selectCurrentChat, selectIsChatsDataLoading} from "../../store/slices/ch
 import {selectCurrentUser} from "../../store/slices/userSlice/userSelectors";
 import {setUnsubscribedChannel} from "../../store/middlewares/socketReduxActions";
 import {ChannelButton} from "./ChannelButton/ChannelButton";
+import {selectIsDarkTheme} from "../../store/slices/appSlice/appSelectors";
 
 
 export const Chat = () => {
@@ -22,6 +23,7 @@ export const Chat = () => {
   const isChatsDataLoading = useSelector(selectIsChatsDataLoading);
   const currentUser = useSelector(selectCurrentUser);
   const currentChat = useSelector(selectCurrentChat);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   const [isInputFileModalOpen, setInputFileModalOpen] = useState(false);
   const [inputMessage, setInputMessage] = useState('');
@@ -50,7 +52,7 @@ export const Chat = () => {
   }, [chatId, currentChat, isSetSubscribedChat]);
 
   return currentChat ? (
-    <main className="chat-container">
+    <main className={`chat-container ${isDarkTheme ? 'chat-container_dark' : ''}`}>
       <MemoizedChatHeader
         currentChat={currentChat}
         isOnline={true}

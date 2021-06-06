@@ -12,6 +12,7 @@ import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
 import {getDialogInfo, getRenderChatInfo} from "../../../utils/chatUtils";
 import {searchingTypes} from "../ChatList/SearchResultList/SearchResultList";
 import {setFoundMessage} from "../../../store/slices/appSlice/appSlice";
+import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 
 export const ChatCard = ({
@@ -33,6 +34,7 @@ export const ChatCard = ({
 
   const history = useHistory();
   const userId = useSelector(selectUserId);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   const openChatHandler = () => {
     if (searchingType) {
@@ -55,7 +57,8 @@ export const ChatCard = ({
 
   return (
     <li
-      className={`card ${currentChatId === id ? 'card_current' : ''} ${className ? className : ''}`}
+      className={`card ${isDarkTheme ? 'card_dark' : ''}
+       ${currentChatId === id ? 'card_current' : ''} ${className ? className : ''}`}
       role="button"
       tabIndex={0}
       onClick={openChatHandler}

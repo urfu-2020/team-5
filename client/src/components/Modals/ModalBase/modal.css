@@ -8,3 +8,13 @@
   box-shadow: 3px 2px 4px 0 rgba(50, 50, 50, 0.59);
   transform: translate(-50%, -50%);
 }
+
+.modal_dark {
+  background-color: var(--menu-bg-dark-theme);
+  color: var(--text-color-dark-theme);
+}
+
+.modal_dark input {
+  background-color: var(--menu-bg-dark-theme);
+  color: var(--text-color-dark-theme);
+}

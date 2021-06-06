@@ -6,6 +6,10 @@
   background-color: white;
 }
 
+.navigation_dark {
+  background-color: var(--menu-bg-dark-theme);
+}
+
 .navigation_searching {
   grid-template-rows: 11vh auto;
 }

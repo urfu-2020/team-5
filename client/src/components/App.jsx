@@ -9,7 +9,7 @@ import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
-import {selectAppError} from "../store/slices/appSlice/appSelectors";
+import {selectAppError, selectIsDarkTheme} from "../store/slices/appSlice/appSelectors";
 import {ErrorCard} from "./UtilComponents/ErrorCard/ErrorCard";
 import {setError} from "../store/slices/appSlice/appSlice";
 import {initSocket} from "../store/middlewares/socketReduxActions";
@@ -20,6 +20,7 @@ const App = () => {
   const currentUserId = useSelector(selectUserId);
   const isUserLoading = useSelector(selectIsUserLoading);
   const appError = useSelector(selectAppError);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   useEffect(() => {
     if (!currentUserId)
@@ -30,7 +31,7 @@ const App = () => {
 
   return isUserLoading ? <Spinner className="spinner_main"/> :
     currentUserId ? (
-      <div id="app">
+      <div id="app" className={`${isDarkTheme ? 'app_dark' : ''}`}>
         <Navigation />
         <Switch>
           <Route path="/" exact component={HomePage}/>
