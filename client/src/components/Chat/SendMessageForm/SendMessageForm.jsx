@@ -41,9 +41,10 @@ export const SendMessageForm = ({isInputFileModalOpen, setInputFileModalOpen,
   return (
     <form className={`send-message-form ${isDarkTheme ? 'send-message-form_dark' : ''}`}
           aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
-      <label
+      <Button
+        as="label"
         htmlFor="input-file"
-        className="button rounded-button"
+        className="rounded-button"
         aria-label="прикрепить файлы"
         role="button"
         tabIndex="0"
@@ -65,7 +66,7 @@ export const SendMessageForm = ({isInputFileModalOpen, setInputFileModalOpen,
             5.5s5.5-2.46 5.5-5.5V6h-1.5z"
           />
         </svg>
-      </label>
+      </Button>
       <input
         ref={inputMessageRef}
         value={isInputFileModalOpen ? '' : inputMessage}
