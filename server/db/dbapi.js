@@ -453,7 +453,6 @@ async function getTheme(userId) {
   try {
     const request = (await mssql.connect(sqlConfig)).request();
     request.input('userId', mssql.Int, userId);
-    console.log(userId);
     const { theme } = (await request.query(`
       SELECT theme
       FROM UsersTheme

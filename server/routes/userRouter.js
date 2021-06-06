@@ -31,7 +31,7 @@ router.get('/theme/:isDarkTheme', async (req, res) => {
   if (req.user) {
     await updateTheme(req.user.id, boolTheme);
     res.status(200).end();
-  }
+  } else res.end();
 });
 
 module.exports = router;

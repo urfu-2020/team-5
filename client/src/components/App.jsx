@@ -32,8 +32,9 @@ const App = () => {
       dispatch(initSocket());
   }, [currentUserId]);
 
-  return isThemeLoading || isUserLoading || isChatsDataLoading ? <Spinner className="spinner_main"/> :
-    currentUserId ? (
+  return isUserLoading ?
+    <Spinner className="spinner_main"/> :
+    currentUserId ? (isChatsDataLoading || isThemeLoading) ? <Spinner className="spinner_main"/> : (
       <div id="app" className={`${isDarkTheme ? 'app_dark' : 'app_light'}`}>
         <Navigation />
         <Switch>
