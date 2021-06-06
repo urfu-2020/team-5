@@ -421,6 +421,51 @@ async function getChatMembers(chatId) {
   }
 }
 
+/**
+ * Обновить цветовую тему для пользователя в бд
+ * @param userId {number}
+ * @param isDarkTheme {boolean}
+ * @return {Promise<void>}
+ */
+async function updateTheme(userId, isDarkTheme) {
+  const themeColor = isDarkTheme ? 'DARK' : 'LIGHT';
+  try {
+    const request = (await mssql.connect(sqlConfig)).request();
+    request.input('theme', mssql.NVarChar, themeColor);
+    request.input('userId', mssql.Int, userId);
+    await request.query(`
+      UPDATE UsersTheme
+      SET theme=@theme
+      WHERE userId=@userId;
+  `);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
+ * Получить тему из бд
+ * @param userId {number}
+ * @param isDarkTheme {boolean}
+ * @return {string}
+ */
+async function getTheme(userId) {
+  try {
+    const request = (await mssql.connect(sqlConfig)).request();
+    request.input('userId', mssql.Int, userId);
+    console.log(userId);
+    const { theme } = (await request.query(`
+      SELECT theme
+      FROM UsersTheme
+      WHERE userId=@userId;
+  `)).recordset[0];
+
+    return theme;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 module.exports = {
   addUsersInChat,
   getUsers,
@@ -442,5 +487,7 @@ module.exports = {
   leaveFromChat,
   getChannelsAndMessagesByQuery,
   getChatInfo,
-  getChatMembers
+  getChatMembers,
+  updateTheme,
+  getTheme
 };

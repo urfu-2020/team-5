@@ -49,7 +49,7 @@
 }
 
 .new-chat-info-modal__buttons,
-.second-step-create-new-chat-modal__buttons {
+.new-chat-user-modal__buttons {
   display: flex;
   flex-flow: row nowrap;
   gap: 5%;

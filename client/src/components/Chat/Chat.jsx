@@ -76,7 +76,7 @@ export const Chat = () => {
                 <InputFileModal
                   inputMessage={inputMessage}
                   setInputMessage={setInputMessage}
-                  setLoadFileModalOpen={setInputFileModalOpen}
+                  setModalOpen={setInputFileModalOpen}
                 />)
             }
           </>

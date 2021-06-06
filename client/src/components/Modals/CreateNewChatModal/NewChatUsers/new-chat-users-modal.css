@@ -1,4 +1,4 @@
-.second-step-create-new-chat-modal {
+.new-chat-user-modal {
   display: grid;
   grid-template-rows: 1.5fr 10fr 1fr;
   grid-row-gap: 1rem;
@@ -7,30 +7,30 @@
   padding: 20px;
 }
 
-.second-step-create-new-chat-modal__head {
+.new-chat-user-modal__head {
   display: flex;
   flex-flow: column;
   gap: 2rem;
   justify-content: space-between;
 }
 
-.second-step-create-new-chat-modal__title {
+.new-chat-user-modal__title {
   font-size: 1.2rem;
   font-weight: normal;
   text-align: center;
 }
 
-.second-step-create-new-chat-modal__search-panel {
+.new-chat-user-modal__search-panel {
   display: flex;
   flex-flow: row nowrap;
   align-items: center;
 }
 
-.second-step-create-new-chat-modal__search-input {
+.new-chat-user-modal__search-input {
   flex-grow: 1;
 }
 
-.second-step-create-new-chat-modal__search-icon {
+.new-chat-user-modal__search-icon {
   width: 30px;
   height: 30px;
 }
@@ -53,6 +53,15 @@
   background-color: var(--teal-200);
 }
 
+.new-chat-user-modal_dark .new-chat-user_selected {
+  background-color: var(--selected-item-dark-theme);
+}
+
+.new-chat-user-modal_dark .new-chat-user_selected:hover,
+.new-chat-user-modal_dark .new-chat-user_selected:focus-visible {
+  background-color: var(--control-bg-dark-theme);
+}
+
 .new-chat-user__avatar {
   width: 50px;
   border-radius: 100%;
@@ -65,4 +74,8 @@
 
 .new-chat-user__username {
   color: var(--primary-text);
+}
+
+.new-chat-user-modal_dark .new-chat-user__username {
+  color: var(--text-color-dark-theme);
 }

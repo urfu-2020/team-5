@@ -12,11 +12,10 @@
   --accent-text: var(--teal-500);
   --error-red: #d50000;
   --error-card-bg: #ff8a80;
-
-  --bg-color-dark-theme: #36393F;
+  --bg-color-dark-theme: #36393f;
   --text-color-dark-theme: #e0f2f1;
-  --selected-item-dark-theme: #393C43;
-  --menu-bg-dark-theme: #2F3136;
-  --control-bg-dark-theme: #40444B;
-  --control-fg-dark-theme: #B9BBBE;
+  --selected-item-dark-theme: #393c43;
+  --menu-bg-dark-theme: #2f3136;
+  --control-bg-dark-theme: #40444b;
+  --control-fg-dark-theme: #b9bbbe;
 }

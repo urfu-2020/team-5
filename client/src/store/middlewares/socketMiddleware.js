@@ -4,7 +4,7 @@ import {
   setChatsData,
   setCurrentUnsubscribeChannel, setIsSubscribing
 } from "../slices/chatsSlice/chatsSlice";
-import {setError} from "../slices/appSlice/appSlice";
+import {setError, setStartTheme} from "../slices/appSlice/appSlice";
 import {
   CREATE_NEW_CHANNEL,
   CREATE_NEW_CHAT,
@@ -29,6 +29,10 @@ export const socketMiddleware = store => next => action => {
           }
           case 'setChatsData': {
             store.dispatch(setChatsData(payload));
+            break;
+          }
+          case 'setTheme': {
+            store.dispatch(setStartTheme(payload));
             break;
           }
           case 'addNewChat': {

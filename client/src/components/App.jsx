@@ -9,10 +9,11 @@ import {Chat} from "./Chat/Chat";
 import {Navigation} from "./Navigation/Navigation";
 import {setCurrentUser} from "../store/slices/userSlice/userThunks";
 import {selectIsUserLoading, selectUserId} from "../store/slices/userSlice/userSelectors";
-import {selectAppError, selectIsDarkTheme} from "../store/slices/appSlice/appSelectors";
+import {selectAppError, selectIsDarkTheme, selectIsThemeLoading} from "../store/slices/appSlice/appSelectors";
 import {ErrorCard} from "./UtilComponents/ErrorCard/ErrorCard";
 import {setError} from "../store/slices/appSlice/appSlice";
 import {initSocket} from "../store/middlewares/socketReduxActions";
+import {selectIsChatsDataLoading} from "../store/slices/chatsSlice/chatsSelectors";
 
 
 const App = () => {
@@ -21,6 +22,8 @@ const App = () => {
   const isUserLoading = useSelector(selectIsUserLoading);
   const appError = useSelector(selectAppError);
   const isDarkTheme = useSelector(selectIsDarkTheme);
+  const isThemeLoading = useSelector(selectIsThemeLoading);
+  const isChatsDataLoading = useSelector(selectIsChatsDataLoading);
 
   useEffect(() => {
     if (!currentUserId)
@@ -29,9 +32,9 @@ const App = () => {
       dispatch(initSocket());
   }, [currentUserId]);
 
-  return isUserLoading ? <Spinner className="spinner_main"/> :
+  return isThemeLoading || isUserLoading || isChatsDataLoading ? <Spinner className="spinner_main"/> :
     currentUserId ? (
-      <div id="app" className={`${isDarkTheme ? 'app_dark' : ''}`}>
+      <div id="app" className={`${isDarkTheme ? 'app_dark' : 'app_light'}`}>
         <Navigation />
         <Switch>
           <Route path="/" exact component={HomePage}/>

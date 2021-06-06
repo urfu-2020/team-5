@@ -1,5 +1,5 @@
 const express = require('express');
-const { getUsers } = require('../db/dbapi');
+const { getUsers, updateTheme } = require('../db/dbapi');
 
 const router = express.Router();
 
@@ -24,6 +24,14 @@ router.get('/self', async (req, res) => {
   res.json({
     user
   });
+});
+
+router.get('/theme/:isDarkTheme', async (req, res) => {
+  const boolTheme = req.params.isDarkTheme === 'true';
+  if (req.user) {
+    await updateTheme(req.user.id, boolTheme);
+    res.status(200).end();
+  }
 });
 
 module.exports = router;

@@ -10,6 +10,7 @@ import {CloseIcon} from "../../../UtilComponents/Icons/CloseIcon";
 import {Modal} from "../../ModalBase/Modal";
 import {createNewChat} from "../../../../store/middlewares/socketReduxActions";
 import {BaseInput} from "../../../UtilComponents/Inputs/BaseInput/BaseInput";
+import {selectIsDarkTheme} from "../../../../store/slices/appSlice/appSelectors";
 
 
 export const NewChatUsersModal = ({
@@ -19,6 +20,8 @@ export const NewChatUsersModal = ({
                                   }) => {
   const dispatch = useDispatch();
   const currentUserId = useSelector(selectCurrentUser).id;
+  const isDarkTheme = useSelector(selectIsDarkTheme);
+
   const [users, setUsers] = useState(null);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [searchInput, setSearchInput] = useState('');
@@ -41,7 +44,7 @@ export const NewChatUsersModal = ({
     <Modal
       as="form"
       onOverlayClick={() => setNewChatModalOpen(false)}
-      className="second-step-create-new-chat-modal"
+      className={`new-chat-user-modal ${isDarkTheme ? 'new-chat-user-modal_dark' : ''}`}
       onSubmit={submitHandler}
       role="dialog"
       aria-label="Модальное окно создания чата, 2 этап."
@@ -51,15 +54,15 @@ export const NewChatUsersModal = ({
         className="rounded-button centred-button create-chat-modal__close-icon"
         Icon={<CloseIcon className="svg-button"/>}
       />
-      <div className="second-step-create-new-chat-modal__head">
-        <h3 className="second-step-create-new-chat-modal__title"> Добавить участников </h3>
-        <div className="second-step-create-new-chat-modal__search-panel">
+      <div className="new-chat-user-modal__head">
+        <h3 className="new-chat-user-modal__title"> Добавить участников </h3>
+        <div className="new-chat-user-modal__search-panel">
           <BaseInput
             type="text"
             onChange={e => setSearchInput(e.target.value)}
             value={searchInput}
             className="create-new-chat-modal-input
-            second-step-create-new-chat-modal__search-input"
+            new-chat-user-modal__search-input"
             aria-label="Поиск участников"
             placeholder="Введите имя пользователя"
           />
@@ -68,7 +71,7 @@ export const NewChatUsersModal = ({
 
       <ul
         aria-label="Список контактов"
-        className="second-step-create-new-chat-modal__users-list new-chat-user-list"
+        className="new-chat-user-modal__users-list new-chat-user-list"
       >
         {
           users ?
@@ -94,7 +97,7 @@ export const NewChatUsersModal = ({
         }
       </ul>
 
-      <div className="second-step-create-new-chat-modal__buttons">
+      <div className="new-chat-user-modal__buttons">
         <Button
           aria-label="Вернуться на предыдущий этап"
           className="text-button"
