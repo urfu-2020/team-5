@@ -6,15 +6,17 @@ import './navigation-header.css';
 import {Button} from "../../UtilComponents/Button/Button";
 import {tabTypes} from "../Navigation";
 import {useDebounce} from "../../../hooks/useDebounce";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {setSearchResult} from "../../../store/slices/appSlice/appThunks";
 import {setFoundMessage, setIsSearching} from "../../../store/slices/appSlice/appSlice";
+import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 
 export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, isSearching, searchInputRef}) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearch = useDebounce(searchInput, 300);
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   useEffect(
     () => {
@@ -29,7 +31,7 @@ export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, 
   );
 
   return (
-    <header className="navigation-header">
+    <header className={`navigation-header ${isDarkTheme ? 'navigation-header_dark' : ''}`}>
       <div className="navigation-header__first-line">
         <Button
           className="rounded-button centred-button"

@@ -72,6 +72,11 @@
   box-shadow: 1px -1px 1px var(--separator);
 }
 
+.message_dark .cloud_my {
+  background-color: var(--control-bg-dark-theme);
+  box-shadow: 1px -1px 1px var(--control-bg-dark-theme);
+}
+
 .message__cloud_my::after {
   position: absolute;
   right: -10px;
@@ -83,6 +88,11 @@
   border-right: 5px solid transparent;
   border-bottom: 5px solid var(--teal-50);
   border-left: 5px solid var(--teal-50);
+}
+
+.message_dark .message__cloud_my::after {
+  border-bottom: 5px solid var(--control-bg-dark-theme);
+  border-left: 5px solid var(--control-bg-dark-theme);
 }
 
 .message__cloud_income {
@@ -97,6 +107,12 @@
   box-shadow: 1px -1px 1px var(--separator);
 }
 
+.message_dark .cloud_income {
+  background-color: var(--control-bg-dark-theme);
+  border-radius: 7px 7px 7px 0;
+  box-shadow: 1px -1px 1px var(--control-bg-dark-theme);
+}
+
 .message__cloud_income::before {
   position: absolute;
   bottom: 0;
@@ -108,6 +124,11 @@
   border-right: 5px solid var(--bg-color);
   border-bottom: 5px solid var(--bg-color);
   border-left: 5px solid transparent;
+}
+
+.message_dark .message__cloud_income::before {
+  border-right: 5px solid var(--control-bg-dark-theme);
+  border-bottom: 5px solid var(--control-bg-dark-theme);
 }
 
 .cloud__message-text {

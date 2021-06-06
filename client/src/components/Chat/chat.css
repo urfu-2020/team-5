@@ -2,4 +2,10 @@
   display: grid;
   grid-template-rows: 1fr 10fr 1fr;
   height: 100vh;
+  background: linear-gradient(0deg, var(--teal-500) 0%, var(--teal-200) 100%);
 }
+
+.chat-container_dark {
+  background: var(--bg-color-dark-theme) none;
+}
+

@@ -13,6 +13,10 @@
   transition: left 0.4s;
 }
 
+.side-menu {
+  background-color: var(--menu-bg-dark-theme);
+}
+
 .side-menu_open {
   left: 0;
 }

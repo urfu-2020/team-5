@@ -3,11 +3,16 @@ import PropTypes from 'prop-types';
 
 import './button.css';
 import { Ripple } from './Ripple/Ripple';
+import {useSelector} from "react-redux";
+import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 export const Button = ({Icon, children, className, type, as, ...otherProps}) => {
+  const isDarkTheme = useSelector(selectIsDarkTheme);
   const ResAs = as ? as : "button";
   return (
-    <ResAs className={`button ${className ? className : ''}`} type={type ? type : "button"} {...otherProps}>
+    <ResAs
+      className={`button ${className ? className : ''} ${isDarkTheme ? 'button_dark' : ''}`}
+      type={type ? type : "button"} {...otherProps}>
       {Icon}
       {children}
       <Ripple duration={800} />

@@ -3,6 +3,10 @@
   border-left: var(--separator) solid 1px;
 }
 
+.chat-header_dark {
+  background-color: var(--menu-bg-dark-theme);
+}
+
 .chat-container__chat-header {
   display: flex;
   align-items: center;
@@ -15,6 +19,10 @@
 
 .chat-name {
   color: var(--primary-text);
+}
+
+.chat-header_dark .chat-name {
+  color: var(--text-color-dark-theme);
 }
 
 .chat-status {
@@ -43,6 +51,10 @@
   gap: 5px;
   background-color: var(--bg-color);
   border-radius: 4px;
+}
+
+.chat-header_dark .members-list {
+  background-color: var(--menu-bg-dark-theme);
 }
 
 .member {

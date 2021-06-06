@@ -37,10 +37,18 @@
   background-color: var(--teal-50);
 }
 
+.button_dark:hover {
+  background-color: var(--control-bg-dark-theme);
+}
+
 .button:focus-visible {
   background-color: var(--teal-50);
   box-shadow: 0 0 0 2px var(--teal-500);
   transition: all 0.2s;
+}
+
+.button_dark:focus-visible {
+  background-color: var(--control-bg-dark-theme);
 }
 
 .text-button:disabled {
@@ -91,4 +99,8 @@
   background-color: #fff;
   border-left: var(--separator) solid 1px;
   border-radius: 0;
+}
+
+.button_dark.cancel-button {
+  background-color: var(--control-bg-dark-theme);
 }

@@ -11,6 +11,10 @@
   background-color: var(--bg-color);
 }
 
+.card_dark {
+  background-color: var(--menu-bg-dark-theme);
+}
+
 .card:focus-visible {
   background-color: var(--teal-50);
   box-shadow: 2px 0 0 2px var(--teal-500);
@@ -19,6 +23,16 @@
 
 .card_current {
   background-color: var(--teal-50);
+}
+
+.card_dark.card_current {
+  background-color: var(--control-bg-dark-theme);
+}
+
+.card_dark:focus-visible, .card_dark:hover {
+  background-color: var(--control-bg-dark-theme);
+  box-shadow: 2px 0 0 2px var(--bg-color-dark-theme);
+  transition: all 0.2s;
 }
 
 .card_own {
@@ -64,7 +78,6 @@
 h3 {
   overflow-x: hidden;
   font-size: 1em;
-  color: var(--primary-text);
   text-overflow: ellipsis;
   white-space: nowrap;
 }

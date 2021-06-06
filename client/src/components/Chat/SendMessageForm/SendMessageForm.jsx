@@ -1,5 +1,5 @@
 import React, {useEffect, useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import PropTypes from 'prop-types';
 import {useParams} from "react-router";
 
@@ -7,12 +7,14 @@ import './send-message-form.css';
 
 import {Button} from "../../UtilComponents/Button/Button";
 import {sendMessage} from "../../../store/middlewares/socketReduxActions";
+import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 
 export const SendMessageForm = ({isInputFileModalOpen, setInputFileModalOpen,
                                   inputMessage, setInputMessage}) => {
   const chatId = +useParams().chatId;
   const dispatch = useDispatch();
+  const isDarkTheme = useSelector(selectIsDarkTheme);
 
   const inputMessageRef = useRef(null);
 
@@ -37,7 +39,8 @@ export const SendMessageForm = ({isInputFileModalOpen, setInputFileModalOpen,
   };
 
   return (
-    <form className="send-message-form " aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
+    <form className={`send-message-form ${isDarkTheme ? 'send-message-form_dark' : ''}`}
+          aria-label="отправить сообщение" onSubmit={sendMessageHandler}>
       <label
         htmlFor="input-file"
         className="button rounded-button"

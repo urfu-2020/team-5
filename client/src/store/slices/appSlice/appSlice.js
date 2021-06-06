@@ -1,7 +1,6 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {setSearchResult} from "./appThunks";
 
-
 class AppState {
   /**
    * @param isCreateNewChannelModalOpen {boolean}
@@ -9,14 +8,16 @@ class AppState {
    * @param error {String}
    * @param searchResult {{channels: Array<ChatModel>, messages: Array<MessageModel>}}
    * @param foundMessage {MessageModel}
+   * @param isDarkTheme {boolean}
    */
   constructor(isCreateNewChannelModalOpen, isSearching, error
-              , searchResult, foundMessage) {
+              , searchResult, foundMessage, isDarkTheme) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
     this.isSearching = isSearching;
     this.searchResult = searchResult;
     this.foundMessage = foundMessage;
+    this.isDarkTheme = isDarkTheme;
   }
 }
 
@@ -27,7 +28,8 @@ const initialAppState = {
 
   isSearching: false,
   searchResult: null,
-  foundMessage: null
+  foundMessage: null,
+  isDarkTheme: false
 };
 
 const appSlice = createSlice({
@@ -59,6 +61,9 @@ const appSlice = createSlice({
     setFoundMessage(state, {payload}) {
       state.foundMessage = null;
       state.foundMessage = payload;
+    },
+    setIsDarkTheme(state, {payload}) {
+      state.isDarkTheme = payload;
     }
   },
   extraReducers: {
@@ -83,7 +88,8 @@ export const {
   setNewChannelModalOpen,
   setError,
   setIsSearching,
-  setFoundMessage
+  setFoundMessage,
+  setIsDarkTheme
 } = actions;
 
 export default reducer;
