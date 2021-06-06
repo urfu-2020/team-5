@@ -1,52 +1,76 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import PropTypes from 'prop-types';
 import {MessageReadIcon} from "../../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../../UtilComponents/Icons/MessageUnreadIcon";
 import {NewChannelIcon} from "../../../UtilComponents/Icons/NewChannelIcon";
+import {useDispatch} from "react-redux";
 
-export const ChatMessage = ({chatType, text, time, isMyMessage, avatarUrl, status}) => {
+export const ChatMessage = ({id, chatType, text, time,
+                              isMyMessage, avatarUrl, status, foundMessage}) => {
+
+  const messageRef = useRef();
+
+
+  useEffect(() => {
+    if (foundMessage && id === foundMessage.id) {
+      if (messageRef.current) {
+        messageRef.current.scrollIntoView();
+      }
+    }
+  }, [foundMessage]);
+
+
   return (
-    <li
-      className={`chat-area__message ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}`}
-      // aria-label={isMyMessage ? `Мое сообщение: ${text}` : `Сообщение собеседника: ${text}`}
-    >
-      <div
-        className={`cloud message__cloud
-        ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}`}
+    <div className={`chat-area__message-container
+      ${foundMessage && foundMessage.id === id && 'chat-area__found-message'}`}>
+      <li
+        ref={messageRef}
+        className={`chat-area__message
+        ${isMyMessage ? 'chat-area__message_my' : 'chat-area__message_income'}
+      `}
       >
+        <div
+          className={`cloud message__cloud
+          ${isMyMessage ? 'message__cloud_my cloud_my' : 'message__cloud_income cloud_income'}
+        `}
+        >
       <span className="message-text cloud__message-text">
         {text}
       </span>
-        <span className="message-time cloud__message-time">
+          <span className="message-time cloud__message-time">
         {time}
       </span>
+          {
+            isMyMessage ? (
+              <svg
+                className="ticks cloud__ticks"
+                height="20px"
+                viewBox="0 0 24 24"
+                width="20px"
+                fill="#000000"
+              >
+                {
+                  status === "Read" ? <MessageReadIcon/> : <MessageUnreadIcon/>
+                }
+              </svg>
+            ) : null
+          }
+        </div>
         {
-          isMyMessage ? (
-            <svg
-              className="ticks cloud__ticks"
-              height="20px"
-              viewBox="0 0 24 24"
-              width="20px"
-              fill="#000000"
-            >
-              {
-                status === "Read" ? <MessageReadIcon/> : <MessageUnreadIcon/>
-              }
-            </svg>
-          ) : null
+          chatType === 'Channel' ?
+            <NewChannelIcon className="message__chat-avatar icon-message-avatar" /> :
+            <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`} />
         }
-      </div>
-      {
-        chatType === 'Channel' ?
-          <NewChannelIcon className="message__chat-avatar icon-message-avatar" /> :
-          <img className="message__chat-avatar" alt="user avatar" src={`${avatarUrl}`} />
-      }
-
-    </li>
+      </li>
+    </div>
   );
 };
 
 ChatMessage.propTypes = {
+  id: PropTypes.number,
+  lastMessage: PropTypes.object,
+  endMessagesRef: PropTypes.object,
+  foundMessage: PropTypes.object,
   chatType: PropTypes.oneOf(['Own', 'Group', 'Dialog', 'Channel']),
   text: PropTypes.string,
   time: PropTypes.string.isRequired,

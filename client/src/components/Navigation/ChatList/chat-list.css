@@ -6,6 +6,7 @@
   padding: 2px 0;
   overflow-x: hidden;
   overflow-y: auto;
+  border-top: 2px solid var(--teal-200);
 }
 
 .chat-list_empty {
@@ -35,7 +36,6 @@
 }
 
 .search-result-header {
-  text-align: center;
-  border-top: 2px solid var(--teal-200);
   padding: 10px 0;
+  text-align: center;
 }

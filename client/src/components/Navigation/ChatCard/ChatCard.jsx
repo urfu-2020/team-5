@@ -4,16 +4,26 @@ import {useHistory} from "react-router-dom";
 
 import './chat-card.css';
 
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {getTimeInLocaleString} from "../../../utils/time";
 import {MessageReadIcon} from "../../UtilComponents/Icons/MessageReadIcon";
 import {MessageUnreadIcon} from "../../UtilComponents/Icons/MessageUnreadIcon";
 import {selectUserId} from "../../../store/slices/userSlice/userSelectors";
 import {getDialogInfo, getRenderChatInfo} from "../../../utils/chatUtils";
+import {searchingTypes} from "../ChatList/SearchResultList/SearchResultList";
+import {setFoundMessage} from "../../../store/slices/appSlice/appSlice";
 
 
-export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearching }) => {
-  let {id, chatType, chatAvatarUrl, chatTitle, lastMessage, members, description} = chat;
+export const ChatCard = ({
+                           searchingType,
+                           className,
+                           describedMessage,
+                           chat,
+                           currentChatId,
+                           currentUserId }) => {
+  let {id, chatType, chatAvatarUrl, chatTitle, members} = chat;
+
+  const dispatch = useDispatch();
 
   if(chatType === 'Dialog' || chatType === 'Own') {
     const { dialogAvatarUrl, dialogChatTitle } = getDialogInfo(members, chatType, currentUserId);
@@ -25,6 +35,13 @@ export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearc
   const userId = useSelector(selectUserId);
 
   const openChatHandler = () => {
+    if (searchingType) {
+      if (searchingType === searchingTypes.Messages) {
+        dispatch(setFoundMessage(describedMessage));
+      } else if (searchingType === searchingTypes.Channels) {
+        dispatch(setFoundMessage(null));
+      }
+    }
     history.push(`/chat/${id}`);
   };
 
@@ -46,8 +63,8 @@ export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearc
       aria-label={renderChatInfo.ariaLabel}
     >
       {renderChatInfo.avatar}
-      <div className={`card__content ${chatType === "Channel" && isSearching ?
-        'card__content_searching' : 'card__content_chat'}`}
+      <div className={`card__content ${searchingType && searchingType === searchingTypes.Channels ?
+        'card__content_channels' : 'card__content_chat'} `}
       >
         <h3
           className="dialogHeader"
@@ -56,36 +73,37 @@ export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearc
           {chatType === 'Own' ? 'Saved Messages' : chatTitle}
         </h3>
         {
-          chatType === "Channel" && isSearching ? (
-            <p className="card__description">{description}</p>
+          chatType === "Channel" &&
+          searchingType === searchingTypes.Channels ? (
+            <p title={describedMessage} className="card__description">{describedMessage}</p>
             ) :
-          lastMessage ?
-            lastMessage.senderId === userId ? (
+            describedMessage ?
+              describedMessage.senderId === userId ? (
               <>
                 <p
                   className="messagePreview"
                   aria-label="Ваше сообщение"
                 >
-                  <span className="messageSender" aria-hidden="true">Вы: </span> {lastMessage.text}
+                  <span className="messageSender" aria-hidden="true">Вы: </span> {describedMessage.text}
                 </p>
                 <p
                   className="messageTime"
-                  aria-label="Время последнего сообщения"
+                  aria-label="Время отображаемого сообщения"
                 >
                   {/*кстати тут не подумали про указание дней*/}
-                  {getTimeInLocaleString(lastMessage.time)}
+                  {getTimeInLocaleString(describedMessage.time)}
                 </p>
-                {lastMessage.status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />}
+                {describedMessage.status === "Read" ? <MessageReadIcon /> : <MessageUnreadIcon />}
               </>
             ) : (
               <>
                 <p
                   className="messageTime"
-                  aria-label="Время последнего сообщения"
+                  aria-label="Время отображаемого сообщения"
                 >
-                  {getTimeInLocaleString(lastMessage.time)}
+                  {getTimeInLocaleString(describedMessage.time)}
                 </p>
-                <p className="messagePreview">{lastMessage.text}</p>
+                <p className="messagePreview">{describedMessage.text}</p>
                 {/*<p className="unreadMessageCounter">{countUnreadMessage}</p>*/}
               </>
             ) : null
@@ -97,10 +115,19 @@ export const ChatCard = ({className, chat, currentChatId, currentUserId, isSearc
 
 
 ChatCard.propTypes = {
+  searchingType: PropTypes.string,
   className: PropTypes.string,
   currentChatId: PropTypes.number,
   currentUserId: PropTypes.number,
-  isSearching: PropTypes.bool,
+  describedMessage: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    chatId: PropTypes.number.isRequired,
+    senderId: PropTypes.number.isRequired,
+    text: PropTypes.string.isRequired,
+    hasAttachments: PropTypes.bool,
+    status: PropTypes.string.isRequired,
+    time: PropTypes.string.isRequired
+  }),
   chat: PropTypes.shape({
     id: PropTypes.number.isRequired,
     chatType: PropTypes.oneOf(["Own", "Dialog", "Group", "Channel"]),
@@ -128,6 +155,5 @@ ChatCard.propTypes = {
       status: PropTypes.string.isRequired,
       time: PropTypes.string.isRequired
     })
-  }),
-  isSubscribed: PropTypes.bool
+  })
 };

@@ -31,9 +31,7 @@ const App = () => {
   return isUserLoading ? <Spinner className="spinner_main"/> :
     currentUserId ? (
       <div id="app">
-        <nav className="navigation">
-          <Navigation />
-        </nav>
+        <Navigation />
         <Switch>
           <Route path="/" exact component={HomePage}/>
           <Route path={`/chat/:chatId`} exact component={Chat}/>

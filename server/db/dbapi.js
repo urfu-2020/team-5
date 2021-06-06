@@ -234,6 +234,25 @@ async function getChatMessages(chatId, offset, take) {
 }
 
 /**
+ * Получить сообщения из чата до найденного в поиске
+ * @param chatId {number}
+ * @param messageId {number}
+ * @returns Array<MessageModel>
+ */
+async function getMessagesUntilFoundMessage(chatId, messageId) {
+  try {
+    const request = (await mssql.connect(sqlConfig)).request();
+    request.input('chatId', mssql.Int, chatId);
+    request.input('messageId', mssql.Int, messageId);
+    return (
+      await request.query('SELECT * FROM GetChatMessages(@chatId, 0, dbo.GetMessageRowNum(@chatId, @messageId))')
+    ).recordset;
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+/**
  * Получить последние сообщения из всех чатов, в которых есть пользователь (для начальных данных о чатах)
  * @param userId {number}
  * @returns Array<MessageModel>
@@ -338,16 +357,27 @@ async function leaveFromChat(chatId, userId) {
 }
 
 /**
- * Получить все каналы
+ * Получить каналы и сообщения, удовлетворяющие тексту из строки поиска
+ * @param userId {number}
  * @param query {String}
  */
-async function getAllChannelsByQuery(query) {
+async function getChannelsAndMessagesByQuery(userId, query) {
   try {
     const request = (await mssql.connect(sqlConfig)).request();
     request.input('query', mssql.NVarChar, query);
+    request.input('userId', mssql.Int, userId);
 
-    return (await request.query("SELECT * FROM Chats WHERE chatType='Channel' AND chatTitle LIKE @query + '%'"))
+    const channels = (
+      await request.query("SELECT * FROM Chats WHERE chatType='Channel' AND chatTitle LIKE '%' + @query + '%'"))
       .recordset;
+
+    const messages = (
+      await request.query('SELECT * FROM Messages '
+        + 'WHERE chatId IN (SELECT chatId FROM ChatUsers WHERE userId=@userId)'
+          + "AND Messages.text LIKE '%' + @query + '%'"))
+      .recordset;
+
+    return { channels, messages };
   } catch (e) {
     console.log(e);
   }
@@ -405,11 +435,12 @@ module.exports = {
   getUserChatsIds,
   createAndGetMessage,
   getChatMessages,
+  getMessagesUntilFoundMessage,
   getUserLastChatMessages,
   createAndGetChannel,
   joinToChat,
   leaveFromChat,
-  getAllChannelsByQuery,
+  getChannelsAndMessagesByQuery,
   getChatInfo,
   getChatMembers
 };

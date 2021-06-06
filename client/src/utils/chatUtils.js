@@ -6,10 +6,11 @@ import {NewChannelIcon} from "../components/UtilComponents/Icons/NewChannelIcon"
 import React from "react";
 import {getDeclOfNum} from "./stringUtils";
 
-export const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller}) => {
-  const {LOAD_MESSAGES_THRESHOLD} = config;
+const {LOAD_MESSAGES_THRESHOLD} = config;
+
+export const loadOldMessages = async ({chatId, offset, take=LOAD_MESSAGES_THRESHOLD, cbOnAllLoaded, controller}) => {
   try {
-    const {oldMessages} = await (await fetch(`/api/chat/${chatId}/${offset}/${LOAD_MESSAGES_THRESHOLD}`, {
+    const {oldMessages} = await (await fetch(`/api/chat/oldMessages/${chatId}/${offset}/${take}`, {
       signal: controller.signal
     })).json();
 
@@ -19,6 +20,24 @@ export const loadOldMessages = async ({chatId, offset, cbOnAllLoaded, controller
     return {oldMessages};
   } catch (e) {
     console.error(e);
+  }
+};
+
+export const loadUntilFoundMessage = async ({chatId, messageId, cbOnAllLoaded, controller}) => {
+  try {
+    const {oldMessages} = await (await fetch(`/api/chat/oldUntilFoundMessage/${chatId}/${messageId}`, {
+      signal: controller.signal
+    })).json();
+
+    // Если вернулось меньше, чем LOAD_MESSAGES_THRESHOLD сообщений, то грузим LOAD_MESSAGES_THRESHOLD сообщений
+    if (oldMessages.length < LOAD_MESSAGES_THRESHOLD) {
+      console.log('menshe');
+      return loadOldMessages({chatId, controller, offset: 0, cbOnAllLoaded: cbOnAllLoaded });
+    }
+
+    return {oldMessages};
+  } catch (e) {
+    console.log(e);
   }
 };
 

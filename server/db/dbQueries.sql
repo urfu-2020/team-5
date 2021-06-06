@@ -1,9 +1,3 @@
-
-drop table Messages;
-drop table ChatUsers;
-drop table Chats;
-drop table Users;
-
 GO
 CREATE TABLE Users (
 	id INT PRIMARY KEY IDENTITY,
@@ -38,6 +32,7 @@ CREATE TABLE Messages (
 	status NVARCHAR(20) CHECK(Status IN ('Read', 'Unread', 'UnSend')) NOT NULL,
 	time DATETIME NOT NULL
 );
+
 
 
 /* При первом логине этот пользователь добавляется в диалоги ко всем другим */
@@ -131,6 +126,34 @@ AS RETURN
 	ORDER BY Messages.time DESC
 	OFFSET (@offset) ROWS FETCH NEXT (@take) ROWS ONLY
 
+/* Получить номер записи сообщения в чате */
+GO
+CREATE FUNCTION GetMessageRowNum(@chatId INT, @messageId INT)
+RETURNS INT
+AS
+BEGIN
+	DECLARE @rowNum INT;
+	SET @rowNum = (
+		SELECT Message#.Row#
+		FROM
+		(
+			SELECT ROW_NUMBER() OVER(ORDER BY Messages.time DESC) AS Row#, *
+			FROM Messages
+			WHERE Messages.chatId = @chatId
+		) as Message#
+		WHERE Message#.id=@messageId
+	);
+
+	RETURN @rowNum;
+END
+
+GO
+drop function GetMessageRowNum
+
+DECLARE @rowNum INT;
+SET @rowNum = dbo.GetMessageRowNum(2, 5);
+select @rowNum;
+SELECT * FROM GetChatMessages(2, 0, @rowNum);
 
 
 /* Получить последние (одно из каждого) сообщения всех чатов, в которых есть пользователь */
