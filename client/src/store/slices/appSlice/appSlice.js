@@ -55,7 +55,9 @@ const appSlice = createSlice({
      * @param payload {{error: boolean, errorMessage: String}}
      */
     setError(state, {payload}) {
-      state.error = payload.errorMessage;
+      if(payload.error)
+        state.error = payload.errorMessage;
+      else state.error = null;
     },
     setIsSearching(state, {payload}) {
       state.isSearching = payload;
