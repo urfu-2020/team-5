@@ -55,7 +55,7 @@ const appSlice = createSlice({
      * @param payload {{error: boolean, errorMessage: String}}
      */
     setError(state, {payload}) {
-      if(payload.error)
+      if(payload)
         state.error = payload.errorMessage;
       else state.error = null;
     },
