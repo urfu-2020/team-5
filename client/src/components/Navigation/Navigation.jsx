@@ -14,33 +14,24 @@ export const tabTypes = {
 };
 
 export const Navigation = () => {
-  const [isSideMenuOpen, setOpenSideMenu] = useState(false);
   const [selectedTab, setSelectedTab] = useState(tabTypes.Chats);
   const searchResult = useSelector(selectSearchResult);
   const isSearching = useSelector(selectIsSearching);
   const isDarkTheme = useSelector(selectIsDarkTheme);
 
-  const searchInputRef = useRef();
-
   return (
   <nav className={`navigation ${isDarkTheme ? 'navigation_dark' : ''} ${isSearching ? "navigation_searching" : ''}`}>
       <NavigationHeader
-        searchInputRef={searchInputRef}
         isSearching={isSearching}
-        setOpenSideMenu={setOpenSideMenu}
         selectedTab={selectedTab}
         setSelectedTab={setSelectedTab}
       />
       <MemoizedChatList
-        searchInputRef={searchInputRef}
         isSearching={isSearching}
         searchResult={searchResult}
         selectedTab={selectedTab}
       />
-      <SideMenu
-          isSideMenuOpen={isSideMenuOpen}
-          setOpenSideMenu={setOpenSideMenu}
-        />
+      <SideMenu />
     </nav>
   );
 };

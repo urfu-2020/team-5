@@ -1,0 +1,64 @@
+.home-page-content {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  word-spacing: .05rem;
+}
+
+.home-page-content__features-list {
+  position: relative;
+  left: 1.2rem;
+  max-width: 600px;
+}
+
+.link {
+  display: inline-block;
+  text-decoration: none;
+  color: var(--purple-accent);
+  background-color: transparent;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.link_to-course {
+  margin: 0 .5rem;
+}
+
+.link:focus-visible,
+.link:hover {
+  color: var(--deep-purple);
+  transition: .2s;
+  transform: scale(1.1);
+  outline: none;
+  cursor: pointer;
+}
+
+.home-page-content__title {
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.home-page-content__oh-uh {
+  font-size: .5rem;
+}
+
+@counter-style emoji-counter {
+  system: fixed;
+  symbols: "\1F98D" "\1F994" "\1F416" "\1F433";
+  suffix: " ";
+}
+
+.home-page-content__features-list {
+  list-style: emoji-counter;
+}
+
+.features-list__feature {
+  margin: 10px 0;
+}
+
+.feature__sum {
+  color: var(--deep-purple);
+}
