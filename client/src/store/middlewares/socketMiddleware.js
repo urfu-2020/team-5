@@ -63,17 +63,17 @@ function connect(store) {
     }
   };
 
-  // socket.onopen = function () {
-  //   if(store && store.getState().app.error) {
-  //     store.dispatch(setError(null));
-  //   }
-  // };
+  socket.onopen = function () {
+    if(store && store.getState().app.error) {
+      store.dispatch(setError(null));
+    }
+  };
 
   socket.onclose = function() {
     store.dispatch(setError({ error: true,
       errorMessage: "Соеденение прервано. Повторное подключение..."}));
     setTimeout(function() {
-      connect();
+      connect(store);
     }, 1000);
   };
 
