@@ -63,11 +63,11 @@ function connect(store) {
     }
   };
 
-  socket.onopen = function () {
-    if(store && store.getState().app.error) {
-      store.dispatch(setError(null));
-    }
-  };
+  // socket.onopen = function () {
+  //   if(store && store.getState().app.error) {
+  //     store.dispatch(setError(null));
+  //   }
+  // };
 
   socket.onclose = function() {
     store.dispatch(setError({ error: true,
