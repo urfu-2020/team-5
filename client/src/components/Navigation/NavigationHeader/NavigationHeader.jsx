@@ -30,6 +30,13 @@ export const NavigationHeader = ({isSearching}) => {
     }
   }, [searchInputRef]);
 
+  const searchInputRef = useRef();
+  useEffect(() => {
+    if (searchInputRef.current) {
+      dispatch(setSearchInputRef(searchInputRef));
+    }
+  }, [searchInputRef]);
+
   useEffect(
     () => {
       if (debouncedSearch) {
