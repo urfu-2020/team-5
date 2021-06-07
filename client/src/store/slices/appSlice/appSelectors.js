@@ -42,3 +42,18 @@ export const selectIsThemeLoading = createSelector(
   selectApp,
   app => app.isThemeLoading
 );
+
+export const selectIsSideMenuOpen = createSelector(
+  selectApp,
+  app => app.isSideMenuOpen
+);
+
+export const selectSearchInputRef = createSelector(
+  selectApp,
+  app => app.searchInputRef
+);
+
+export const selectSelectedTab = createSelector(
+  selectApp,
+  app => app.selectedTab
+);

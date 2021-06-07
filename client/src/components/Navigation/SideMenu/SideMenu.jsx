@@ -1,6 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
 import React, {useState} from 'react';
-import PropTypes from 'prop-types';
 import FocusLock from 'react-focus-lock';
 
 import './side-menu.css';
@@ -15,18 +14,19 @@ import {Button} from "../../UtilComponents/Button/Button";
 import {NewChannelIcon} from "../../UtilComponents/Icons/NewChannelIcon";
 import {CreateNewChannelModal} from "../../Modals/CreateNewChannelModal/CreateNewChannelModal";
 import {
-  selectIsCreateNewChannelModalOpen, selectIsDarkTheme, selectIsSwitching
+  selectIsCreateNewChannelModalOpen, selectIsDarkTheme, selectIsSideMenuOpen, selectIsSwitching
 } from "../../../store/slices/appSlice/appSelectors";
 import {Overlay} from "../../UtilComponents/Overlay/Overlay";
-import {setIsDarkTheme, setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
+import {setIsSideMenuOpen, setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
 import {throttle} from "../../../utils/throttle";
 import {setTheme} from "../../../store/slices/appSlice/appThunks";
 
-export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
+export const SideMenu = () => {
   const user = useSelector(selectCurrentUser);
   const isCreateNewChannelModalOpen = useSelector(selectIsCreateNewChannelModalOpen);
   const isDarkTheme = useSelector(selectIsDarkTheme);
   const isSwitching = useSelector(selectIsSwitching);
+  const isSideMenuOpen = useSelector(selectIsSideMenuOpen);
 
   const dispatch = useDispatch();
 
@@ -34,7 +34,7 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
 
   const keyDownHandler = e => {
     if (e.key === 'Escape') {
-      setOpenSideMenu(false);
+      dispatch(setIsSideMenuOpen(false));
     }
   };
 
@@ -45,7 +45,7 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
   return (
     <>
       {
-        isSideMenuOpen && <Overlay onClick={() => setOpenSideMenu(false)} />
+        isSideMenuOpen && <Overlay onClick={() => dispatch(setIsSideMenuOpen(false))} />
       }
 
       <FocusLock disabled={!isSideMenuOpen}>
@@ -71,7 +71,7 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
               className="centred-button button-with-pre-icon"
               onClick={() => {
                 setNewChatModalOpen(true);
-                setOpenSideMenu(false);
+                dispatch(setIsSideMenuOpen(false));
               }}
             >
               Новая группа
@@ -84,7 +84,7 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
               className="centred-button button-with-pre-icon"
               onClick={() => {
                 dispatch(setNewChannelModalOpen(true));
-                setOpenSideMenu(false);
+                dispatch(setIsSideMenuOpen(false));
               }}
             >
               Новый канал
@@ -127,10 +127,4 @@ export const SideMenu = ({isSideMenuOpen, setOpenSideMenu}) => {
       }
     </>
   );
-};
-
-
-SideMenu.propTypes = {
-  isSideMenuOpen: PropTypes.bool,
-  setOpenSideMenu: PropTypes.func
 };
