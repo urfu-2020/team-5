@@ -17,9 +17,7 @@ let socket;
 
 function connect(store) {
   socket = new WebSocket(process.env.REACT_APP_BACKEND_WEBSOCKET_URL);
-  if(store.getState().app.error) {
-    store.dispatch(setError(null));
-  }
+
   socket.onmessage = function (event) {
     const message = JSON.parse(event.data);
     const {payload} = message;
@@ -62,6 +60,12 @@ function connect(store) {
         store.dispatch(setCurrentUnsubscribeChannel(payload));
         break;
       }
+    }
+  };
+
+  socket.onopen = function () {
+    if(store && store.getState().app.error) {
+      store.dispatch(setError(null));
     }
   };
 
