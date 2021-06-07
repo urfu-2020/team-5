@@ -12,7 +12,9 @@ export const store = configureStore({
     user: userSlice
   },
   devTools: process.env.NODE_ENV === 'development',
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(socketMiddleware)
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: false
+  }).concat(socketMiddleware)
 });
 
 export default store;
