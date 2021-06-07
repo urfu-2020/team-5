@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import PropTypes from 'prop-types';
 
 import './navigation-header.css';
@@ -8,15 +8,27 @@ import {tabTypes} from "../Navigation";
 import {useDebounce} from "../../../hooks/useDebounce";
 import {useDispatch, useSelector} from "react-redux";
 import {setSearchResult} from "../../../store/slices/appSlice/appThunks";
-import {setFoundMessage, setIsSearching} from "../../../store/slices/appSlice/appSlice";
+import {
+  setFoundMessage,
+  setIsSearching,
+  setIsSideMenuOpen,
+  setSearchInputRef
+} from "../../../store/slices/appSlice/appSlice";
 import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
 
 
-export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, isSearching, searchInputRef}) => {
+export const NavigationHeader = ({selectedTab, setSelectedTab, isSearching}) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearch = useDebounce(searchInput, 300);
   const isDarkTheme = useSelector(selectIsDarkTheme);
+
+  const searchInputRef = useRef();
+  useEffect(() => {
+    if (searchInputRef.current) {
+      dispatch(setSearchInputRef(searchInputRef));
+    }
+  }, [searchInputRef]);
 
   useEffect(
     () => {
@@ -37,7 +49,7 @@ export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, 
           className="rounded-button centred-button"
           aria-label="Открыть главное меню"
           type="button"
-          onClick={() => setOpenSideMenu(true)}
+          onClick={() => dispatch(setIsSideMenuOpen(true))}
         >
           <svg className="mainMenuButton__icon" height="2.5em" viewBox="0 0 24 24" width="2.5em">
             <path d="M0 0h24v24H0z" fill="none"/>
@@ -88,9 +100,7 @@ export const NavigationHeader = ({setOpenSideMenu, selectedTab, setSelectedTab, 
 NavigationHeader.propTypes = {
   isSearching: PropTypes.bool,
   setIsSearching: PropTypes.bool,
-  setOpenSideMenu: PropTypes.func,
   setSearchResult: PropTypes.func,
   selectedTab: PropTypes.string,
-  setSelectedTab: PropTypes.func,
-  searchInputRef: PropTypes.object
+  setSelectedTab: PropTypes.func
 };

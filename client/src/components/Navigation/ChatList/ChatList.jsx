@@ -11,11 +11,13 @@ import {tabTypes} from "../Navigation";
 import {Button} from "../../UtilComponents/Button/Button";
 import {SearchResultList} from "./SearchResultList/SearchResultList";
 import {setNewChannelModalOpen} from "../../../store/slices/appSlice/appSlice";
+import {selectSearchInputRef} from "../../../store/slices/appSlice/appSelectors";
 
 
-const ChatList = ({selectedTab, isSearching, searchResult, searchInputRef}) => {
+const ChatList = ({selectedTab, isSearching, searchResult}) => {
   const currentChat = useSelector(selectCurrentChat);
   const currentUserId = useSelector(selectCurrentUser).id;
+  const searchInputRef = useSelector(selectSearchInputRef);
 
   const rawUserChats = Object.values(useSelector(selectUserChats));
 
@@ -87,6 +89,5 @@ export const MemoizedChatList = React.memo(ChatList);
 ChatList.propTypes = {
   isSearching: PropTypes.bool,
   selectedTab: PropTypes.string,
-  searchResult: PropTypes.func,
-  searchInputRef: PropTypes.object
+  searchResult: PropTypes.func
 };
