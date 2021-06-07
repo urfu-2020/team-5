@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from "react-redux";
 import './home-page.css';
 
 import {selectIsDarkTheme, selectSearchInputRef} from "../../store/slices/appSlice/appSelectors";
-import {setIsSideMenuOpen} from "../../store/slices/appSlice/appSlice";
+import {setIsSideMenuOpen, setSelectedTab, tabTypes} from "../../store/slices/appSlice/appSlice";
 
 const BurgerMenuLinkButton = () => {
   const dispatch = useDispatch();
@@ -33,6 +33,8 @@ const SearchInputLinkButton = () => {
 };
 
 export const HomePage = () => {
+  const dispatch = useDispatch();
+
   return (
     <div className="home-page-content">
       <h1 className="home-page-content__title">
@@ -54,7 +56,13 @@ export const HomePage = () => {
           <span className="feature__sum">Каналы:</span> создать канал можно все в том же <BurgerMenuLinkButton />,
           пункт &quot;Новый канал&quot;.
           Чтобы подписаться на существующий канал нужно ввести его название в <SearchInputLinkButton />, открыть его
-          и нажать &quot;Подписаться&quot;. P.S: уже существует &quot;Тестовый канал&quot;.
+          и нажать &quot;Подписаться&quot;. P.S: уже существует &quot;Тестовый канал&quot;. Отслеживаемые каналы
+          отображаются в табе <button
+            className={`home-page-content__link link`}
+            onClick={() => dispatch(setSelectedTab(tabTypes.Channels))}
+          >
+            &quot;Каналы&quot;
+          </button>.
         </li>
         <li className="features-list__feature feature">
           <span className="feature__sum">Серверный поиск сообщений и каналов: </span>

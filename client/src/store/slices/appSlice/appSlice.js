@@ -1,6 +1,11 @@
 import {createSlice} from '@reduxjs/toolkit';
 import {setSearchResult, setTheme} from "./appThunks";
 
+export const tabTypes = {
+  Chats: 'Chats',
+  Channels: 'Channels'
+};
+
 class AppState {
   /**
    * @param isCreateNewChannelModalOpen {boolean}
@@ -13,10 +18,11 @@ class AppState {
    * @param isThemeLoading {boolean}
    * @param isSideMenuOpen {boolean}
    * @param searchInputRef {object}
+   * @param selectedTab {tabTypes.Chats | tabTypes.Channels}
    */
   constructor(isCreateNewChannelModalOpen, isSearching, error, isSideMenuOpen,
               searchResult, foundMessage, isDarkTheme,
-              isSwitching, isThemeLoading, searchInputRef) {
+              isSwitching, isThemeLoading, searchInputRef, selectedTab) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
     this.isSearching = isSearching;
@@ -27,6 +33,7 @@ class AppState {
     this.isThemeLoading = isThemeLoading;
     this.isSideMenuOpen = isSideMenuOpen;
     this.searchInputRef = searchInputRef;
+    this.selectedTab = selectedTab;
   }
 }
 
@@ -41,7 +48,8 @@ const initialAppState = {
   isDarkTheme: false,
   isSwitching: false,
   isThemeLoading: true,
-  searchInputRef: null
+  searchInputRef: null,
+  selectedTab: tabTypes.Chats
 };
 
 const appSlice = createSlice({
@@ -85,6 +93,9 @@ const appSlice = createSlice({
     },
     setSearchInputRef(state, {payload}) {
       state.searchInputRef = payload;
+    },
+    setSelectedTab(state, {payload}) {
+      state.selectedTab = payload;
     }
   },
   extraReducers: {
@@ -119,7 +130,8 @@ export const {
   setFoundMessage,
   setStartTheme,
   setIsSideMenuOpen,
-  setSearchInputRef
+  setSearchInputRef,
+  setSelectedTab
 } = actions;
 
 export default reducer;

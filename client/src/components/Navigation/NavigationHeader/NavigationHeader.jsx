@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import './navigation-header.css';
 
 import {Button} from "../../UtilComponents/Button/Button";
-import {tabTypes} from "../Navigation";
 import {useDebounce} from "../../../hooks/useDebounce";
 import {useDispatch, useSelector} from "react-redux";
 import {setSearchResult} from "../../../store/slices/appSlice/appThunks";
@@ -12,16 +11,17 @@ import {
   setFoundMessage,
   setIsSearching,
   setIsSideMenuOpen,
-  setSearchInputRef
+  setSearchInputRef, setSelectedTab, tabTypes
 } from "../../../store/slices/appSlice/appSlice";
-import {selectIsDarkTheme} from "../../../store/slices/appSlice/appSelectors";
+import {selectIsDarkTheme, selectSelectedTab} from "../../../store/slices/appSlice/appSelectors";
 
 
-export const NavigationHeader = ({selectedTab, setSelectedTab, isSearching}) => {
+export const NavigationHeader = ({isSearching}) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearch = useDebounce(searchInput, 300);
   const isDarkTheme = useSelector(selectIsDarkTheme);
+  const selectedTab = useSelector(selectSelectedTab);
 
   const searchInputRef = useRef();
   useEffect(() => {
@@ -76,7 +76,7 @@ export const NavigationHeader = ({selectedTab, setSelectedTab, isSearching}) => 
               tabIndex="0"
               aria-selected={selectedTab === tabTypes.Chats}
               className={`header-tabs__tab ${selectedTab === tabTypes.Chats ? 'chats-tab_selected' : ''}`}
-              onClick={() => setSelectedTab(tabTypes.Chats)}
+              onClick={() => dispatch(setSelectedTab(tabTypes.Chats))}
             >
               Чаты
             </Button>
@@ -85,7 +85,7 @@ export const NavigationHeader = ({selectedTab, setSelectedTab, isSearching}) => 
               tabIndex="0"
               aria-selected={selectedTab === tabTypes.Channels}
               className={`header-tabs__tab ${selectedTab === tabTypes.Channels ? 'chats-tab_selected' : ''}`}
-              onClick={() => setSelectedTab(tabTypes.Channels)}
+              onClick={() => dispatch(setSelectedTab(tabTypes.Channels))}
             >
               Каналы
             </Button>
@@ -100,7 +100,5 @@ export const NavigationHeader = ({selectedTab, setSelectedTab, isSearching}) => 
 NavigationHeader.propTypes = {
   isSearching: PropTypes.bool,
   setIsSearching: PropTypes.bool,
-  setSearchResult: PropTypes.func,
-  selectedTab: PropTypes.string,
-  setSelectedTab: PropTypes.func
+  setSearchResult: PropTypes.func
 };

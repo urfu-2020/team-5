@@ -52,3 +52,8 @@ export const selectSearchInputRef = createSelector(
   selectApp,
   app => app.searchInputRef
 );
+
+export const selectSelectedTab = createSelector(
+  selectApp,
+  app => app.selectedTab
+);
