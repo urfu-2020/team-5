@@ -43,15 +43,16 @@
   position: absolute;
   width: 300px;
   max-height: 300px;
-  padding: 10px;
   overflow-y: auto;
-  box-shadow: 0 0 4px 0 rgba(50, 50, 50, 0.75);
 }
 
 .members-list {
+  z-index: 100;
   gap: 5px;
   background-color: var(--bg-color);
   border-radius: 4px;
+  box-shadow: 0 0 4px 0 rgba(50, 50, 50, 0.75);
+  padding: 10px;
 }
 
 .chat-header_dark .members-list {

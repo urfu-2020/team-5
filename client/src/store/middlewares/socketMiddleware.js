@@ -73,7 +73,7 @@ function connect(store) {
     store.dispatch(setError({ error: true,
       errorMessage: "Соеденение прервано. Повторное подключение..."}));
     setTimeout(function() {
-      connect();
+      connect(store);
     }, 1000);
   };
 
