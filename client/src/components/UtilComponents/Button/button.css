@@ -94,3 +94,16 @@
   border: none;
   border-radius: 0;
 }
+
+.channel-button {
+  background-color: var(--bg-color);
+  border-radius: 0;
+  height: 100%;
+  border-left: 1px solid var(--separator);
+}
+
+.button_dark.channel-button {
+  background-color: var(--menu-bg-dark-theme);
+  color: var(--text-color-dark-theme);
+  border-left: 1px solid var(--selected-item-dark-theme);
+}
