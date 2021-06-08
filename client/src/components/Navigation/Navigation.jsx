@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 
 import './navigation.css';
 
@@ -13,12 +13,16 @@ export const Navigation = () => {
   const isSearching = useSelector(selectIsSearching);
   const isDarkTheme = useSelector(selectIsDarkTheme);
 
+  const searchInputRef = useRef();
+
   return (
   <nav className={`navigation ${isDarkTheme ? 'navigation_dark' : ''} ${isSearching ? "navigation_searching" : ''}`}>
       <NavigationHeader
         isSearching={isSearching}
+        searchInputRef={searchInputRef}
       />
       <MemoizedChatList
+        searchInputRef={searchInputRef}
         isSearching={isSearching}
         searchResult={searchResult}
       />

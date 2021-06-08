@@ -42,10 +42,6 @@
   font-weight: 500;
 }
 
-.home-page-content__oh-uh {
-  font-size: 0.5rem;
-}
-
 @counter-style emoji-counter {
   system: fixed;
   symbols: "\1F98D" "\1F994" "\1F416" "\1F433";

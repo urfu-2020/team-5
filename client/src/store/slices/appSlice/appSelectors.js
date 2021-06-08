@@ -48,11 +48,6 @@ export const selectIsSideMenuOpen = createSelector(
   app => app.isSideMenuOpen
 );
 
-export const selectSearchInputRef = createSelector(
-  selectApp,
-  app => app.searchInputRef
-);
-
 export const selectSelectedTab = createSelector(
   selectApp,
   app => app.selectedTab

@@ -1,9 +1,8 @@
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 
 import './home-page.css';
 
-import {selectIsDarkTheme, selectSearchInputRef} from "../../store/slices/appSlice/appSelectors";
 import {setIsSideMenuOpen, setSelectedTab, tabTypes} from "../../store/slices/appSlice/appSlice";
 
 const BurgerMenuLinkButton = () => {
@@ -19,26 +18,13 @@ const BurgerMenuLinkButton = () => {
   );
 };
 
-const SearchInputLinkButton = () => {
-  const searchInputRef = useSelector(selectSearchInputRef);
-
-  return (
-    <button
-      className={`home-page-content__link link`}
-      onClick={() => searchInputRef.current.focus()}
-    >
-      поиск
-    </button>
-  );
-};
-
 export const HomePage = () => {
   const dispatch = useDispatch();
 
   return (
     <div className="home-page-content">
       <h1 className="home-page-content__title">
-        Привет! Это <span className="home-page-content__oh-uh"><sup><del>Навальный</del></sup></span> мессенджер для
+        Привет! Это мессенджер для
         <a
           href="https://github.com/urfu-2020" target="_blank" rel="noreferrer"
           className={`home-page-content__link link link_to-course`}
@@ -55,7 +41,7 @@ export const HomePage = () => {
         <li className="features-list__feature feature">
           <span className="feature__sum">Каналы:</span> создать канал можно все в том же <BurgerMenuLinkButton />,
           пункт &quot;Новый канал&quot;.
-          Чтобы подписаться на существующий канал нужно ввести его название в <SearchInputLinkButton />, открыть его
+          Чтобы подписаться на существующий канал нужно ввести его название в поиск, открыть его
           и нажать &quot;Подписаться&quot;. P.S: уже существует &quot;Тестовый канал&quot;. Отслеживаемые каналы
           отображаются в табе <button
             className={`home-page-content__link link`}
@@ -66,7 +52,7 @@ export const HomePage = () => {
         </li>
         <li className="features-list__feature feature">
           <span className="feature__sum">Серверный поиск сообщений и каналов: </span>
-          вводим в <SearchInputLinkButton /> текст искомого сообщения. При нажатии на чат с найденным
+          вводим в поиск текст искомого сообщения. При нажатии на чат с найденным
           сообщением это сообщение подсветится.
         </li>
         <li className="features-list__feature feature">

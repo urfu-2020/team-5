@@ -10,13 +10,12 @@ import {selectCurrentUser} from "../../../store/slices/userSlice/userSelectors";
 import {Button} from "../../UtilComponents/Button/Button";
 import {SearchResultList} from "./SearchResultList/SearchResultList";
 import {setNewChannelModalOpen, tabTypes} from "../../../store/slices/appSlice/appSlice";
-import {selectSearchInputRef, selectSelectedTab} from "../../../store/slices/appSlice/appSelectors";
+import {selectSelectedTab} from "../../../store/slices/appSlice/appSelectors";
 
 
-const ChatList = ({isSearching, searchResult}) => {
+const ChatList = ({isSearching, searchResult, searchInputRef}) => {
   const currentChat = useSelector(selectCurrentChat);
   const currentUserId = useSelector(selectCurrentUser).id;
-  const searchInputRef = useSelector(selectSearchInputRef);
   const selectedTab = useSelector(selectSelectedTab);
 
   const rawUserChats = Object.values(useSelector(selectUserChats));
@@ -87,6 +86,7 @@ const ChatList = ({isSearching, searchResult}) => {
 export const MemoizedChatList = React.memo(ChatList);
 
 ChatList.propTypes = {
+  searchInputRef: PropTypes.object,
   isSearching: PropTypes.bool,
   searchResult: PropTypes.func
 };

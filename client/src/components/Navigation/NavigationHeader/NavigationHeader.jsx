@@ -11,24 +11,17 @@ import {
   setFoundMessage,
   setIsSearching,
   setIsSideMenuOpen,
-  setSearchInputRef, setSelectedTab, tabTypes
+  setSelectedTab, tabTypes
 } from "../../../store/slices/appSlice/appSlice";
 import {selectIsDarkTheme, selectSelectedTab} from "../../../store/slices/appSlice/appSelectors";
 
 
-export const NavigationHeader = ({isSearching}) => {
+export const NavigationHeader = ({isSearching, searchInputRef}) => {
   const dispatch = useDispatch();
   const [searchInput, setSearchInput] = useState('');
   const debouncedSearch = useDebounce(searchInput, 300);
   const isDarkTheme = useSelector(selectIsDarkTheme);
   const selectedTab = useSelector(selectSelectedTab);
-
-  const searchInputRef = useRef();
-  useEffect(() => {
-    if (searchInputRef.current) {
-      dispatch(setSearchInputRef(searchInputRef));
-    }
-  }, [searchInputRef]);
 
   useEffect(
     () => {
@@ -98,6 +91,7 @@ export const NavigationHeader = ({isSearching}) => {
 
 
 NavigationHeader.propTypes = {
+  searchInputRef: PropTypes.object,
   isSearching: PropTypes.bool,
   setIsSearching: PropTypes.bool,
   setSearchResult: PropTypes.func

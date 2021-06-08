@@ -17,12 +17,11 @@ class AppState {
    * @param isSwitching {boolean}
    * @param isThemeLoading {boolean}
    * @param isSideMenuOpen {boolean}
-   * @param searchInputRef {object}
    * @param selectedTab {tabTypes.Chats | tabTypes.Channels}
    */
   constructor(isCreateNewChannelModalOpen, isSearching, error, isSideMenuOpen,
               searchResult, foundMessage, isDarkTheme,
-              isSwitching, isThemeLoading, searchInputRef, selectedTab) {
+              isSwitching, isThemeLoading, selectedTab) {
     this.isCreateNewChannelModalOpen = isCreateNewChannelModalOpen;
     this.error = error;
     this.isSearching = isSearching;
@@ -32,7 +31,6 @@ class AppState {
     this.isSwitching = isSwitching;
     this.isThemeLoading = isThemeLoading;
     this.isSideMenuOpen = isSideMenuOpen;
-    this.searchInputRef = searchInputRef;
     this.selectedTab = selectedTab;
   }
 }
@@ -48,7 +46,6 @@ const initialAppState = {
   isDarkTheme: false,
   isSwitching: false,
   isThemeLoading: true,
-  searchInputRef: null,
   selectedTab: tabTypes.Chats
 };
 
@@ -91,9 +88,6 @@ const appSlice = createSlice({
     setIsSideMenuOpen(state, {payload}) {
       state.isSideMenuOpen = payload;
     },
-    setSearchInputRef(state, {payload}) {
-      state.searchInputRef = payload;
-    },
     setSelectedTab(state, {payload}) {
       state.selectedTab = payload;
     }
@@ -130,7 +124,6 @@ export const {
   setFoundMessage,
   setStartTheme,
   setIsSideMenuOpen,
-  setSearchInputRef,
   setSelectedTab
 } = actions;
 
